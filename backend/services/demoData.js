@@ -21,7 +21,7 @@ const generateCustomer = (planIds, customerId) => {
         phone_number: faker.phone.number('###########'), // 11 digits
         email: faker.internet.email({ firstName, lastName }).toLowerCase(),
         address: faker.location.streetAddress(false),
-        planId: planIds[customerId % planIds.length],
+        planId: faker.helpers.arrayElement(planIds),
         status: faker.helpers.arrayElement(['active', 'inactive', 'suspended']),
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
@@ -139,17 +139,14 @@ const generateDemoData = () => {
 
         console.log(`Generating ${NUM_INVOICES_PER_CUSTOMER} invoices for customer ${customer.id}...`);
         for (let j = 0; j < NUM_INVOICES_PER_CUSTOMER; j++) {
-            const customerBills = bills.filter(b => b.customerId === customer.id);
-            if (customerBills.length > 0) {
-                const billForInvoice = faker.helpers.arrayElement(customerBills);
-                const invoice = generateInvoice(customer.id, billForInvoice.id, invoiceIdCounter++);
-                invoices.push(invoice);
+            const billForInvoice = faker.helpers.arrayElement(bills.filter(b => b.customerId === customer.id));
+            const invoice = generateInvoice(customer.id, billForInvoice ? billForInvoice.id : null, invoiceIdCounter++);
+            invoices.push(invoice);
 
-                // Generate payments for invoices
-                if (invoice.status === 'paid' || faker.helpers.arrayElement([true, false])) { // Some pending/failed payments
-                    const payment = generatePayment(customer.id, invoice.billId, invoice.id, paymentIdCounter++, invoice.amountDue);
-                    payments.push(payment);
-                }
+            // Generate payments for invoices
+            if (invoice.status === 'paid' || faker.helpers.arrayElement([true, false])) { // Some pending/failed payments
+                const payment = generatePayment(customer.id, invoice.billId, invoice.id, paymentIdCounter++, invoice.amountDue);
+                payments.push(payment);
             }
         }
 

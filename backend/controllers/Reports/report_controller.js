@@ -25,10 +25,9 @@ async function calculateMonthlyUsage(customerId) {
   return usageLogs.reduce((acc, log) => acc + log.duration, 0);
 }
 
-async function getUsageTrendData(customerId = null) {
-  const whereClause = customerId ? { customerId: customerId } : {};
+async function getUsageTrendData(customerId) {
   const usageLogs = await UsageLog.findAll({
-    where: whereClause,
+    where: { customerId: customerId },
     attributes: ['timestamp', 'duration'],
     order: [['timestamp', 'ASC']]
   });

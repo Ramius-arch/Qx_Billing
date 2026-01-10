@@ -6,39 +6,13 @@ const Plan = db.Plan;
 
 async function getCustomers(req, res) {
   try {
-    const { page = 1, pageSize = 10, search, sortBy = 'id', sortOrder = 'asc' } = req.query;
-    const limit = parseInt(pageSize, 10);
-    const offset = (parseInt(page, 10) - 1) * limit;
-
-    const whereClause = {};
-    if (search) {
-      whereClause[db.Sequelize.Op.or] = [
-        { name: { [db.Sequelize.Op.like]: `%${search}%` } },
-        { email: { [db.Sequelize.Op.like]: `%${search}%` } },
-        { phone_number: { [db.Sequelize.Op.like]: `%${search}%` } },
-        { address: { [db.Sequelize.Op.like]: `%${search}%` } },
-      ];
-    }
-
-    const orderClause = [[sortBy, sortOrder.toUpperCase()]];
-
-    const { count, rows } = await Customer.findAndCountAll({
-      where: whereClause,
-      order: orderClause,
-      limit: limit,
-      offset: offset,
+    const customers = await Customer.findAll({
       include: [{
         model: Plan,
-        attributes: ['name', 'price']
+        attributes: ['name', 'price'] // Include relevant plan attributes
       }]
     });
-
-    return res.status(200).json({
-      totalItems: count,
-      customers: rows,
-      currentPage: parseInt(page, 10),
-      totalPages: Math.ceil(count / limit)
-    });
+    return res.status(200).json(customers);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Failed to fetch customers' });
