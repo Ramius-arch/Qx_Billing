@@ -92,56 +92,58 @@
         />
       </div>
 
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" @click="sortCustomers('name')">
-              Name
-              <span v-if="sortBy === 'name'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" @click="sortCustomers('email')">
-              Email
-              <span v-if="sortBy === 'email'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" @click="sortCustomers('phone_number')">
-              Phone Number
-              <span v-if="sortBy === 'phone_number'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" @click="sortCustomers('address')">
-              Address
-              <span v-if="sortBy === 'address'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" @click="sortCustomers('planId')">
-              Plan
-              <span v-if="sortBy === 'planId'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="customer in customers" :key="customer.id" class="hover:bg-gray-50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ customer.name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ customer.email }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ customer.phone_number }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ customer.address }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ customer.Plan ? customer.Plan.name : 'N/A' }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button
-                class="text-indigo-600 hover:text-indigo-900 mr-2"
-                @click="editCustomer(customer)"
-              >
-                Edit
-              </button>
-              <button
-                class="text-red-600 hover:text-red-900"
-                @click="deleteCustomer(customer.id)"
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto relative shadow-md sm:rounded-lg border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-100">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('name')">
+                Name
+                <span v-if="sortBy === 'name'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('email')">
+                Email
+                <span v-if="sortBy === 'email'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('phone_number')">
+                Phone Number
+                <span v-if="sortBy === 'phone_number'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('address')">
+                Address
+                <span v-if="sortBy === 'address'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('planId')">
+                Plan
+                <span v-if="sortBy === 'planId'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="(customer, index) in customers" :key="customer.id" :class="{'bg-gray-50': index % 2 === 1, 'hover:bg-gray-100': true}">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ customer.name }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ customer.email }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ customer.phone_number }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ customer.address }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ customer.Plan ? customer.Plan.name : 'N/A' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button
+                  class="text-indigo-600 hover:text-indigo-800 mr-3"
+                  @click="editCustomer(customer)"
+                >
+                  Edit
+                </button>
+                <button
+                  class="text-red-600 hover:text-red-800"
+                  @click="deleteCustomer(customer.id)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Pagination Controls -->
       <div class="flex justify-between items-center mt-4">
