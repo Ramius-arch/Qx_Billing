@@ -8,8 +8,8 @@ const apiClient = axios.create({
 });
 
 const api = {
-  getCustomers() {
-    return apiClient.get('/customers');
+  getCustomers(page = 1, pageSize = 10) {
+    return apiClient.get('/customers', { params: { page, pageSize } });
   },
   addCustomer(customer) {
     return apiClient.post('/customers', customer);

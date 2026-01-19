@@ -1,0 +1,14 @@
+App.vue:71 false
+InvoiceGenerator.vue:180 Invoice saved: Object
+App.vue:71 true
+App.vue:68 true 'responsive'
+App.vue:68 false 'clickTrigger'
+App.vue:71 false
+:3000/api/billing/generate/6:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+BillingEngine.vue:106 Error calculating bill: AxiosError
+calculateBill @ BillingEngine.vue:106
+:3000/api/billing/generate/6:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+BillingEngine.vue:106 Error calculating bill: AxiosError
+calculateBill @ BillingEngine.vue:106
+App.vue:71 true
+App.vue:68 true 'responsive'
