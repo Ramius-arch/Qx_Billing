@@ -1,99 +1,112 @@
 <template>
-  <template v-if="$route.meta.layout === false">
-    <router-view />
-  </template>
-  <template v-else>
-    <a-layout style="min-height: 100vh;">
-      <a-layout-sider
-        v-model:collapsed="collapsed"
-        collapsible
-        breakpoint="lg"
-        class="main-sider"
-        width="260"
-      >
-        <div class="logo-container">
-          <div class="logo-icon">Qx</div>
-          <span v-if="!collapsed" class="logo-text">Billing</span>
-        </div>
-        <a-menu v-model:selectedKeys="selectedKeys" mode="inline" class="nav-menu">
-          <a-menu-item key="dashboard">
-            <template #icon><dashboard-outlined /></template>
-            <router-link to="/dashboard">Dashboard</router-link>
-          </a-menu-item>
-          <a-menu-item key="customers">
-            <template #icon><team-outlined /></template>
-            <router-link to="/customers">Customers</router-link>
-          </a-menu-item>
-          <a-menu-item key="usage-tracker">
-            <template #icon><bar-chart-outlined /></template>
-            <router-link to="/usage-tracker">Usage Tracker</router-link>
-          </a-menu-item>
-          <a-menu-item key="billing-engine">
-            <template #icon><setting-outlined /></template>
-            <router-link to="/billing-engine">Billing Engine</router-link>
-          </a-menu-item>
-          <a-menu-item key="reports">
-            <template #icon><line-chart-outlined /></template>
-            <router-link to="/reports">Reports & Analytics</router-link>
-          </a-menu-item>
-           <a-menu-item key="invoice-generator">
-            <template #icon><file-text-outlined /></template>
-            <router-link to="/invoice-generator">Invoices</router-link>
-          </a-menu-item>
-           <a-menu-item key="payment-processing">
-            <template #icon><credit-card-outlined /></template>
-            <router-link to="/payment-processing">Payments</router-link>
-          </a-menu-item>
-          <a-menu-divider />
-          <a-menu-item key="help-center">
-            <template #icon><question-circle-outlined /></template>
-            <router-link to="/help-center">Help Center</router-link>
-          </a-menu-item>
-        </a-menu>
-      </a-layout-sider>
-      <a-layout>
-        <a-layout-header class="main-header">
-          <div class="header-left">
-            <h2 class="page-title">{{ currentPageTitle }}</h2>
+  <a-config-provider :theme="themeConfig">
+    <template v-if="$route.meta.layout === false">
+      <router-view />
+    </template>
+    <template v-else>
+      <a-layout style="min-height: 100vh;">
+        <a-layout-sider
+          v-model:collapsed="collapsed"
+          collapsible
+          breakpoint="lg"
+          class="main-sider"
+          width="260"
+        >
+          <div class="logo-container">
+            <div class="logo-icon">Qx</div>
+            <span v-if="!collapsed" class="logo-text">Billing</span>
           </div>
-          <div class="header-right">
-            <a-space size="large">
-              <a-badge dot>
-                <bell-outlined class="header-icon" />
-              </a-badge>
-              <a-dropdown placement="bottomRight">
-                <div class="user-profile">
-                  <a-avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
-                  <span v-if="!isMobile" class="user-name">Admin User</span>
-                </div>
-                <template #overlay>
-                  <a-menu>
-                    <a-menu-item key="profile">Profile Settings</a-menu-item>
-                    <a-menu-item key="logout">Logout</a-menu-item>
-                  </a-menu>
-                </template>
-              </a-dropdown>
-            </a-space>
-          </div>
-        </a-layout-header>
-        <a-layout-content>
-          <router-view v-slot="{ Component }">
-            <transition name="fade" mode="out-in">
-              <component :is="Component" class="page-container" />
-            </transition>
-          </router-view>
-        </a-layout-content>
-        <a-layout-footer class="main-footer">
-          Qx_Billing &copy;2026 Crafted with precision by Ramius_arch
-        </a-layout-footer>
+          <a-menu v-model:selectedKeys="selectedKeys" mode="inline" class="nav-menu">
+            <a-menu-item key="dashboard">
+              <template #icon><dashboard-outlined /></template>
+              <router-link to="/dashboard">Dashboard</router-link>
+            </a-menu-item>
+            <a-menu-item key="customers">
+              <template #icon><team-outlined /></template>
+              <router-link to="/customers">Customers</router-link>
+            </a-menu-item>
+            <a-menu-item key="usage-tracker">
+              <template #icon><bar-chart-outlined /></template>
+              <router-link to="/usage-tracker">Usage Tracker</router-link>
+            </a-menu-item>
+            <a-menu-item key="billing-engine">
+              <template #icon><setting-outlined /></template>
+              <router-link to="/billing-engine">Billing Engine</router-link>
+            </a-menu-item>
+            <a-menu-item key="reports">
+              <template #icon><line-chart-outlined /></template>
+              <router-link to="/reports">Reports & Analytics</router-link>
+            </a-menu-item>
+             <a-menu-item key="invoice-generator">
+              <template #icon><file-text-outlined /></template>
+              <router-link to="/invoice-generator">Invoices</router-link>
+            </a-menu-item>
+             <a-menu-item key="payment-processing">
+              <template #icon><credit-card-outlined /></template>
+              <router-link to="/payment-processing">Payments</router-link>
+            </a-menu-item>
+            <a-menu-divider />
+            <a-menu-item key="help-center">
+              <template #icon><question-circle-outlined /></template>
+              <router-link to="/help-center">Help Center</router-link>
+            </a-menu-item>
+          </a-menu>
+        </a-layout-sider>
+        <a-layout>
+          <a-layout-header class="main-header">
+            <div class="header-left">
+              <h2 class="page-title">{{ currentPageTitle }}</h2>
+            </div>
+            <div class="header-right">
+              <a-space size="large">
+                <a-tooltip :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+                  <div class="theme-toggle" @click="toggleTheme">
+                    <template v-if="isDark">
+                      <sun-outlined class="header-icon" />
+                    </template>
+                    <template v-else>
+                      <moon-outlined class="header-icon" />
+                    </template>
+                  </div>
+                </a-tooltip>
+                <a-badge dot>
+                  <bell-outlined class="header-icon" />
+                </a-badge>
+                <a-dropdown placement="bottomRight">
+                  <div class="user-profile">
+                    <a-avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
+                    <span v-if="!isMobile" class="user-name">Admin User</span>
+                  </div>
+                  <template #overlay>
+                    <a-menu>
+                      <a-menu-item key="profile">Profile Settings</a-menu-item>
+                      <a-menu-item key="logout">Logout</a-menu-item>
+                    </a-menu>
+                  </template>
+                </a-dropdown>
+              </a-space>
+            </div>
+          </a-layout-header>
+          <a-layout-content>
+            <router-view v-slot="{ Component }">
+              <transition name="fade" mode="out-in">
+                <component :is="Component" class="page-container" />
+              </transition>
+            </router-view>
+          </a-layout-content>
+          <a-layout-footer class="main-footer">
+            Qx_Billing &copy;2026 Crafted with precision by Ramius_arch
+          </a-layout-footer>
+        </a-layout>
       </a-layout>
-    </a-layout>
-  </template>
+    </template>
+  </a-config-provider>
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { theme } from 'ant-design-vue';
 import {
   DashboardOutlined,
   TeamOutlined,
@@ -104,6 +117,8 @@ import {
   CreditCardOutlined,
   QuestionCircleOutlined,
   BellOutlined,
+  SunOutlined,
+  MoonOutlined,
 } from '@ant-design/icons-vue';
 
 export default defineComponent({
@@ -118,11 +133,59 @@ export default defineComponent({
     CreditCardOutlined,
     QuestionCircleOutlined,
     BellOutlined,
+    SunOutlined,
+    MoonOutlined,
   },
   setup() {
     const route = useRoute();
     const collapsed = ref(false);
     const selectedKeys = ref([route.path.split('/')[1] || 'dashboard']);
+    
+    // Smart initial theme detection
+    const getInitialTheme = () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) return savedTheme === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    };
+    
+    const isDark = ref(getInitialTheme());
+
+    const themeConfig = computed(() => ({
+      algorithm: isDark.value ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      token: {
+        colorPrimary: '#1677ff',
+        borderRadius: 8,
+      },
+    }));
+
+    const toggleTheme = () => {
+      isDark.value = !isDark.value;
+      localStorage.setItem('theme', isDark.value ? 'dark' : 'light');
+      updateThemeAttribute();
+    };
+
+    const updateThemeAttribute = () => {
+      document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : 'light');
+    };
+
+    onMounted(() => {
+      updateThemeAttribute();
+      
+      // Listen for system theme changes
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = (e) => {
+        if (!localStorage.getItem('theme')) {
+          isDark.value = e.matches;
+          updateThemeAttribute();
+        }
+      };
+      
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', handleChange);
+      } else {
+        mediaQuery.addListener(handleChange);
+      }
+    });
 
     const currentPageTitle = computed(() => {
       const key = route.path.split('/')[1] || 'dashboard';
@@ -144,6 +207,9 @@ export default defineComponent({
       selectedKeys,
       currentPageTitle,
       isMobile: window.innerWidth < 768,
+      isDark,
+      themeConfig,
+      toggleTheme,
     };
   },
   watch: {
@@ -241,8 +307,36 @@ export default defineComponent({
   padding: 16px;
 }
 
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background: var(--bg-color);
+}
+
 .nav-menu :deep(.ant-menu-item-selected) {
-  background-color: #e6f4ff !important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
   font-weight: 600;
+}
+
+[data-theme='dark'] .nav-menu :deep(.ant-menu-item-selected) {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+[data-theme='dark'] .nav-menu :deep(.ant-menu-title-content a) {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .nav-menu :deep(.ant-menu-item-selected .ant-menu-title-content a) {
+  color: white;
 }
 </style>
