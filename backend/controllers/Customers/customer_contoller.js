@@ -1,137 +1,120 @@
-const { ErrorHandler } = require('../../utlis/errorHandler');
-const Joi = require('joi');
-const db = require('../../models'); // Import models from the centralized index.js
+const { ErrorResponse } = require('../../middleware/errorHandler');
+const asyncHandler = require('../../middleware/asyncHandler');
+const db = require('../../models');
 const Customer = db.Customer;
 const Plan = db.Plan;
 
-async function getCustomers(req, res) {
-  try {
-    const { page = 1, pageSize = 10, search, sortBy = 'id', sortOrder = 'asc' } = req.query;
-    const limit = parseInt(pageSize, 10);
-    const offset = (parseInt(page, 10) - 1) * limit;
+// @desc    Get all customers
+// @route   GET /api/customers
+// @access  Private
+const getCustomers = asyncHandler(async (req, res, next) => {
+  const { page = 1, pageSize = 10, search, sortBy = 'id', sortOrder = 'asc' } = req.query;
+  const limit = parseInt(pageSize, 10);
+  const offset = (parseInt(page, 10) - 1) * limit;
 
-    const whereClause = {};
-    if (search) {
-      whereClause[db.Sequelize.Op.or] = [
-        { name: { [db.Sequelize.Op.like]: `%${search}%` } },
-        { email: { [db.Sequelize.Op.like]: `%${search}%` } },
-        { phone_number: { [db.Sequelize.Op.like]: `%${search}%` } },
-        { address: { [db.Sequelize.Op.like]: `%${search}%` } },
-      ];
-    }
-
-    const orderClause = [[sortBy, sortOrder.toUpperCase()]];
-
-    const { count, rows } = await Customer.findAndCountAll({
-      where: whereClause,
-      order: orderClause,
-      limit: limit,
-      offset: offset,
-      include: [{
-        model: Plan,
-        attributes: ['name', 'price']
-      }]
-    });
-
-    return res.status(200).json({
-      totalItems: count,
-      customers: rows,
-      currentPage: parseInt(page, 10),
-      totalPages: Math.ceil(count / limit)
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to fetch customers' });
+  const whereClause = {};
+  if (search) {
+    whereClause[db.Sequelize.Op.or] = [
+      { name: { [db.Sequelize.Op.like]: `%${search}%` } },
+      { email: { [db.Sequelize.Op.like]: `%${search}%` } },
+      { phone_number: { [db.Sequelize.Op.like]: `%${search}%` } },
+      { address: { [db.Sequelize.Op.like]: `%${search}%` } },
+    ];
   }
-}
 
-async function getCustomerById(req, res) {
-  try {
-    const { id } = req.params;
-    const customer = await Customer.findByPk(parseInt(id), {
-      include: [{
-        model: Plan,
-        attributes: ['name', 'price']
-      }]
-    });
-    if (!customer) {
-      return res.status(404).json({ error: 'Customer not found' });
-    }
-    return res.status(200).json(customer);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to fetch customer details' });
+  const orderClause = [[sortBy, sortOrder.toUpperCase()]];
+
+  const { count, rows } = await Customer.findAndCountAll({
+    where: whereClause,
+    order: orderClause,
+    limit: limit,
+    offset: offset,
+    include: [{
+      model: Plan,
+      attributes: ['name', 'price']
+    }]
+  });
+
+  res.status(200).json({
+    success: true,
+    totalItems: count,
+    customers: rows,
+    currentPage: parseInt(page, 10),
+    totalPages: Math.ceil(count / limit)
+  });
+});
+
+// @desc    Get single customer
+// @route   GET /api/customers/:id
+// @access  Private
+const getCustomerById = asyncHandler(async (req, res, next) => {
+  const customer = await Customer.findByPk(req.params.id, {
+    include: [{
+      model: Plan,
+      attributes: ['name', 'price']
+    }]
+  });
+
+  if (!customer) {
+    return next(new ErrorResponse(`Customer not found with id of ${req.params.id}`, 404));
   }
-}
 
-async function createCustomer(req, res) {
-  try {
-    const { name, phone_number, email, address, planId, status } = req.body;
-    
-    const validationSchema = Joi.object({
-      name: Joi.string().required(),
-      phone_number: Joi.string().required(),
-      email: Joi.string().email().optional(),
-      address: Joi.string().required(),
-      planId: Joi.number().integer().required(),
-      status: Joi.string().valid('active', 'inactive', 'suspended').optional(),
-    });
+  res.status(200).json({
+    success: true,
+    data: customer
+  });
+});
 
-    const { error } = validationSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ error: error.details[0].message });
-    }
+// @desc    Create new customer
+// @route   POST /api/customers
+// @access  Private
+const createCustomer = asyncHandler(async (req, res, next) => {
+  const customer = await Customer.create(req.body);
 
-    const newCustomer = await Customer.create({
-      name,
-      phone_number,
-      email,
-      address,
-      planId,
-      status: status || 'active',
-    });
-    return res.status(201).json(newCustomer);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to create customer' });
+  res.status(201).json({
+    success: true,
+    data: customer
+  });
+});
+
+// @desc    Update customer
+// @route   PUT /api/customers/:id
+// @access  Private
+const updateCustomer = asyncHandler(async (req, res, next) => {
+  let customer = await Customer.findByPk(req.params.id);
+
+  if (!customer) {
+    return next(new ErrorResponse(`Customer not found with id of ${req.params.id}`, 404));
   }
-}
 
-async function updateCustomer(req, res) {
-  try {
-    const { id } = req.params;
-    const [updatedRows] = await Customer.update(req.body, {
-      where: { id: parseInt(id) }
-    });
+  await customer.update(req.body);
 
-    if (updatedRows === 0) {
-      return res.status(404).json({ error: 'Customer not found or no changes made' });
-    }
+  // Re-fetch to get any updated fields
+  customer = await Customer.findByPk(req.params.id);
 
-    const updatedCustomer = await Customer.findByPk(parseInt(id));
-    return res.status(200).json(updatedCustomer);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to update customer' });
+  res.status(200).json({
+    success: true,
+    data: customer
+  });
+});
+
+// @desc    Delete customer
+// @route   DELETE /api/customers/:id
+// @access  Private
+const deleteCustomer = asyncHandler(async (req, res, next) => {
+  const customer = await Customer.findByPk(req.params.id);
+
+  if (!customer) {
+    return next(new ErrorResponse(`Customer not found with id of ${req.params.id}`, 404));
   }
-}
 
-async function deleteCustomer(req, res) {
-  try {
-    const { id } = req.params;
-    const deletedRows = await Customer.destroy({
-      where: { id: parseInt(id) }
-    });
+  await customer.destroy();
 
-    if (deletedRows === 0) {
-      return res.status(404).json({ error: 'Customer not found' });
-    }
-    return res.status(204).send(); // No content for successful deletion
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to delete customer' });
-  }
-}
+  res.status(200).json({
+    success: true,
+    data: {}
+  });
+});
 
 module.exports = {
   getCustomers,
@@ -140,3 +123,4 @@ module.exports = {
   updateCustomer,
   deleteCustomer,
 };
+

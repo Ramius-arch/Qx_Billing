@@ -20,6 +20,8 @@ const usageRoutes = require('./routes/usage.routes');
 const invoiceRoutes = require('./routes/invoices.routes');
 const reportRoutes = require('./routes/reports.routes');
 
+const { errorHandler } = require('./middleware/errorHandler');
+
 // Use routes
 app.use('/api/customers', customerRoutes);
 app.use('/api/plans', planRoutes);
@@ -28,6 +30,9 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/usage', usageRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/reports', reportRoutes);
+
+// Error handler (should be after routes)
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 db.sequelize.sync({ force: true }) // Use { force: true } to drop and re-create tables

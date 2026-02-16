@@ -111,6 +111,16 @@ const routes = [
       layout: true,
     },
   },
+  // Invoice Detail route
+  {
+    path: '/invoices/:id',
+    name: 'InvoiceDetail',
+    component: () => import('./pages/InvoiceDetail.vue'),
+    meta: {
+      title: 'Invoice Details',
+      layout: true,
+    },
+  },
 ];
 
 const router = createRouter({

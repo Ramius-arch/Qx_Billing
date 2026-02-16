@@ -1,8 +1,8 @@
 const { faker } = require('@faker-js/faker');
 
-const NUM_CUSTOMERS = 10000;
-const NUM_INVOICES_PER_CUSTOMER = 30; // Total 300,000 invoices
-const NUM_USAGELOGS_PER_CUSTOMER = 9; // Total 90,000 usage logs
+const NUM_CUSTOMERS = 100;
+const NUM_INVOICES_PER_CUSTOMER = 5; // Total 500 invoices
+const NUM_USAGELOGS_PER_CUSTOMER = 10; // Total 1000 usage logs
 const NUM_PAYMENTS_PER_INVOICE = 1; // For simplicity, one payment attempt per invoice
 
 // Static plans for consistent referencing

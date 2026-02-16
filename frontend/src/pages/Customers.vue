@@ -1,306 +1,333 @@
 <template>
-  <div class="customers-container">
-    <!-- Header -->
-    <header class="mb-6">
-      <h1 class="text-2xl font-bold">Customer Management</h1>
-    </header>
-
-    <!-- Customer Form -->
-    <div class="bg-white p-6 rounded-lg shadow mb-8">
-      <h2 class="text-xl font-bold mb-4">{{ isEditing ? 'Edit Customer' : 'Add New Customer' }}</h2>
-      <form @submit.prevent="handleSubmit" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Name:</label>
-          <input
-            type="text"
-            v-model="newCustomer.name"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Phone Number:</label>
-          <input
-            type="tel"
-            v-model="newCustomer.phone_number"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Address:</label>
-          <textarea
-            v-model="newCustomer.address"
-            required
-            rows="3"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Email:</label>
-          <input
-            type="email"
-            v-model="newCustomer.email"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Plan:</label>
-          <select
-            v-model="newCustomer.planId"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          >
-            <option v-for="plan in plans" :key="plan.id" :value="plan.id">{{ plan.name }}</option>
-          </select>
-        </div>
-
-        <div class="flex space-x-4">
-          <button
-            type="submit"
-            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-          >
-            {{ isEditing ? 'Update Customer' : 'Add Customer' }}
-          </button>
-          <button
-            v-if="isEditing"
-            type="button"
-            @click="cancelEdit"
-            class="w-full bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+  <div class="customers-page">
+    <div class="header-actions mb-24">
+      <a-input-search
+        v-model:value="searchQuery"
+        placeholder="Search by name, email, or phone..."
+        style="width: 320px"
+        @search="fetchCustomers"
+        allow-clear
+      />
+      <a-button type="primary" size="large" @click="showAddModal">
+        <template #icon><plus-outlined /></template>
+        Add Customer
+      </a-button>
     </div>
 
-    <!-- Customers Table -->
-    <div class="bg-white p-6 rounded-lg shadow">
-      <!-- Search Input -->
-      <div class="mb-4">
-        <input
-          type="text"
-          v-model="searchQuery"
-          @input="fetchCustomers"
-          placeholder="Search customers..."
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        />
-      </div>
+    <a-card :bordered="false" class="table-card">
+      <a-table
+        :columns="columns"
+        :data-source="customers"
+        :loading="loading"
+        :pagination="pagination"
+        @change="handleTableChange"
+        row-key="id"
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'plan'">
+            <a-tag color="blue">{{ record.Plan ? record.Plan.name : 'N/A' }}</a-tag>
+          </template>
+          <template v-else-if="column.key === 'status'">
+            <a-tag :color="getStatusTagColor(record.status)">
+              {{ record.status.toUpperCase() }}
+            </a-tag>
+          </template>
+          <template v-else-if="column.key === 'action'">
+            <a-space size="middle">
+              <a-tooltip title="Edit Customer">
+                <a-button type="text" @click="editCustomer(record)">
+                  <template #icon><edit-outlined /></template>
+                </a-button>
+              </a-tooltip>
+              <a-popconfirm
+                title="Are you sure you want to delete this customer?"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="handleDelete(record.id)"
+              >
+                <a-tooltip title="Delete Customer">
+                  <a-button type="text" danger>
+                    <template #icon><delete-outlined /></template>
+                  </a-button>
+                </a-tooltip>
+              </a-popconfirm>
+            </a-space>
+          </template>
+        </template>
+      </a-table>
+    </a-card>
 
-      <div class="overflow-x-auto relative shadow-md sm:rounded-lg border border-gray-200">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-100">
-            <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('name')">
-                Name
-                <span v-if="sortBy === 'name'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('email')">
-                Email
-                <span v-if="sortBy === 'email'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('phone_number')">
-                Phone Number
-                <span v-if="sortBy === 'phone_number'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('address')">
-                Address
-                <span v-if="sortBy === 'address'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer" @click="sortCustomers('planId')">
-                Plan
-                <span v-if="sortBy === 'planId'">{{ sortOrder === 'asc' ? ' ▲' : ' ▼' }}</span>
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="(customer, index) in customers" :key="customer.id" :class="{'bg-gray-50': index % 2 === 1, 'hover:bg-gray-100': true}">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ customer.name }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ customer.email }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ customer.phone_number }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ customer.address }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ customer.Plan ? customer.Plan.name : 'N/A' }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  class="text-indigo-600 hover:text-indigo-800 mr-3"
-                  @click="editCustomer(customer)"
-                >
-                  Edit
-                </button>
-                <button
-                  class="text-red-600 hover:text-red-800"
-                  @click="deleteCustomer(customer.id)"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- Add/Edit Customer Modal -->
+    <a-modal
+      v-model:open="modalVisible"
+      :title="isEditing ? 'Modify Customer Profile' : 'Register New Customer'"
+      @ok="handleModalOk"
+      :confirm-loading="modalConfirmLoading"
+      destroyOnClose
+    >
+      <a-form :model="formState" layout="vertical" ref="formRef">
+        <a-form-item
+          label="Full Name"
+          name="name"
+          :rules="[{ required: true, message: 'Please input full name!' }]"
+        >
+          <a-input v-model:value="formState.name" placeholder="John Doe" />
+        </a-form-item>
+        
+        <a-row :gutter="16">
+          <a-col :span="12">
+            <a-form-item
+              label="Phone Number"
+              name="phone_number"
+              :rules="[{ required: true, message: 'Please input phone number!' }]"
+            >
+              <a-input v-model:value="formState.phone_number" placeholder="2547XXXXXXXX" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item
+              label="Email Address"
+              name="email"
+              :rules="[{ type: 'email', message: 'Please enter a valid email!' }]"
+            >
+              <a-input v-model:value="formState.email" placeholder="john@example.com" />
+            </a-form-item>
+          </a-col>
+        </a-row>
 
-      <!-- Pagination Controls -->
-      <div class="flex justify-between items-center mt-4">
-        <button
-          @click="changePage(currentPage - 1)"
-          :disabled="currentPage === 1"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+        <a-form-item
+          label="Physical Address"
+          name="address"
+          :rules="[{ required: true, message: 'Please input address!' }]"
         >
-          Previous
-        </button>
-        <span>Page {{ currentPage }} of {{ totalPages }}</span>
-        <button
-          @click="changePage(currentPage + 1)"
-          :disabled="currentPage === totalPages"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
-        >
-          Next
-        </button>
-      </div>
-    </div>  </div>
+          <a-textarea v-model:value="formState.address" :rows="3" placeholder="Street, Building, City" />
+        </a-form-item>
+
+        <a-row :gutter="16">
+          <a-col :span="12">
+            <a-form-item
+              label="Subscription Plan"
+              name="planId"
+              :rules="[{ required: true, message: 'Please select a plan!' }]"
+            >
+              <a-select v-model:value="formState.planId" placeholder="Select a plan">
+                <a-select-option v-for="plan in plans" :key="plan.id" :value="plan.id">
+                  {{ plan.name }} (KSh {{ plan.price }})
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="Account Status" name="status">
+              <a-select v-model:value="formState.status">
+                <a-select-option value="active">Active</a-select-option>
+                <a-select-option value="inactive">Inactive</a-select-option>
+                <a-select-option value="suspended">Suspended</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
+    </a-modal>
+  </div>
 </template>
 
 <script>
+import { defineComponent, ref, reactive } from 'vue';
+import { 
+  PlusOutlined, 
+  EditOutlined, 
+  DeleteOutlined,
+  SearchOutlined 
+} from '@ant-design/icons-vue';
 import api from '../services/api';
+import { message } from 'ant-design-vue';
 
-export default {
+const columns = [
+  { title: 'Customer Name', dataIndex: 'name', key: 'name', sorter: true },
+  { title: 'Email Address', dataIndex: 'email', key: 'email', sorter: true },
+  { title: 'Phone', dataIndex: 'phone_number', key: 'phone', sorter: true },
+  { title: 'Current Plan', key: 'plan', width: 120 },
+  { title: 'Status', key: 'status', width: 120 },
+  { title: 'Actions', key: 'action', width: 100 },
+];
+
+export default defineComponent({
   name: 'Customers',
-  data() {
-    return {
-      customers: [],
-      newCustomer: {
-        name: '',
-        phone_number: '',
-        address: '',
-        planId: 1, // Default plan for new customers
-        email: '',
-      },
-      editingCustomer: null,
-      isEditing: false,
-      currentPage: 1,
+  components: {
+    PlusOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    SearchOutlined,
+  },
+  setup() {
+    const customers = ref([]);
+    const plans = ref([]);
+    const loading = ref(false);
+    const modalVisible = ref(false);
+    const modalConfirmLoading = ref(false);
+    const isEditing = ref(false);
+    const formRef = ref(null);
+    const searchQuery = ref('');
+    const formState = reactive({
+      id: null,
+      name: '',
+      phone_number: '',
+      email: '',
+      address: '',
+      planId: null,
+      status: 'active',
+    });
+
+    const pagination = reactive({
+      current: 1,
       pageSize: 10,
-      totalItems: 0,
-      totalPages: 0,
-      searchQuery: '', // New: for filtering
-      sortBy: 'id', // New: for sorting
-      sortOrder: 'asc', // New: for sorting
-      plans: [], // To display available plans for new customer
-    };
-  },
-  created() {
-    this.fetchCustomers();
-    this.fetchPlans(); // Fetch plans for the customer form
-  },
-  methods: {
-    async fetchCustomers() {
+      total: 0,
+      showSizeChanger: true,
+      showTotal: (total) => `Total ${total} customers`,
+    });
+
+    const fetchCustomers = async () => {
+      loading.value = true;
       try {
         const response = await api.getCustomers(
-          this.currentPage,
-          this.pageSize,
-          this.searchQuery, // Pass search query
-          this.sortBy,       // Pass sort by field
-          this.sortOrder     // Pass sort order
+          pagination.current,
+          pagination.pageSize,
+          searchQuery.value
         );
-        this.customers = response.data.customers;
-        this.totalItems = response.data.totalItems;
-        this.totalPages = response.data.totalPages;
+        customers.value = response.data.customers;
+        pagination.total = response.data.totalItems;
       } catch (error) {
-        console.error('Error fetching customers:', error);
+        message.error('Database connection failed.');
+      } finally {
+        loading.value = false;
       }
-    },
-    async fetchPlans() {
-      try {
-        const response = await api.getPlans();
-        this.plans = response.data;
-      } catch (error) {
-        console.error('Error fetching plans:', error);
-      }
-    },
-    sortCustomers(column) {
-      if (this.sortBy === column) {
-        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.sortBy = column;
-        this.sortOrder = 'asc';
-      }
-      this.fetchCustomers();
-    },
-    async handleSubmit() {
-      if (this.isEditing) {
-        await this.updateCustomer();
-      } else {
-        await this.addCustomer();
-      }
-    },
-    async addCustomer() {
-      try {
-        // Add planId and email to newCustomer before sending
-        const customerToAdd = { ...this.newCustomer, planId: this.newCustomer.planId, email: this.newCustomer.email };
-        await api.addCustomer(customerToAdd);
-        this.resetForm();
-        await this.fetchCustomers();
-      } catch (error) {
-        console.error('Error adding customer:', error);
-      }
-    },
-    editCustomer(customer) {
-      this.isEditing = true;
-      this.editingCustomer = { ...customer };
-      this.newCustomer = { ...customer };
-    },
-    async updateCustomer() {
-      try {
-        // Add planId and email to newCustomer before sending
-        const customerToUpdate = { ...this.newCustomer, planId: this.newCustomer.planId, email: this.newCustomer.email };
-        await api.updateCustomer(this.editingCustomer.id, customerToUpdate);
-        this.resetForm();
-        await this.fetchCustomers();
-      } catch (error) {
-        console.error('Error updating customer:', error);
-      }
-    },
-    async deleteCustomer(id) {
-      if (window.confirm('Are you sure you want to delete this customer?')) {
-        try {
-          await api.deleteCustomer(id);
-          await this.fetchCustomers();
-        } catch (error) {
-          console.error('Error deleting customer:', error);
-        }
-      }
-    },
-    changePage(page) {
-      if (page > 0 && page <= this.totalPages) {
-        this.currentPage = page;
-        this.fetchCustomers();
-      }
-    },
-    resetForm() {
-      this.newCustomer = {
+    };
+
+    const fetchPlans = async () => {
+      const response = await api.getPlans();
+      plans.value = response.data;
+    };
+
+    const handleTableChange = (pag, filters, sorter) => {
+      pagination.current = pag.current;
+      pagination.pageSize = pag.pageSize;
+      fetchCustomers();
+    };
+
+    const resetForm = () => {
+      Object.assign(formState, {
+        id: null,
         name: '',
         phone_number: '',
-        address: '',
-        planId: 1,
         email: '',
-      };
-      this.isEditing = false;
-      this.editingCustomer = null;
-    },
-  },
-  computed: {
-    pages() {
-      const pagesArray = [];
-      for (let i = 1; i <= this.totalPages; i++) {
-        pagesArray.push(i);
+        address: '',
+        planId: null,
+        status: 'active',
+      });
+    };
+
+    const showAddModal = () => {
+      isEditing.value = false;
+      resetForm();
+      modalVisible.value = true;
+    };
+
+    const editCustomer = (record) => {
+      isEditing.value = true;
+      Object.assign(formState, { ...record });
+      modalVisible.value = true;
+    };
+
+    const handleModalOk = () => {
+      formRef.value.validate().then(async () => {
+        modalConfirmLoading.value = true;
+        try {
+          if (isEditing.value) {
+            await api.updateCustomer(formState.id, formState);
+            message.success('Account updated successfully.');
+          } else {
+            await api.addCustomer(formState);
+            message.success('New customer registered.');
+          }
+          modalVisible.value = false;
+          fetchCustomers();
+        } catch (error) {
+          message.error(error.response?.data?.error || 'Operation failed');
+        } finally {
+          modalConfirmLoading.value = false;
+        }
+      });
+    };
+
+    const handleDelete = async (id) => {
+      try {
+        await api.deleteCustomer(id);
+        message.success('Customer record purged.');
+        fetchCustomers();
+      } catch (error) {
+        message.error('Deletion failed.');
       }
-      return pagesArray;
-    }
-  }
-};
+    };
+
+    const getStatusTagColor = (status) => {
+      const colors = {
+        active: 'success',
+        inactive: 'default',
+        suspended: 'error',
+      };
+      return colors[status] || 'default';
+    };
+
+    fetchCustomers();
+    fetchPlans();
+
+    return {
+      customers,
+      plans,
+      columns,
+      loading,
+      pagination,
+      modalVisible,
+      modalConfirmLoading,
+      isEditing,
+      formState,
+      formRef,
+      searchQuery,
+      fetchCustomers,
+      handleTableChange,
+      showAddModal,
+      editCustomer,
+      handleModalOk,
+      handleDelete,
+      getStatusTagColor,
+    };
+  },
+});
 </script>
+
+<style scoped>
+.customers-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mb-24 { margin-bottom: 24px; }
+
+.table-card {
+  box-shadow: var(--shadow-sm);
+  border-radius: 12px;
+}
+
+:deep(.ant-table-thead > tr > th) {
+  background: #fcfcfc !important;
+  font-weight: 600;
+}
+</style>
+

@@ -8,8 +8,10 @@ const apiClient = axios.create({
 });
 
 const api = {
-  getCustomers(page = 1, pageSize = 10) {
-    return apiClient.get('/customers', { params: { page, pageSize } });
+  getCustomers(page = 1, pageSize = 10, search = '', sortBy = 'id', sortOrder = 'asc') {
+    return apiClient.get('/customers', {
+      params: { page, pageSize, search, sortBy, sortOrder }
+    });
   },
   addCustomer(customer) {
     return apiClient.post('/customers', customer);
@@ -127,6 +129,10 @@ const api = {
     getTopCustomers() {
       return apiClient.get('/reports/top-customers');
     },
+  },
+
+  getBillingForecast(customerId) {
+    return apiClient.get(`/billing/forecast/${customerId}`);
   },
 
   async getDashboardData() {

@@ -7,10 +7,13 @@ const customerController = require('../controllers/Customers/customer_contoller'
 const auth = require('../middleware/auth');
 const { isAdmin } = require('../middleware/adminMiddleware');
 
+const validate = require('../middleware/validate');
+const { customerSchema } = require('../middleware/schemas/customer.schema');
+
 router.get('/', customerController.getCustomers);
 router.get('/:id', customerController.getCustomerById);
-router.post('/', customerController.createCustomer);
-router.put('/:id', customerController.updateCustomer);
+router.post('/', validate(customerSchema), customerController.createCustomer);
+router.put('/:id', validate(customerSchema), customerController.updateCustomer);
 router.delete('/:id', customerController.deleteCustomer);
 
 // Route for getting own profile
@@ -23,9 +26,9 @@ router.get('/me', async (req, res) => {
       message: 'Profile retrieved successfully'
     });
   } catch (error) {
-    res.status(500).json({ 
-      status: 'error', 
-      message: error.message 
+    res.status(500).json({
+      status: 'error',
+      message: error.message
     });
   }
 });
@@ -40,9 +43,9 @@ router.put('/me/update-profile', async (req, res) => {
       message: 'Profile updated successfully'
     });
   } catch (error) {
-    res.status(500).json({ 
-      status: 'error', 
-      message: error.message 
+    res.status(500).json({
+      status: 'error',
+      message: error.message
     });
   }
 });

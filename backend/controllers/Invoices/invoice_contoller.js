@@ -1,148 +1,134 @@
-const { ErrorHandler } = require('../../utlis/errorHandler');
-const db = require('../../models'); // Import models from the centralized index.js
+const asyncHandler = require('../../middleware/asyncHandler');
+const ErrorResponse = require('../../middleware/errorHandler').ErrorResponse;
+const db = require('../../models');
+
 const Invoice = db.Invoice;
 const Bill = db.Bill;
 const Customer = db.Customer;
 const Plan = db.Plan;
 
-async function getInvoices(req, res) {
-  try {
-    const invoices = await Invoice.findAll({
-      include: [{
-        model: Bill,
-        include: [
-          { model: Customer, attributes: ['name', 'email'] },
-          { model: Plan, attributes: ['name'] }
-        ]
-      }]
+// @desc    Get all invoices
+// @route   GET /api/invoices
+// @access  Private
+exports.getInvoices = asyncHandler(async (req, res, next) => {
+  const { status } = req.query;
+  const query = {
+    include: [{
+      model: Bill,
+      include: [
+        { model: Customer, attributes: ['name', 'email'] },
+        { model: Plan, attributes: ['name'] }
+      ]
+    }]
+  };
+
+  if (status) {
+    query.where = { status };
+  }
+
+  const invoices = await Invoice.findAll(query);
+  res.status(200).json({ success: true, count: invoices.length, data: invoices });
+});
+
+// @desc    Get single invoice with detailed breakdown
+// @route   GET /api/invoices/:id
+// @access  Private
+exports.getInvoiceById = asyncHandler(async (req, res, next) => {
+  const invoice = await Invoice.findByPk(req.params.id, {
+    include: [{
+      model: Bill,
+      include: [
+        { model: Customer, attributes: ['name', 'email', 'phone_number', 'address'] },
+        { model: Plan }
+      ]
+    }]
+  });
+
+  if (!invoice) {
+    throw new ErrorResponse(`Invoice not found with id of ${req.params.id}`, 404);
+  }
+
+  // Innovation: Dynamic Itemization Breakdown for UI
+  const details = {
+    invoiceNumber: invoice.invoiceNumber,
+    billDate: invoice.Bill?.date,
+    amount: invoice.amountDue,
+    status: invoice.status,
+    customer: invoice.Bill?.Customer,
+    plan: invoice.Bill?.Plan,
+    usageLogs: invoice.Bill?.usageLogs || [],
+    // Calculated breakdown (assuming 16% VAT was included in amountDue)
+    breakdown: {
+      subtotal: invoice.amountDue / 1.16,
+      tax: (invoice.amountDue / 1.16) * 0.16,
+      total: invoice.amountDue
+    }
+  };
+
+  res.status(200).json({ success: true, data: details });
+});
+
+// @desc    Update invoice status
+// @route   PUT /api/invoices/:id/status
+// @access  Private
+exports.updateInvoiceStatus = asyncHandler(async (req, res, next) => {
+  const { status } = req.body;
+  let invoice = await Invoice.findByPk(req.params.id);
+
+  if (!invoice) {
+    throw new ErrorResponse('Invoice not found', 404);
+  }
+
+  invoice = await invoice.update({ status });
+  res.status(200).json({ success: true, data: invoice });
+});
+
+// @desc    Generate a one-off invoice
+// @route   POST /api/invoices/generate-invoice
+// @access  Private
+exports.generateInvoice = asyncHandler(async (req, res, next) => {
+  const { billId, customerId, dueDate, amountDue } = req.body;
+
+  let bill;
+  if (billId) {
+    bill = await Bill.findByPk(billId);
+  } else if (customerId) {
+    // If no billId, find the most recent bill for this customer
+    bill = await Bill.findOne({
+      where: { customerId },
+      order: [['createdAt', 'DESC']]
     });
-    return res.status(200).json(invoices);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to fetch invoices' });
   }
-}
 
-async function getInvoiceById(req, res) {
-  try {
-    const { id } = req.params;
-    const invoice = await Invoice.findByPk(parseInt(id), {
-      include: [{
-        model: Bill,
-        include: [
-          { model: Customer, attributes: ['name', 'email'] },
-          { model: Plan, attributes: ['name'] }
-        ]
-      }]
-    });
-    if (!invoice) {
-      return res.status(404).json({ error: 'Invoice not found' });
-    }
-    return res.status(200).json(invoice);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to fetch invoice details' });
+  if (!bill) {
+    throw new ErrorResponse('No associated bill found for this transaction', 404);
   }
-}
 
-async function updateInvoiceStatus(req, res) {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
-    const [updatedRows] = await Invoice.update({ status, updatedAt: new Date() }, {
-      where: { id: parseInt(id) }
-    });
+  const invoice = await Invoice.create({
+    billId: bill.id,
+    customerId: bill.customerId,
+    invoiceNumber: `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date(),
+    dueDate: new Date(dueDate || new Date().setDate(new Date().getDate() + 14)),
+    amountDue: parseFloat(amountDue) || bill.amount,
+    status: 'pending'
+  });
 
-    if (updatedRows === 0) {
-      return res.status(404).json({ error: 'Invoice not found or no changes made' });
-    }
+  res.status(201).json({ success: true, data: invoice });
+});
 
-    const updatedInvoice = await Invoice.findByPk(parseInt(id));
-    return res.status(200).json({ message: 'Invoice status updated successfully', invoice: updatedInvoice });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to update invoice status' });
+// @desc    Generate PDF for invoice (Mock)
+// @route   GET /api/invoices/:id/pdf
+// @access  Private
+exports.generatePDF = asyncHandler(async (req, res, next) => {
+  const invoice = await Invoice.findByPk(req.params.id);
+  if (!invoice) {
+    throw new ErrorResponse('Invoice not found', 404);
   }
-}
 
-async function generateInvoice(req, res) {
-  try {
-    const { billId, dueDate, amountDue } = req.body;
-    if (!billId || !dueDate || !amountDue) {
-      return res.status(400).json({ error: 'Missing required invoice generation details' });
-    }
-    const bill = await Bill.findByPk(parseInt(billId));
-    if (!bill) {
-        return res.status(404).json({ error: 'Bill not found for invoice generation' });
-    }
+  // Placeholder for real PDF logic
+  const pdfPath = `/generated/invoices/${invoice.invoiceNumber}.pdf`;
+  await invoice.update({ pdfPath });
 
-    const newInvoice = await Invoice.create({
-      billId: parseInt(billId),
-      invoiceNumber: `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`, // Generate a unique invoice number
-      issueDate: new Date(),
-      dueDate: new Date(dueDate),
-      amountDue: parseFloat(amountDue),
-      pdfPath: null, // PDF path will be updated after generation
-      status: 'pending',
-    });
-    return res.status(201).json({ message: 'Invoice generated successfully', invoice: newInvoice });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to generate invoice' });
-  }
-}
-
-async function getInvoicesForCustomer(req, res) {
-  try {
-    const customerId = req.user && req.user.id ? req.user.id : null; // Assuming customerId from authenticated user
-
-    if (!customerId) {
-      return res.status(401).json({ error: 'Authentication required to fetch customer invoices' });
-    }
-
-    const invoices = await Invoice.findAll({
-      include: [{
-        model: Bill,
-        include: [
-          { model: Customer, where: { id: customerId }, attributes: ['name', 'email'] },
-          { model: Plan, attributes: ['name'] }
-        ]
-      }]
-    });
-
-    // Filter out invoices where the customer include failed (due to the where clause)
-    const customerInvoices = invoices.filter(invoice => invoice.Bill && invoice.Bill.Customer);
-
-    return res.status(200).json(customerInvoices);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to fetch customer invoices' });
-  }
-}
-
-async function generatePDF(req, res) {
-  try {
-    const { id } = req.params;
-    const invoice = await Invoice.findByPk(parseInt(id));
-    if (!invoice) {
-        return res.status(404).json({ error: 'Invoice not found for PDF generation' });
-    }
-    // Placeholder for PDF generation logic (e.g., using a PDF library)
-    const pdfPath = `/path/to/generated/invoices/invoice_${invoice.invoiceNumber}.pdf`;
-    await Invoice.update({ pdfPath }, { where: { id: invoice.id } });
-
-    return res.status(200).json({ message: `PDF for invoice ${id} generated successfully.`, pdfPath: pdfPath });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Failed to generate PDF' });
-  }
-}
-
-module.exports = {
-  getInvoices,
-  getInvoiceById,
-  updateInvoiceStatus,
-  generateInvoice,
-  getInvoicesForCustomer,
-  generatePDF,
-};
+  res.status(200).json({ success: true, message: 'PDF generated', pdfPath });
+});
