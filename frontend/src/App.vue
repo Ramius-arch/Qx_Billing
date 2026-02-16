@@ -62,10 +62,10 @@
                 <a-tooltip :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
                   <div class="theme-toggle" @click="toggleTheme">
                     <template v-if="isDark">
-                      <sun-outlined class="header-icon" />
+                      <bulb-filled class="header-icon" />
                     </template>
                     <template v-else>
-                      <moon-outlined class="header-icon" />
+                      <bulb-outlined class="header-icon" />
                     </template>
                   </div>
                 </a-tooltip>
@@ -117,8 +117,8 @@ import {
   CreditCardOutlined,
   QuestionCircleOutlined,
   BellOutlined,
-  SunOutlined,
-  MoonOutlined,
+  BulbOutlined,
+  BulbFilled,
 } from '@ant-design/icons-vue';
 
 export default defineComponent({
@@ -133,8 +133,8 @@ export default defineComponent({
     CreditCardOutlined,
     QuestionCircleOutlined,
     BellOutlined,
-    SunOutlined,
-    MoonOutlined,
+    BulbOutlined,
+    BulbFilled,
   },
   setup() {
     const route = useRoute();
