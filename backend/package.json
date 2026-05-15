@@ -22,6 +22,8 @@
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.9",
     "pdfmake": "^0.2.20",
+    "pg": "^8.20.0",
+    "pg-hstore": "^2.3.4",
     "roboto-font": "^0.1.0",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",

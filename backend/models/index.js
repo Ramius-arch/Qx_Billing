@@ -1,11 +1,18 @@
 const { Sequelize } = require('sequelize');
 const dbConfig = require('../config/db.config');
 
-const sequelize = new Sequelize({
-    dialect: dbConfig.db.dialect,
-    storage: dbConfig.db.storage,
-    logging: false,
-});
+const sequelize = dbConfig.db.url 
+  ? new Sequelize(dbConfig.db.url, {
+      dialect: dbConfig.db.dialect,
+      dialectOptions: dbConfig.db.dialectOptions,
+      pool: dbConfig.db.pool,
+      logging: false,
+    })
+  : new Sequelize({
+      dialect: dbConfig.db.dialect,
+      storage: dbConfig.db.storage,
+      logging: false,
+    });
 
 const db = {};
 

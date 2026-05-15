@@ -1,0 +1,21 @@
+services:
+  qx-billing-backend:
+    type: web
+    env: node
+    buildCommand: npm install && cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: qx-billing-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+
+databases:
+  - name: qx-billing-db
+    type: postgres
+    plan: free
+    region: oregon

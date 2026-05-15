@@ -35,37 +35,31 @@ app.use('/api/reports', reportRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-db.sequelize.sync({ force: true }) // Use { force: true } to drop and re-create tables
+db.sequelize.sync({ alter: true }) // Use { alter: true } to update tables without dropping data
     .then(() => {
         console.log('Database synchronized');
-        seedDatabase();
+        // seedDatabase(); // Uncomment once if you need initial demo data
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
     })
     .catch(err => {
         console.error('Failed to synchronize database:', err);
-        process.exit(1); // Exit process if database sync fails
+        process.exit(1);
     });
 
 async function seedDatabase() {
     const generateDemoData = require('./services/demoData');
     const { customers, plans, bills, payments, usageLogs, invoices, reports } = generateDemoData();
     try {
-        // Temporarily disable foreign key checks
-        await db.sequelize.query('PRAGMA foreign_keys = OFF;');
-
-        await db.Plan.bulkCreate(plans);
-        await db.Customer.bulkCreate(customers);
-        await db.Bill.bulkCreate(bills);
-        await db.Payment.bulkCreate(payments);
-        await db.UsageLog.bulkCreate(usageLogs);
-        await db.Invoice.bulkCreate(invoices);
-        await db.Report.bulkCreate(reports);
+        await db.Plan.bulkCreate(plans, { ignoreDuplicates: true });
+        await db.Customer.bulkCreate(customers, { ignoreDuplicates: true });
+        await db.Bill.bulkCreate(bills, { ignoreDuplicates: true });
+        await db.Payment.bulkCreate(payments, { ignoreDuplicates: true });
+        await db.UsageLog.bulkCreate(usageLogs, { ignoreDuplicates: true });
+        await db.Invoice.bulkCreate(invoices, { ignoreDuplicates: true });
+        await db.Report.bulkCreate(reports, { ignoreDuplicates: true });
         console.log('Database seeded successfully!');
-
-        // Re-enable foreign key checks
-        await db.sequelize.query('PRAGMA foreign_keys = ON;');
     } catch (error) {
         console.error('Failed to seed database:', error);
     }
