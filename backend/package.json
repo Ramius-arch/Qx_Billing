@@ -24,6 +24,7 @@
     "pdfmake": "^0.2.20",
     "pg": "^8.20.0",
     "pg-hstore": "^2.3.4",
+    "pg-pool": "^3.13.0",
     "roboto-font": "^0.1.0",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",

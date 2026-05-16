@@ -1,22 +1,7 @@
-const { Sequelize } = require('sequelize');
-const dbConfig = require('../config/db.config');
-
-const sequelize = dbConfig.db.url 
-  ? new Sequelize(dbConfig.db.url, {
-      dialect: dbConfig.db.dialect,
-      dialectOptions: dbConfig.db.dialectOptions,
-      pool: dbConfig.db.pool,
-      logging: false,
-    })
-  : new Sequelize({
-      dialect: dbConfig.db.dialect,
-      storage: dbConfig.db.storage,
-      logging: false,
-    });
+const sequelize = require('../config/database');
 
 const db = {};
-
-db.Sequelize = Sequelize;
+db.Sequelize = require('sequelize');
 db.sequelize = sequelize;
 
 // Import all models
@@ -29,16 +14,6 @@ db.Invoice = require('./Invoice')(sequelize);
 db.Report = require('./Report')(sequelize);
 
 // Set up model associations
-// Associations should ideally be defined within each model file's `associate` method
-// but explicitly defined here for clarity if not present in models.
-// If your models have an associate method, uncomment and use the following:
-// Object.keys(db).forEach(modelName => {
-//     if (db[modelName].associate) {
-//         db[modelName].associate(db);
-//     }
-// });
-
-// Explicit associations extracted from server.js
 db.Customer.hasMany(db.Bill, { foreignKey: 'customerId' });
 db.Bill.belongsTo(db.Customer, { foreignKey: 'customerId' });
 
@@ -64,6 +39,5 @@ db.Bill.hasMany(db.Invoice, { foreignKey: 'billId' });
 
 db.Report.belongsTo(db.Customer, { foreignKey: 'customerId' });
 db.Customer.hasMany(db.Report, { foreignKey: 'customerId' });
-
 
 module.exports = db;
