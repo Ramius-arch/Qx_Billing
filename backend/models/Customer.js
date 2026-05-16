@@ -34,8 +34,11 @@ module.exports = (sequelize) => {
       }
     },
     status: {
-      type: DataTypes.ENUM('active', 'inactive', 'suspended'),
-      defaultValue: 'active'
+      type: DataTypes.STRING,
+      defaultValue: 'active',
+      validate: {
+        isIn: [['active', 'inactive', 'suspended']]
+      }
     },
     createdAt: {
       type: DataTypes.DATE,

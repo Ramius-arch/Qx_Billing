@@ -89,11 +89,19 @@ exports.getBillingTrends = asyncHandler(async (req, res, next) => {
     }
   }) || 0;
 
-  // Group by month - Note: strftime is SQLite specific
+  // Group by month - Handle both SQLite and PostgreSQL
+  const dialect = db.sequelize.getDialect();
+  let dateGroup;
+  if (dialect === 'postgres') {
+    dateGroup = [db.sequelize.fn('to_char', db.sequelize.col('payment_date'), 'YYYY-MM'), 'month'];
+  } else {
+    dateGroup = [db.sequelize.fn('strftime', '%Y-%m', db.sequelize.col('payment_date')), 'month'];
+  }
+
   const trendDataRaw = await Payment.findAll({
     where: { status: 'completed' },
     attributes: [
-      [db.sequelize.fn('strftime', '%Y-%m', db.sequelize.col('payment_date')), 'month'],
+      dateGroup,
       [db.sequelize.fn('SUM', db.sequelize.col('amount')), 'revenue']
     ],
     group: ['month'],
