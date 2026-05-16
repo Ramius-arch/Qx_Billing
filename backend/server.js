@@ -35,7 +35,7 @@ app.use('/api/reports', reportRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-db.sequelize.sync({ alter: true }) // Use { alter: true } to update tables without dropping data
+db.sequelize.sync({ alter: true }) // Update tables without dropping data
     .then(() => {
         console.log('Database synchronized');
         // seedDatabase(); // Uncomment once if you need initial demo data
