@@ -11,7 +11,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: true, // Changed from false to true
       references: {
-        model: 'Bill',
+        model: 'Bills',
         key: 'id'
       }
     },
