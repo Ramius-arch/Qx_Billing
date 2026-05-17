@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@faker-js/faker": "^10.2.0",
     "africastalking": "^0.7.7",
