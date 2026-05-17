@@ -4,8 +4,9 @@ services:
     env: node
     plan: free
     region: oregon
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && node server.js
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
     envVars:
       - key: DATABASE_URL
         sync: false
@@ -19,8 +20,9 @@ services:
     env: static
     plan: free
     region: oregon
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
         value: https://qx-billing-backend.onrender.com/api
