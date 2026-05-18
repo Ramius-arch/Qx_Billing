@@ -35,7 +35,11 @@ app.use('/api/reports', reportRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-db.sequelize.sync({ alter: true }) // Update tables without dropping data
+const isProduction = process.env.NODE_ENV === 'production';
+
+// In production, we avoid 'alter: true' as it can be unreliable with PostgreSQL
+// sync() will still create tables if they don't exist.
+db.sequelize.sync({ alter: !isProduction }) 
     .then(() => {
         console.log('Database synchronized');
         // seedDatabase(); // Uncomment once if you need initial demo data

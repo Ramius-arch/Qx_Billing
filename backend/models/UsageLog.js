@@ -24,10 +24,9 @@ module.exports = (sequelize) => {
       }
     },
     usageType: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.ENUM('call', 'sms', 'data'),
       allowNull: false,
-      comment: 'Usage type (call, sms, data)',
-      enum: ['call', 'sms', 'data']
+      comment: 'Usage type (call, sms, data)'
     },
     duration: {
       type: DataTypes.FLOAT,
