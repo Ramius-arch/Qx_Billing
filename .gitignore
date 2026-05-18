@@ -144,3 +144,6 @@ dist
 *.sqlite
 
 
+
+# Local Netlify folder
+.netlify

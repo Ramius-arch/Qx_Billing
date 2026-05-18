@@ -51,27 +51,59 @@ async function getUsageTrendData(customerId = null) {
 // @route   GET /api/reports/customers
 // @access  Private
 exports.getAllCustomers = asyncHandler(async (req, res, next) => {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  // Optimization: Use subqueries or separate optimized aggregations to avoid N+1 problem
   const customers = await Customer.findAll({
-    attributes: ['id', 'name', 'email']
+    attributes: ['id', 'name', 'email'],
+    include: [
+      {
+        model: UsageLog,
+        attributes: [],
+        where: {
+          timestamp: { [Op.gte]: thirtyDaysAgo }
+        },
+        required: false
+      }
+    ],
+    attributes: {
+      include: [
+        [
+          db.sequelize.fn('SUM', db.sequelize.col('UsageLogs.duration')),
+          'totalUsage'
+        ]
+      ]
+    },
+    group: ['Customer.id'],
+    raw: true
   });
 
-  const customersWithData = await Promise.all(customers.map(async customer => {
-    const totalUsage = await calculateMonthlyUsage(customer.id);
-    const outstandingInvoices = await Invoice.sum('amountDue', {
-      where: {
-        customerId: customer.id,
-        status: { [Op.in]: ['pending', 'overdue'] }
-      }
-    }) || 0;
+  // Fetch outstanding invoices in a single query map for performance
+  const outstandingMap = await Invoice.findAll({
+    attributes: [
+      'customerId',
+      [db.sequelize.fn('SUM', db.sequelize.col('amountDue')), 'totalOutstanding']
+    ],
+    where: {
+      status: { [Op.in]: ['pending', 'overdue'] }
+    },
+    group: ['customerId'],
+    raw: true
+  });
 
-    return {
-      ...customer.toJSON(),
-      totalUsage: totalUsage,
-      outstandingInvoices: outstandingInvoices
-    };
+  const outstandingLookup = outstandingMap.reduce((acc, curr) => {
+    acc[curr.customerId] = parseFloat(curr.totalOutstanding);
+    return acc;
+  }, {});
+
+  const data = customers.map(c => ({
+    ...c,
+    totalUsage: parseFloat(c.totalUsage) || 0,
+    outstandingInvoices: outstandingLookup[c.id] || 0
   }));
 
-  res.status(200).json({ success: true, message: 'All customers report', data: customersWithData });
+  res.status(200).json({ success: true, message: 'All customers report (Optimized)', data });
 });
 
 // @desc    Get billing trends report

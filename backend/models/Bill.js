@@ -24,10 +24,8 @@ module.exports = (sequelize) => {
         key: 'id'
       }
     },
-    usageLogs: {
-      type: DataTypes.JSON,
-      allowNull: true
-    },
+    // Optimization: Removed redundant usageLogs JSON field. 
+    // Usage details should be queried directly from the UsageLog table to prevent bloat.
     voiceCallsDuration: {
       type: DataTypes.DOUBLE,
       allowNull: true
@@ -45,7 +43,7 @@ module.exports = (sequelize) => {
       allowNull: true
     },
     paymentStatus: {
-      type: DataTypes.ENUM(' unpaid', 'paid', 'pending'),
+      type: DataTypes.ENUM('unpaid', 'paid', 'pending'),
       defaultValue: 'unpaid'
     },
     invoicePdfUrl: {

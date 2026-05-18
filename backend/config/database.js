@@ -12,6 +12,7 @@ const connectDatabase = () => {
       process.exit(1);
     }
 
+    // Optimization: Connection pooling is critical for performance on dedicated platforms
     return new Sequelize(process.env.DATABASE_URL, {
       dialect: 'postgres',
       protocol: 'postgres',
@@ -22,11 +23,11 @@ const connectDatabase = () => {
         }
       },
       pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
+        max: 10, // Increased for better concurrency
+        min: 2,
+        acquire: 60000,
         idle: 10000,
-        evict: 1000 // Release connections aggressively for serverless
+        evict: 1000 
       },
       retry: {
         max: 5,
@@ -41,14 +42,14 @@ const connectDatabase = () => {
         backoffBase: 1000,
         backoffExponent: 1.5
       },
-      logging: false
+      logging: false // Disable logging in production for performance
     });
   } else {
     // Local development fallback
     return new Sequelize({
       dialect: 'sqlite',
       storage: path.join(__dirname, '../../database.sqlite'),
-      logging: console.log
+      logging: false // Reduced noise for developer productivity
     });
   }
 };

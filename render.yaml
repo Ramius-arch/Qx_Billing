@@ -9,7 +9,9 @@ services:
     startCommand: node server.js
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: qx-billing-db
+          property: connectionString
       - key: NODE_ENV
         value: production
       - key: PORT
@@ -26,3 +28,8 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://qx-billing-backend.onrender.com/api
+
+databases:
+  - name: qx-billing-db
+    plan: free
+    region: oregon
