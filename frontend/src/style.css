@@ -101,6 +101,29 @@ body {
   box-shadow: 0 4px 6px -1px rgba(22, 119, 255, 0.2) !important;
 }
 
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+  
+  .text-right-mobile {
+    text-align: right !important;
+  }
+  
+  .mt-4-mobile {
+    margin-top: 16px !important;
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+
 /* Animations */
 .fade-enter-active,
 .fade-leave-active {

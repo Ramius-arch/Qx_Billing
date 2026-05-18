@@ -20,7 +20,7 @@
         <a-card title="Invoice Structure" class="standard-card">
           <a-form layout="vertical">
             <a-row :gutter="16">
-              <a-col :span="12">
+              <a-col :xs="24" :sm="12">
                 <a-form-item label="Billed To" required>
                   <a-select
                     v-model:value="form.customerId"
@@ -34,7 +34,7 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :xs="24" :sm="12">
                 <a-form-item label="Invoice Reference" required>
                   <a-input v-model:value="form.invoiceNumber" placeholder="e.g. INV-2026-001" />
                 </a-form-item>
@@ -42,12 +42,12 @@
             </a-row>
 
             <a-row :gutter="16">
-              <a-col :span="12">
+              <a-col :xs="24" :sm="12">
                 <a-form-item label="Date of Issue">
                   <a-date-picker v-model:value="form.issueDate" style="width: 100%" />
                 </a-form-item>
               </a-col>
-              <a-col :span="12">
+              <a-col :xs="24" :sm="12">
                 <a-form-item label="Payment Deadline">
                   <a-date-picker v-model:value="form.dueDate" style="width: 100%" />
                 </a-form-item>
@@ -57,7 +57,7 @@
             <a-divider>Line Items</a-divider>
 
             <div class="items-list">
-              <a-row :gutter="8" class="item-header mb-8">
+              <a-row :gutter="8" class="item-header mb-8 hidden-mobile">
                 <a-col :span="10"><span class="text-xs font-bold text-secondary">DESCRIPTION / SERVICE</span></a-col>
                 <a-col :span="4"><span class="text-xs font-bold text-secondary">QTY</span></a-col>
                 <a-col :span="5"><span class="text-xs font-bold text-secondary">RATE (KSh)</span></a-col>
@@ -66,20 +66,26 @@
               </a-row>
 
               <div v-for="(item, index) in form.items" :key="index" class="item-row mb-12">
-                <a-row :gutter="8" align="middle">
-                  <a-col :span="10">
+                <a-row :gutter="[8, 8]" align="middle">
+                  <a-col :xs="24" :sm="10">
+                    <span class="mobile-only text-xs font-bold text-secondary">DESCRIPTION</span>
                     <a-input v-model:value="item.description" placeholder="e.g. Monthly Subscription" />
                   </a-col>
-                  <a-col :span="4">
+                  <a-col :xs="8" :sm="4">
+                    <span class="mobile-only text-xs font-bold text-secondary">QTY</span>
                     <a-input-number v-model:value="item.quantity" :min="1" style="width: 100%" />
                   </a-col>
-                  <a-col :span="5">
+                  <a-col :xs="12" :sm="5">
+                    <span class="mobile-only text-xs font-bold text-secondary">RATE</span>
                     <a-input-number v-model:value="item.rate" :min="0" style="width: 100%" />
                   </a-col>
-                  <a-col :span="4">
-                    <span class="text-sm font-semibold">KSh {{ (item.quantity * item.rate).toLocaleString() }}</span>
+                  <a-col :xs="2" :sm="4" class="text-right-mobile">
+                     <span class="mobile-only text-xs font-bold text-secondary">TOTAL</span>
+                    <div class="mt-4-mobile">
+                      <span class="text-sm font-semibold">KSh {{ (item.quantity * item.rate).toLocaleString() }}</span>
+                    </div>
                   </a-col>
-                  <a-col :span="1">
+                  <a-col :xs="2" :sm="1" class="text-right">
                     <a-button type="text" danger size="small" @click="removeItem(index)">
                       <template #icon><delete-outlined /></template>
                     </a-button>

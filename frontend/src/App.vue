@@ -13,7 +13,7 @@
           width="260"
         >
           <div class="logo-container">
-            <div class="logo-icon">Qx</div>
+            <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
             <span v-if="!collapsed" class="logo-text">Billing</span>
           </div>
           <a-menu v-model:selectedKeys="selectedKeys" mode="inline" class="nav-menu">
@@ -239,8 +239,14 @@ export default defineComponent({
   height: 64px;
   display: flex;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 16px;
   margin-bottom: 8px;
+}
+
+.sidebar-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo-icon {

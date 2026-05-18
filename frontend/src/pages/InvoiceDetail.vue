@@ -14,7 +14,7 @@
         </a-button>
       </template>
 
-      <a-descriptions size="small" :column="3">
+      <a-descriptions size="small" :column="{ xxl: 3, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }">
         <a-descriptions-item label="Status">
           <a-tag :color="statusColor">{{ invoice?.status?.toUpperCase() }}</a-tag>
         </a-descriptions-item>
@@ -35,6 +35,7 @@
             :data-source="usageLogs" 
             :pagination="{ pageSize: 5 }"
             size="middle"
+            :scroll="{ x: 'max-content' }"
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'usageType'">
