@@ -16,7 +16,7 @@
     </a-row>
 
     <a-card title="Outstanding Invoices Summary" style="margin-bottom: 24px;">
-      <a-table :columns="outstandingInvoicesColumns" :data-source="outstandingInvoices" :pagination="false">
+      <a-table :columns="outstandingInvoicesColumns" :data-source="outstandingInvoices" :pagination="false" :scroll="{ x: 'max-content' }">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'status'">
             <a-tag :color="record.status === 'overdue' ? 'red' : 'orange'">
@@ -28,7 +28,7 @@
     </a-card>
 
     <a-card title="All Customers Report">
-      <a-table :columns="allCustomersColumns" :data-source="allCustomers" :pagination="false">
+      <a-table :columns="allCustomersColumns" :data-source="allCustomers" :pagination="false" :scroll="{ x: 'max-content' }">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'actions'">
             <a>View Details</a>

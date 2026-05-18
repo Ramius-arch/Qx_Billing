@@ -53,12 +53,12 @@
           </a-menu>
         </a-layout-sider>
         <a-layout>
-          <a-layout-header class="main-header">
+          <a-layout-header :class="['main-header', { 'mobile-header': isMobile }]">
             <div class="header-left">
-              <h2 class="page-title">{{ currentPageTitle }}</h2>
+              <h2 class="page-title">{{ isMobile ? 'Qx' : currentPageTitle }}</h2>
             </div>
             <div class="header-right">
-              <a-space size="large">
+              <a-space :size="isMobile ? 'small' : 'large'">
                 <a-tooltip :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
                   <div class="theme-toggle" @click="toggleTheme">
                     <template v-if="isDark">
@@ -69,12 +69,12 @@
                     </template>
                   </div>
                 </a-tooltip>
-                <a-badge dot>
+                <a-badge dot v-if="!isMobile">
                   <bell-outlined class="header-icon" />
                 </a-badge>
                 <a-dropdown placement="bottomRight">
                   <div class="user-profile">
-                    <a-avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
+                    <a-avatar size="small" src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
                     <span v-if="!isMobile" class="user-name">Admin User</span>
                   </div>
                   <template #overlay>
@@ -87,7 +87,7 @@
               </a-space>
             </div>
           </a-layout-header>
-          <a-layout-content>
+          <a-layout-content :style="{ marginTop: isMobile ? '64px' : '0' }">
             <router-view v-slot="{ Component }">
               <transition name="fade" mode="out-in">
                 <component :is="Component" class="page-container" />
@@ -168,7 +168,13 @@ export default defineComponent({
       document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : 'light');
     };
 
+    const windowWidth = ref(window.innerWidth);
+    const updateWidth = () => {
+      windowWidth.value = window.innerWidth;
+    };
+
     onMounted(() => {
+      window.addEventListener('resize', updateWidth);
       updateThemeAttribute();
       
       // Listen for system theme changes
@@ -186,6 +192,8 @@ export default defineComponent({
         mediaQuery.addListener(handleChange);
       }
     });
+
+    const isMobile = computed(() => windowWidth.value < 768);
 
     const currentPageTitle = computed(() => {
       const key = route.path.split('/')[1] || 'dashboard';
@@ -206,7 +214,7 @@ export default defineComponent({
       collapsed,
       selectedKeys,
       currentPageTitle,
-      isMobile: window.innerWidth < 768,
+      isMobile,
       isDark,
       themeConfig,
       toggleTheme,
@@ -258,6 +266,16 @@ export default defineComponent({
 
 .main-header {
   justify-content: space-between;
+  background: var(--surface-color);
+}
+
+.mobile-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 0 16px !important;
 }
 
 .page-title {

@@ -225,6 +225,6 @@ export default defineComponent({
 
 <style scoped>
 .usage-tracker-container {
-  padding: 24px;
+  padding: 16px;
 }
 </style>

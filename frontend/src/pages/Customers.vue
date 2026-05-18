@@ -22,6 +22,7 @@
         :pagination="pagination"
         @change="handleTableChange"
         row-key="id"
+        :scroll="{ x: 'max-content' }"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'plan'">
@@ -316,6 +317,19 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 576px) {
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .header-actions > * {
+    width: 100% !important;
+  }
 }
 
 .mb-24 { margin-bottom: 24px; }
