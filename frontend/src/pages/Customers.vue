@@ -4,11 +4,11 @@
       <a-input-search
         v-model:value="searchQuery"
         placeholder="Search by name, email, or phone..."
-        style="width: 320px"
+        class="search-input"
         @search="fetchCustomers"
         allow-clear
       />
-      <a-button type="primary" size="large" @click="showAddModal">
+      <a-button type="primary" size="large" @click="showAddModal" class="add-btn">
         <template #icon><plus-outlined /></template>
         Add Customer
       </a-button>
@@ -321,6 +321,10 @@ export default defineComponent({
   flex-wrap: wrap;
 }
 
+.search-input {
+  width: 320px;
+}
+
 @media (max-width: 576px) {
   .header-actions {
     flex-direction: column;
@@ -329,6 +333,10 @@ export default defineComponent({
   
   .header-actions > * {
     width: 100% !important;
+  }
+
+  .search-input {
+    width: 100%;
   }
 }
 

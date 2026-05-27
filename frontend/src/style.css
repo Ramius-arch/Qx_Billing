@@ -60,10 +60,6 @@ body {
   .ant-layout-header {
     padding: 0 16px !important;
   }
-  
-  .page-container {
-    padding: 16px !important;
-  }
 }
 
 .ant-layout-sider {
@@ -139,6 +135,12 @@ body {
   padding: 32px;
   animation: slideUp 0.5s ease-out;
   overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 12px !important;
+  }
 }
 
 /* Ensure global box sizing and containment */

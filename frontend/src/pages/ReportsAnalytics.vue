@@ -137,4 +137,10 @@ export default defineComponent({
 .reports-analytics-container {
   padding: 24px;
 }
+
+@media (max-width: 576px) {
+  .reports-analytics-container {
+    padding: 12px;
+  }
+}
 </style>

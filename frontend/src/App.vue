@@ -5,7 +5,9 @@
     </template>
     <template v-else>
       <a-layout style="min-height: 100vh;">
+        <!-- Desktop Sider -->
         <a-layout-sider
+          v-if="!isMobile"
           v-model:collapsed="collapsed"
           collapsible
           breakpoint="lg"
@@ -16,46 +18,38 @@
             <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
             <span v-if="!collapsed" class="logo-text">Billing</span>
           </div>
-          <a-menu v-model:selectedKeys="selectedKeys" mode="inline" class="nav-menu">
-            <a-menu-item key="dashboard">
-              <template #icon><dashboard-outlined /></template>
-              <router-link to="/dashboard">Dashboard</router-link>
-            </a-menu-item>
-            <a-menu-item key="customers">
-              <template #icon><team-outlined /></template>
-              <router-link to="/customers">Customers</router-link>
-            </a-menu-item>
-            <a-menu-item key="usage-tracker">
-              <template #icon><bar-chart-outlined /></template>
-              <router-link to="/usage-tracker">Usage Tracker</router-link>
-            </a-menu-item>
-            <a-menu-item key="billing-engine">
-              <template #icon><setting-outlined /></template>
-              <router-link to="/billing-engine">Billing Engine</router-link>
-            </a-menu-item>
-            <a-menu-item key="reports">
-              <template #icon><line-chart-outlined /></template>
-              <router-link to="/reports">Reports & Analytics</router-link>
-            </a-menu-item>
-             <a-menu-item key="invoice-generator">
-              <template #icon><file-text-outlined /></template>
-              <router-link to="/invoice-generator">Invoices</router-link>
-            </a-menu-item>
-             <a-menu-item key="payment-processing">
-              <template #icon><credit-card-outlined /></template>
-              <router-link to="/payment-processing">Payments</router-link>
-            </a-menu-item>
-            <a-menu-divider />
-            <a-menu-item key="help-center">
-              <template #icon><question-circle-outlined /></template>
-              <router-link to="/help-center">Help Center</router-link>
-            </a-menu-item>
-          </a-menu>
+          <MenuContent v-model:selectedKeys="selectedKeys" />
         </a-layout-sider>
+
+        <!-- Mobile Drawer -->
+        <a-drawer
+          v-if="isMobile"
+          v-model:open="drawerVisible"
+          placement="left"
+          :closable="false"
+          @close="drawerVisible = false"
+          width="260"
+          :body-style="{ padding: 0 }"
+        >
+          <div class="logo-container">
+            <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
+            <span class="logo-text">Billing</span>
+          </div>
+          <MenuContent v-model:selectedKeys="selectedKeys" @click="drawerVisible = false" />
+        </a-drawer>
+
         <a-layout>
           <a-layout-header :class="['main-header', { 'mobile-header': isMobile }]">
             <div class="header-left">
-              <h2 class="page-title">{{ isMobile ? 'Qx' : currentPageTitle }}</h2>
+              <a-button 
+                v-if="isMobile" 
+                type="text" 
+                @click="drawerVisible = true" 
+                class="menu-toggle"
+              >
+                <menu-outlined />
+              </a-button>
+              <h2 class="page-title">{{ isMobile ? 'Qx Billing' : currentPageTitle }}</h2>
             </div>
             <div class="header-right">
               <a-space :size="isMobile ? 'small' : 'large'">
@@ -104,8 +98,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { defineComponent, ref, computed, onMounted, h } from 'vue';
+import { useRoute, RouterLink } from 'vue-router';
 import { theme } from 'ant-design-vue';
 import {
   DashboardOutlined,
@@ -119,26 +113,78 @@ import {
   BellOutlined,
   BulbOutlined,
   BulbFilled,
+  MenuOutlined,
 } from '@ant-design/icons-vue';
+
+// Sub-component for Menu Content to avoid duplication
+const MenuContent = defineComponent({
+  props: ['selectedKeys'],
+  emits: ['update:selectedKeys', 'click'],
+  setup(props, { emit }) {
+    const handleClick = (e) => {
+      emit('click', e);
+    };
+    return () => h(
+      'a-menu',
+      {
+        selectedKeys: props.selectedKeys,
+        'onUpdate:selectedKeys': (val) => emit('update:selectedKeys', val),
+        mode: 'inline',
+        class: 'nav-menu',
+        onClick: handleClick
+      },
+      [
+        h('a-menu-item', { key: 'dashboard' }, {
+          icon: () => h(DashboardOutlined),
+          default: () => h(RouterLink, { to: '/dashboard' }, { default: () => 'Dashboard' })
+        }),
+        h('a-menu-item', { key: 'customers' }, {
+          icon: () => h(TeamOutlined),
+          default: () => h(RouterLink, { to: '/customers' }, { default: () => 'Customers' })
+        }),
+        h('a-menu-item', { key: 'usage-tracker' }, {
+          icon: () => h(BarChartOutlined),
+          default: () => h(RouterLink, { to: '/usage-tracker' }, { default: () => 'Usage Tracker' })
+        }),
+        h('a-menu-item', { key: 'billing-engine' }, {
+          icon: () => h(SettingOutlined),
+          default: () => h(RouterLink, { to: '/billing-engine' }, { default: () => 'Billing Engine' })
+        }),
+        h('a-menu-item', { key: 'reports' }, {
+          icon: () => h(LineChartOutlined),
+          default: () => h(RouterLink, { to: '/reports' }, { default: () => 'Reports & Analytics' })
+        }),
+        h('a-menu-item', { key: 'invoice-generator' }, {
+          icon: () => h(FileTextOutlined),
+          default: () => h(RouterLink, { to: '/invoice-generator' }, { default: () => 'Invoices' })
+        }),
+        h('a-menu-item', { key: 'payment-processing' }, {
+          icon: () => h(CreditCardOutlined),
+          default: () => h(RouterLink, { to: '/payment-processing' }, { default: () => 'Payments' })
+        }),
+        h('a-menu-divider'),
+        h('a-menu-item', { key: 'help-center' }, {
+          icon: () => h(QuestionCircleOutlined),
+          default: () => h(RouterLink, { to: '/help-center' }, { default: () => 'Help Center' })
+        }),
+      ]
+    );
+  }
+});
 
 export default defineComponent({
   name: 'App',
   components: {
-    DashboardOutlined,
-    TeamOutlined,
-    BarChartOutlined,
-    SettingOutlined,
-    LineChartOutlined,
-    FileTextOutlined,
-    CreditCardOutlined,
-    QuestionCircleOutlined,
     BellOutlined,
     BulbOutlined,
     BulbFilled,
+    MenuOutlined,
+    MenuContent,
   },
   setup() {
     const route = useRoute();
     const collapsed = ref(false);
+    const drawerVisible = ref(false);
     const selectedKeys = ref([route.path.split('/')[1] || 'dashboard']);
     
     // Smart initial theme detection
@@ -193,7 +239,7 @@ export default defineComponent({
       }
     });
 
-    const isMobile = computed(() => windowWidth.value < 768);
+    const isMobile = computed(() => windowWidth.value < 992); // Using lg breakpoint
 
     const currentPageTitle = computed(() => {
       const key = route.path.split('/')[1] || 'dashboard';
@@ -212,6 +258,7 @@ export default defineComponent({
 
     return {
       collapsed,
+      drawerVisible,
       selectedKeys,
       currentPageTitle,
       isMobile,
@@ -249,19 +296,6 @@ export default defineComponent({
   object-fit: contain;
 }
 
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  background: var(--primary-color);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  font-size: 18px;
-}
-
 .logo-text {
   margin-left: 12px;
   font-size: 20px;
@@ -273,6 +307,7 @@ export default defineComponent({
 .main-header {
   justify-content: space-between;
   background: var(--surface-color);
+  padding: 0 24px;
 }
 
 .mobile-header {
@@ -284,11 +319,26 @@ export default defineComponent({
   padding: 0 16px !important;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-toggle {
+  font-size: 20px;
+  padding: 4px;
+  height: auto;
+}
+
 .page-title {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-icon {

@@ -31,12 +31,12 @@
           <a-input v-model:value="creditCardDetails.cardNumber" placeholder="xxxx xxxx xxxx xxxx" />
         </a-form-item>
         <a-row :gutter="16">
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item label="Expiry Date">
               <a-input v-model:value="creditCardDetails.expiryDate" placeholder="MM/YY" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item label="CVV">
               <a-input v-model:value="creditCardDetails.cvv" placeholder="xxx" />
             </a-form-item>
@@ -47,7 +47,7 @@
         </a-form-item>
       </a-form>
 
-      <a-button type="primary" :loading="processing" @click="processPayment" style="margin-top: 24px;" :disabled="!selectedInvoiceId || processing">
+      <a-button type="primary" :loading="processing" @click="processPayment" style="margin-top: 24px;" :disabled="!selectedInvoiceId || processing" :block="isMobile">
         {{ processing ? 'Processing...' : 'Pay Now' }}
       </a-button>
     </a-card>
@@ -67,12 +67,21 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, reactive } from 'vue';
+import { defineComponent, ref, computed, reactive, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 
 export default defineComponent({
   name: 'PaymentProcessing',
   setup() {
+    const isMobile = ref(window.innerWidth < 768);
+    const updateMobile = () => {
+      isMobile.value = window.innerWidth < 768;
+    };
+
+    onMounted(() => {
+      window.addEventListener('resize', updateMobile);
+    });
+
     const selectedInvoiceId = ref(undefined);
     const paymentMethod = ref('credit_card');
     const processing = ref(false);
@@ -116,7 +125,6 @@ export default defineComponent({
             subTitle: `Your payment for Invoice #${selectedInvoice.value.invoiceNumber} has been processed.`,
           };
           message.success('Payment successful!');
-          // In a real app, you would update invoice status, etc.
         } else {
           paymentStatus.value = {
             type: 'error',
@@ -143,11 +151,24 @@ export default defineComponent({
       selectedInvoice,
       processPayment,
       retryPayment,
+      isMobile,
     };
   },
 });
 </script>
 
 <style scoped>
-/* Add any specific styles for PaymentProcessing here */
+.payment-processing-container {
+  padding: 24px;
+}
+
+@media (max-width: 576px) {
+  .payment-processing-container {
+    padding: 12px;
+  }
+  
+  .ant-card {
+    width: 100% !important;
+  }
+}
 </style>

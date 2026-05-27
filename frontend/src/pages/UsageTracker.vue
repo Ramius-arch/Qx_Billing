@@ -6,7 +6,7 @@
     <a-card title="New Usage Log" style="margin-bottom: 24px;">
       <a-form :model="newUsage" layout="vertical" @finish="addUsage">
         <a-row :gutter="16">
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item label="Customer:" name="customerId" :rules="[{ required: true, message: 'Please select a customer!' }]">
               <a-select v-model:value="newUsage.customerId" placeholder="Select a customer">
                 <a-select-option v-for="customer in customers" :key="customer.id" :value="customer.id">
@@ -15,7 +15,7 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item label="Plan:" name="planId" :rules="[{ required: true, message: 'Please select a plan!' }]">
               <a-select v-model:value="newUsage.planId" placeholder="Select a plan">
                 <a-select-option v-for="plan in plans" :key="plan.id" :value="plan.id">
@@ -27,7 +27,7 @@
         </a-row>
 
         <a-row :gutter="16">
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item label="Usage Type:" name="usageType" :rules="[{ required: true, message: 'Please select usage type!' }]">
               <a-select v-model:value="newUsage.usageType" placeholder="Select usage type">
                 <a-select-option value="call">Call</a-select-option>
@@ -36,7 +36,7 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item label="Duration/Count (minutes/MB/SMS):" name="duration" :rules="[{ required: true, message: 'Please input duration/count!' }]">
               <a-input-number v-model:value="newUsage.duration" :min="0" style="width: 100%;" />
             </a-form-item>
@@ -44,7 +44,7 @@
         </a-row>
 
         <a-form-item>
-          <a-button type="primary" html-type="submit" :loading="addingUsage">Add Usage</a-button>
+          <a-button type="primary" html-type="submit" :loading="addingUsage" :block="isMobile">Add Usage</a-button>
         </a-form-item>
       </a-form>
     </a-card>
@@ -56,7 +56,7 @@
           v-model:value="selectedCustomerFilterId"
           placeholder="Filter by customer"
           allowClear
-          style="width: 200px"
+          class="filter-select"
         >
           <a-select-option v-for="customer in customers" :key="customer.id" :value="customer.id">
             {{ customer.name }}
@@ -109,6 +109,11 @@ export default defineComponent({
     // Filtering state
     const selectedCustomerFilterId = ref(null);
 
+    const isMobile = ref(window.innerWidth < 768);
+    const updateMobile = () => {
+      isMobile.value = window.innerWidth < 768;
+    };
+
     const newUsage = reactive({
       customerId: undefined,
       planId: undefined, // Add planId for new usage
@@ -128,13 +133,11 @@ export default defineComponent({
       try {
         let response;
         if (selectedCustomerFilterId.value) {
-          // Assuming an API endpoint for fetching usage by customer with pagination
           response = await api.getUsageByCustomerId(selectedCustomerFilterId.value, currentPage.value, pageSize.value);
         } else {
-          // Fetch all usage with pagination
           response = await api.getUsage(currentPage.value, pageSize.value);
         }
-        usageLogs.value = response.data.usageLogs; // Adjusted to backend response structure
+        usageLogs.value = response.data.usageLogs;
         totalItems.value = response.data.totalItems;
         totalPages.value = response.data.totalPages;
       } catch (error) {
@@ -145,9 +148,7 @@ export default defineComponent({
 
     const fetchCustomers = async () => {
       try {
-        // Fetch all customers (not paginated here as it's for a dropdown)
-        // If there are many customers, this would also need pagination/search
-        const response = await api.getCustomers(1, 9999); // Fetch a large number, or implement search in dropdown
+        const response = await api.getCustomers(1, 9999);
         customers.value = response.data.customers;
       } catch (error) {
         console.error('Error fetching customers:', error);
@@ -170,12 +171,11 @@ export default defineComponent({
       try {
         await api.addUsage(newUsage);
         message.success('Usage log added successfully!');
-        // Reset form
         newUsage.customerId = undefined;
         newUsage.planId = undefined;
         newUsage.usageType = 'data';
         newUsage.duration = 0;
-        fetchUsage(); // Refresh list based on current filter/pagination
+        fetchUsage();
       } catch (error) {
         console.error('Error adding usage log:', error);
         message.error('Failed to add usage log.');
@@ -191,14 +191,13 @@ export default defineComponent({
       }
     };
 
-    // Watch for changes in selectedCustomerFilterId to re-fetch usage
     watch(selectedCustomerFilterId, () => {
-      currentPage.value = 1; // Reset to first page on filter change
+      currentPage.value = 1;
       fetchUsage();
     });
 
-    // Fetch data on component mount
     onMounted(() => {
+      window.addEventListener('resize', updateMobile);
       fetchCustomers();
       fetchPlans();
       fetchUsage();
@@ -218,6 +217,7 @@ export default defineComponent({
       totalPages,
       changePage,
       selectedCustomerFilterId,
+      isMobile,
     };
   },
 });
@@ -226,5 +226,19 @@ export default defineComponent({
 <style scoped>
 .usage-tracker-container {
   padding: 16px;
+}
+
+.filter-select {
+  width: 200px;
+}
+
+@media (max-width: 576px) {
+  .usage-tracker-container {
+    padding: 8px;
+  }
+  
+  .filter-select {
+    width: 100%;
+  }
 }
 </style>
