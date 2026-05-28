@@ -1,20 +1,20 @@
 <template>
-  <div class="customers-page">
-    <div class="header-actions mb-24">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 mb-6">
       <a-input-search
         v-model:value="searchQuery"
         placeholder="Search by name, email, or phone..."
-        class="search-input"
+        class="w-full sm:w-80"
         @search="fetchCustomers"
         allow-clear
       />
-      <a-button type="primary" size="large" @click="showAddModal" class="add-btn">
+      <a-button type="primary" size="large" @click="showAddModal" class="w-full sm:w-auto">
         <template #icon><plus-outlined /></template>
         Add Customer
       </a-button>
     </div>
 
-    <a-card :bordered="false" class="table-card">
+    <a-card :bordered="false" class="shadow-sm rounded-xl">
       <a-table
         :columns="columns"
         :data-source="customers"
@@ -76,7 +76,7 @@
         </a-form-item>
         
         <a-row :gutter="16">
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item
               label="Phone Number"
               name="phone_number"
@@ -85,7 +85,7 @@
               <a-input v-model:value="formState.phone_number" placeholder="2547XXXXXXXX" />
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item
               label="Email Address"
               name="email"
@@ -105,7 +105,7 @@
         </a-form-item>
 
         <a-row :gutter="16">
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item
               label="Subscription Plan"
               name="planId"
@@ -118,7 +118,7 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :xs="24" :sm="12">
             <a-form-item label="Account Status" name="status">
               <a-select v-model:value="formState.status">
                 <a-select-option value="active">Active</a-select-option>
@@ -134,7 +134,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive } from 'vue';
+import { defineComponent, ref, reactive, watch, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { 
   PlusOutlined, 
   EditOutlined, 
@@ -162,6 +163,8 @@ export default defineComponent({
     SearchOutlined,
   },
   setup() {
+    const route = useRoute();
+    const router = useRouter();
     const customers = ref([]);
     const plans = ref([]);
     const loading = ref(false);
@@ -169,7 +172,16 @@ export default defineComponent({
     const modalConfirmLoading = ref(false);
     const isEditing = ref(false);
     const formRef = ref(null);
-    const searchQuery = ref('');
+    
+    // Sync search query with URL
+    const searchQuery = computed({
+      get: () => route.query.search || '',
+      set: (val) => {
+        router.replace({
+          query: { ...route.query, search: val || undefined }
+        });
+      }
+    });
     const formState = reactive({
       id: null,
       name: '',
@@ -280,8 +292,11 @@ export default defineComponent({
       return colors[status] || 'default';
     };
 
-    fetchCustomers();
     fetchPlans();
+
+    watch(() => route.query.search, () => {
+      fetchCustomers();
+    }, { immediate: true });
 
     return {
       customers,
@@ -308,45 +323,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.customers-page {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.header-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.search-input {
-  width: 320px;
-}
-
-@media (max-width: 576px) {
-  .header-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .header-actions > * {
-    width: 100% !important;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-}
-
-.mb-24 { margin-bottom: 24px; }
-
-.table-card {
-  box-shadow: var(--shadow-sm);
-  border-radius: 12px;
-}
-
 :deep(.ant-table-thead > tr > th) {
   background: #fcfcfc !important;
   font-weight: 600;

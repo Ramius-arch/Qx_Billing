@@ -26,7 +26,7 @@
       </a-descriptions>
     </a-page-header>
 
-    <a-row :gutter="[24, 24]" class="mt-24">
+    <a-row :gutter="[24, 24]" class="mt-6">
       <!-- Breakdown and Summary -->
       <a-col :xs="24" :lg="16">
         <a-card title="Usage Drill-down" class="glass-card">
@@ -48,13 +48,13 @@
           </a-table>
 
           <a-divider>Pricing Tier Analysis</a-divider>
-          <div class="tier-analysis p-16 bg-light rounded-8">
-            <p class="text-xs font-bold text-secondary text-uppercase mb-12">How this was calculated</p>
+          <div class="tier-analysis p-4 bg-slate-50 rounded-lg">
+            <p class="text-xs font-bold text-slate-500 uppercase mb-3">How this was calculated</p>
              <div class="tier-item">
                <span class="label">Included Minutes ({{ invoice?.plan?.call_minutes }} min)</span>
                <a-progress :percent="100" size="small" status="success" />
              </div>
-             <div class="tier-item mt-12">
+             <div class="tier-item mt-3">
                <span class="label">Overage Charges</span>
                <p class="text-sm font-semibold">Additional units billed at standard plan rates.</p>
              </div>
@@ -82,8 +82,8 @@
           </div>
         </a-card>
 
-        <a-card title="Quick Actions" class="mt-24">
-          <a-button block class="mb-12">Send via WhatsApp</a-button>
+        <a-card title="Quick Actions" class="mt-6">
+          <a-button block class="mb-3">Send via WhatsApp</a-button>
           <a-button block>Resend Email</a-button>
         </a-card>
       </a-col>
@@ -199,10 +199,4 @@ export default defineComponent({
   color: var(--text-secondary);
 }
 
-.mt-24 { margin-top: 24px; }
-.mt-12 { margin-top: 12px; }
-.mb-12 { margin-bottom: 12px; }
-.p-16 { padding: 16px; }
-.bg-light { background: #f8fafc; }
-.rounded-8 { border-radius: 8px; }
 </style>

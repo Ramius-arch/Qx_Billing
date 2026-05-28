@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { ref } from 'vue';
+
+export const isRouteLoading = ref(false);
 
 const routes = [
   // Redirect to dashboard by default
@@ -33,6 +36,7 @@ const routes = [
     meta: {
       title: 'Dashboard',
       layout: true,
+      breadcrumb: 'Dashboard'
     },
   },
 
@@ -44,6 +48,7 @@ const routes = [
     meta: {
       title: 'Customers',
       layout: true,
+      breadcrumb: 'Customers'
     },
   },
 
@@ -55,6 +60,7 @@ const routes = [
     meta: {
       title: 'Usage Tracker',
       layout: true,
+      breadcrumb: 'Usage Tracker'
     },
   },
 
@@ -66,6 +72,7 @@ const routes = [
     meta: {
       title: 'Billing Engine',
       layout: true,
+      breadcrumb: 'Billing Engine'
     },
   },
 
@@ -77,6 +84,7 @@ const routes = [
     meta: {
       title: 'Reports and Analytics',
       layout: true,
+      breadcrumb: 'Reports'
     },
   },
 
@@ -88,6 +96,7 @@ const routes = [
     meta: {
       title: 'Invoice Generator',
       layout: true,
+      breadcrumb: 'Invoice Generator'
     },
   },
 
@@ -99,6 +108,7 @@ const routes = [
     meta: {
       title: 'Payment Processing',
       layout: true,
+      breadcrumb: 'Payment Processing'
     },
   },
   // Help Center route
@@ -109,6 +119,7 @@ const routes = [
     meta: {
       title: 'Help Center',
       layout: true,
+      breadcrumb: 'Help Center'
     },
   },
   // Invoice Detail route
@@ -119,18 +130,66 @@ const routes = [
     meta: {
       title: 'Invoice Details',
       layout: true,
+      breadcrumb: (route) => `Invoice #${route.params.id}`,
+      parent: '/invoice-generator'
     },
   },
+  // Offline page
+  {
+    path: '/offline',
+    name: 'Offline',
+    component: () => import('./pages/Offline.vue'),
+    meta: { title: 'Offline', layout: true }
+  },
+  // 404 Route
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('./pages/NotFound.vue'),
+    meta: {
+      title: 'Page Not Found',
+      layout: true,
+    },
+  }
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition && to.meta.preserveScroll !== false) {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(savedPosition), 300)
+      })
+    }
+    if (to.hash) {
+      return { el: to.hash, top: 80, behavior: 'smooth' }
+    }
+    if (to.meta.scrollToTop !== false) {
+      return { top: 0, behavior: 'instant' }
+    }
+    return false
+  }
 });
 
 router.beforeEach((to, from, next) => {
+  isRouteLoading.value = true;
   document.title = to.meta.title || 'Telecom Billing System';
   next();
+});
+
+router.afterEach(() => {
+  setTimeout(() => {
+    isRouteLoading.value = false;
+  }, 100);
+});
+
+router.onError((error) => {
+  isRouteLoading.value = false;
+  console.error('Router error:', error);
+  if (error.message.includes('Failed to fetch dynamically imported module')) {
+    router.push('/offline');
+  }
 });
 
 export default router;

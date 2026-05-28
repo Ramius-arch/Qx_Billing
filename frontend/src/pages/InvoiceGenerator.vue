@@ -14,7 +14,7 @@
       </template>
     </a-page-header>
 
-    <a-row :gutter="[24, 24]" class="mt-24">
+    <a-row :gutter="[24, 24]" class="mt-6">
       <!-- Form Section -->
       <a-col :xs="24" :lg="16">
         <a-card title="Invoice Structure" class="standard-card">
@@ -57,31 +57,31 @@
             <a-divider>Line Items</a-divider>
 
             <div class="items-list">
-              <a-row :gutter="8" class="item-header mb-8 hidden-mobile">
-                <a-col :span="10"><span class="text-xs font-bold text-secondary">DESCRIPTION / SERVICE</span></a-col>
+              <a-row :gutter="8" class="item-header mb-2 hidden sm:flex">
+                <a-col :span="10"><span class="text-xs font-bold text-slate-500">DESCRIPTION / SERVICE</span></a-col>
                 <a-col :span="4"><span class="text-xs font-bold text-secondary">QTY</span></a-col>
                 <a-col :span="5"><span class="text-xs font-bold text-secondary">RATE (KSh)</span></a-col>
                 <a-col :span="4"><span class="text-xs font-bold text-secondary">TOTAL</span></a-col>
                 <a-col :span="1"></a-col>
               </a-row>
 
-              <div v-for="(item, index) in form.items" :key="index" class="item-row mb-12">
+              <div v-for="(item, index) in form.items" :key="index" class="item-row mb-3">
                 <a-row :gutter="[8, 8]" align="middle">
                   <a-col :xs="24" :sm="10">
-                    <span class="mobile-only text-xs font-bold text-secondary">DESCRIPTION</span>
+                    <span class="sm:hidden text-xs font-bold text-slate-500">DESCRIPTION</span>
                     <a-input v-model:value="item.description" placeholder="e.g. Monthly Subscription" />
                   </a-col>
                   <a-col :xs="8" :sm="4">
-                    <span class="mobile-only text-xs font-bold text-secondary">QTY</span>
+                    <span class="sm:hidden text-xs font-bold text-slate-500">QTY</span>
                     <a-input-number v-model:value="item.quantity" :min="1" style="width: 100%" />
                   </a-col>
                   <a-col :xs="12" :sm="5">
-                    <span class="mobile-only text-xs font-bold text-secondary">RATE</span>
+                    <span class="sm:hidden text-xs font-bold text-slate-500">RATE</span>
                     <a-input-number v-model:value="item.rate" :min="0" style="width: 100%" />
                   </a-col>
-                  <a-col :xs="2" :sm="4" class="text-right-mobile">
-                     <span class="mobile-only text-xs font-bold text-secondary">TOTAL</span>
-                    <div class="mt-4-mobile">
+                  <a-col :xs="2" :sm="4" class="text-right sm:text-left">
+                     <span class="sm:hidden text-xs font-bold text-slate-500">TOTAL</span>
+                    <div class="mt-4 sm:mt-0">
                       <span class="text-sm font-semibold">KSh {{ (item.quantity * item.rate).toLocaleString() }}</span>
                     </div>
                   </a-col>
@@ -93,7 +93,7 @@
                 </a-row>
               </div>
 
-              <a-button type="dashed" block @click="addItem" class="mt-8">
+              <a-button type="dashed" block @click="addItem" class="mt-2">
                 <template #icon><plus-outlined /></template>
                 Add Service Item
               </a-button>
@@ -109,11 +109,11 @@
             <span>Subtotal</span>
             <span>KSh {{ subtotal.toLocaleString() }}</span>
           </div>
-          <div class="summary-item mt-12">
+          <div class="summary-item mt-3">
             <span>Discount (%)</span>
             <a-input-number v-model:value="form.discountRate" :min="0" :max="100" size="small" />
           </div>
-          <div class="summary-item mt-12">
+          <div class="summary-item mt-3">
             <span>Tax (VAT 16%)</span>
             <span>KSh {{ taxAmount.toLocaleString() }}</span>
           </div>
@@ -123,20 +123,20 @@
             <span class="total-value">KSh {{ grandTotal.toLocaleString() }}</span>
           </div>
 
-          <div class="mt-24 p-16 bg-light rounded-8">
-            <span class="text-xs text-secondary font-bold">NOTES / INSTRUCTIONS</span>
+          <div class="mt-6 p-4 bg-slate-50 rounded-lg">
+            <span class="text-xs text-slate-500 font-bold">NOTES / INSTRUCTIONS</span>
             <a-textarea 
               v-model:value="form.notes" 
               placeholder="e.g. Payment via M-Pesa Paybill 222111" 
               :rows="3" 
-              class="mt-8 no-border bg-transparent"
+              class="mt-2 border-0 bg-transparent"
             />
           </div>
         </a-card>
 
-        <a-card title="Smart Features" class="mt-24">
+        <a-card title="Smart Features" class="mt-6">
           <a-checkbox v-model:checked="form.notifyCustomer">Email Invoice on Issuance</a-checkbox>
-          <div class="mt-12">
+          <div class="mt-3">
             <a-checkbox v-model:checked="form.autoReminder">Enable Smart Reminders</a-checkbox>
           </div>
         </a-card>
@@ -165,11 +165,11 @@
            </a-col>
            <a-col :span="6">
              <span class="label">DUE DATE:</span>
-             <p class="val text-danger">{{ form.dueDate?.format('DD MMM YYYY') }}</p>
+             <p class="val text-red-600">{{ form.dueDate?.format('DD MMM YYYY') }}</p>
            </a-col>
          </a-row>
          
-         <table class="preview-table mt-24">
+         <table class="preview-table mt-6">
            <thead>
              <tr>
                <th>DESCRIPTION</th>
@@ -184,7 +184,7 @@
            </tbody>
          </table>
 
-         <div class="preview-totals mt-24">
+         <div class="preview-totals mt-6">
            <div class="p-row"><span>Total Due:</span> <strong>KSh {{ grandTotal.toLocaleString() }}</strong></div>
          </div>
       </div>
@@ -351,14 +351,6 @@ export default defineComponent({
   font-weight: 800;
   color: var(--primary-color);
 }
-
-.bg-light { background: #f8fafc; }
-.rounded-8 { border-radius: 8px; }
-.p-16 { padding: 16px; }
-.mt-24 { margin-top: 24px; }
-.mt-12 { margin-top: 12px; }
-.mb-8 { margin-bottom: 8px; }
-.mb-12 { margin-bottom: 12px; }
 
 /* Preview Styles */
 .invoice-preview-wrap {

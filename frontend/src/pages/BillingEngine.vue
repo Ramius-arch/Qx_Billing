@@ -24,7 +24,7 @@
               message="Select a customer to initialize calculations"
               type="info"
               show-icon
-              class="mb-24"
+              class="mb-6"
             />
 
             <div v-if="selectedCustomerId" class="actions-group">
@@ -39,7 +39,7 @@
                 Finalize & Generate Invoice
               </a-button>
               
-              <a-button block class="mt-12" @click="fetchForecast">
+              <a-button block class="mt-3" @click="fetchForecast">
                 <template #icon><line-chart-outlined /></template>
                 Refresh Forecast
               </a-button>
@@ -47,8 +47,8 @@
           </a-form>
         </a-card>
 
-        <a-card title="Batch Operations" class="mt-24">
-          <p class="text-secondary text-sm mb-16">Execute billing cycles for all active accounts in the current window.</p>
+        <a-card title="Batch Operations" class="mt-6">
+          <p class="text-slate-500 text-sm mb-4">Execute billing cycles for all active accounts in the current window.</p>
           <a-button block danger ghost @click="notImplemented">
             Run Global Batch Cycle
           </a-button>
@@ -95,11 +95,11 @@
                 <a-col :span="12">
                   <div class="projection-summary">
                     <span class="insight-label">EOM Projection</span>
-                    <div class="projected-value mt-12">
+                    <div class="projected-value mt-3">
                       <span class="currency">KSh</span>
                       <span class="amount">{{ forecast.projection.total.toLocaleString() }}</span>
                     </div>
-                    <div class="cost-breakdown mt-16">
+                    <div class="cost-breakdown mt-4">
                       <div class="breakdown-row">
                         <span>Base Plan</span>
                         <span>KSh {{ forecast.currentCosts.basePrice }}</span>
@@ -118,7 +118,7 @@
               </a-row>
             </div>
 
-            <a-empty v-else description="Select a customer to view billing intelligence" class="my-48" />
+            <a-empty v-else description="Select a customer to view billing intelligence" class="my-12" />
           </a-card>
         </a-spin>
 
@@ -318,10 +318,5 @@ export default defineComponent({
   color: var(--text-primary);
 }
 
-.mb-24 { margin-bottom: 24px; }
-.mt-12 { margin-top: 12px; }
-.mt-24 { margin-top: 24px; }
-.mt-16 { margin-top: 16px; }
-.my-48 { margin-top: 48px; margin-bottom: 48px; }
 </style>
 

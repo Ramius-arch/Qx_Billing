@@ -1,10 +1,19 @@
 <template>
-  <a-config-provider :theme="themeConfig">
-    <template v-if="$route.meta.layout === false">
-      <router-view />
-    </template>
-    <template v-else>
-      <a-layout style="min-height: 100vh;">
+  <div>
+    <!-- Global route loading indicator -->
+    <div
+      v-if="isRouteLoading"
+      class="fixed top-0 left-0 right-0 h-1 bg-primary-500 z-[100]"
+    >
+      <div class="h-full bg-primary-300 animate-pulse" />
+    </div>
+    <a-config-provider :theme="themeConfig">
+      <template v-if="$route.meta.layout === false">
+        <router-view />
+      </template>
+      <template v-else>
+        <a-layout style="min-height: 100vh; overscroll-behavior-x: none;">
+
         <!-- Desktop Sider -->
         <a-layout-sider
           v-if="!isMobile"
@@ -100,6 +109,7 @@
 <script>
 import { defineComponent, ref, computed, onMounted, h } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
+import { isRouteLoading } from './router';
 import { theme } from 'ant-design-vue';
 import {
   DashboardOutlined,
@@ -265,6 +275,7 @@ export default defineComponent({
       isDark,
       themeConfig,
       toggleTheme,
+      isRouteLoading,
     };
   },
   watch: {
