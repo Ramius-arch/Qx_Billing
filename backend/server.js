@@ -37,12 +37,12 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === 'production';
 
+// In development, we use 'force: true' to ensure a clean state for seeding
 // In production, we avoid 'alter: true' as it can be unreliable with PostgreSQL
-// sync() will still create tables if they don't exist.
-db.sequelize.sync({ alter: !isProduction }) 
+db.sequelize.sync({ force: !isProduction }) 
     .then(() => {
         console.log('Database synchronized');
-        // seedDatabase(); // Uncomment once if you need initial demo data
+        seedDatabase(); // Seed database with initial demo data
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });

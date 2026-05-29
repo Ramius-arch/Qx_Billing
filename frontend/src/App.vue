@@ -23,10 +23,10 @@
           class="main-sider"
           width="260"
         >
-          <div class="logo-container">
+          <router-link to="/dashboard" class="logo-container">
             <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
             <span v-if="!collapsed" class="logo-text">Billing</span>
-          </div>
+          </router-link>
           <MenuContent v-model:selectedKeys="selectedKeys" />
         </a-layout-sider>
 
@@ -40,10 +40,10 @@
           width="260"
           :body-style="{ padding: 0 }"
         >
-          <div class="logo-container">
+          <router-link to="/dashboard" class="logo-container" @click="drawerVisible = false">
             <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
             <span class="logo-text">Billing</span>
-          </div>
+          </router-link>
           <MenuContent v-model:selectedKeys="selectedKeys" @click="drawerVisible = false" />
         </a-drawer>
 
@@ -104,6 +104,7 @@
       </a-layout>
     </template>
   </a-config-provider>
+  </div>
 </template>
 
 <script>
@@ -112,6 +113,7 @@ import { useRoute, RouterLink } from 'vue-router';
 import { isRouteLoading } from './router';
 import { theme } from 'ant-design-vue';
 import {
+  HomeOutlined,
   DashboardOutlined,
   TeamOutlined,
   BarChartOutlined,
@@ -144,6 +146,11 @@ const MenuContent = defineComponent({
         onClick: handleClick
       },
       [
+        h('a-menu-item', { key: 'main-site' }, {
+          icon: () => h(HomeOutlined),
+          default: () => h('a', { href: 'https://quixora.netlify.app' }, { default: () => 'Main Site' })
+        }),
+        h('a-menu-divider'),
         h('a-menu-item', { key: 'dashboard' }, {
           icon: () => h(DashboardOutlined),
           default: () => h(RouterLink, { to: '/dashboard' }, { default: () => 'Dashboard' })
@@ -193,7 +200,8 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const collapsed = ref(false);
+    const windowWidth = ref(window.innerWidth);
+    const collapsed = ref(windowWidth.value >= 768 && windowWidth.value < 1024);
     const drawerVisible = ref(false);
     const selectedKeys = ref([route.path.split('/')[1] || 'dashboard']);
     
@@ -224,7 +232,6 @@ export default defineComponent({
       document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : 'light');
     };
 
-    const windowWidth = ref(window.innerWidth);
     const updateWidth = () => {
       windowWidth.value = window.innerWidth;
     };
@@ -249,7 +256,7 @@ export default defineComponent({
       }
     });
 
-    const isMobile = computed(() => windowWidth.value < 992); // Using lg breakpoint
+    const isMobile = computed(() => windowWidth.value < 768); // Using md breakpoint as per standards
 
     const currentPageTitle = computed(() => {
       const key = route.path.split('/')[1] || 'dashboard';

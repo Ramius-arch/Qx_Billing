@@ -65,15 +65,18 @@
       @ok="handleModalOk"
       :confirm-loading="modalConfirmLoading"
       destroyOnClose
+      :maskClosable="false"
+      width="600px"
     >
-      <a-form :model="formState" layout="vertical" ref="formRef">
-        <a-form-item
-          label="Full Name"
-          name="name"
-          :rules="[{ required: true, message: 'Please input full name!' }]"
-        >
-          <a-input v-model:value="formState.name" placeholder="John Doe" />
-        </a-form-item>
+      <div class="modal-form-container">
+        <a-form :model="formState" layout="vertical" ref="formRef" @finish="handleModalOk">
+          <a-form-item
+            label="Full Name"
+            name="name"
+            :rules="[{ required: true, message: 'Please input full name!' }]"
+          >
+            <a-input v-model:value="formState.name" placeholder="John Doe" />
+          </a-form-item>
         
         <a-row :gutter="16">
           <a-col :xs="24" :sm="12">
@@ -129,6 +132,7 @@
           </a-col>
         </a-row>
       </a-form>
+      </div>
     </a-modal>
   </div>
 </template>
