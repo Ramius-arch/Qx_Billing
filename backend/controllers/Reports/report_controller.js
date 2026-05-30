@@ -29,22 +29,30 @@ async function calculateMonthlyUsage(customerId) {
 
 async function getUsageTrendData(customerId = null) {
   const whereClause = customerId ? { customerId: customerId } : {};
+  const dialect = db.sequelize.getDialect();
+  
+  let dateGroup;
+  if (dialect === 'postgres') {
+    dateGroup = [db.sequelize.fn('to_char', db.sequelize.col('timestamp'), 'YYYY-MM-DD'), 'date'];
+  } else {
+    dateGroup = [db.sequelize.fn('strftime', '%Y-%m-%d', db.sequelize.col('timestamp')), 'date'];
+  }
+
   const usageLogs = await UsageLog.findAll({
     where: whereClause,
-    attributes: ['timestamp', 'duration'],
-    order: [['timestamp', 'ASC']]
+    attributes: [
+      dateGroup,
+      [db.sequelize.fn('SUM', db.sequelize.col('duration')), 'value']
+    ],
+    group: ['date'],
+    order: [[db.sequelize.literal('date'), 'ASC']],
+    raw: true
   });
 
-  const trendData = {};
-  usageLogs.forEach(log => {
-    const date = log.timestamp.toISOString().split('T')[0];
-    if (!trendData[date]) {
-      trendData[date] = 0;
-    }
-    trendData[date] += log.duration;
-  });
-
-  return Object.keys(trendData).map(date => ({ date, value: trendData[date] }));
+  return usageLogs.map(log => ({
+    date: log.date,
+    value: parseFloat(log.value)
+  }));
 }
 
 // @desc    Get all customers report

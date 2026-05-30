@@ -1,5 +1,6 @@
 const { ErrorHandler } = require('../../utlis/errorHandler');
 const db = require('../../models'); // Import models from the centralized index.js
+const { clearCache } = require('../../middleware/cacheHandler');
 const Payment = db.Payment;
 const Bill = db.Bill;
 const Customer = db.Customer;
@@ -63,6 +64,7 @@ async function createPayment(req, res) {
       if (invoiceId) {
         await Invoice.update({ status: 'paid' }, { where: { id: invoiceId } });
       }
+      clearCache('/api/reports*');
     }
 
     return res.status(201).json({ message: 'Payment created successfully', payment: newPayment });
@@ -93,7 +95,9 @@ async function updatePaymentStatus(req, res) {
         if (updatedPayment.invoiceId) {
           await Invoice.update({ status: 'paid' }, { where: { id: updatedPayment.invoiceId } });
         }
-      } else if (status === 'failed' || status === 'pending') {
+        clearCache('/api/reports*');
+      }
+ else if (status === 'failed' || status === 'pending') {
         // You might want to set bill/invoice status to 'unpaid' or 'pending' accordingly
         // For simplicity, this example only updates on 'completed'
       }
@@ -159,6 +163,8 @@ async function mpesaCallback(req, res) {
     await Bill.update({ paymentStatus: 'paid' }, { where: { id: bill.id } });
     // If linked to an invoice, also update invoice status
     // await Invoice.update({ status: 'paid' }, { where: { id: newPayment.invoiceId } });
+    
+    clearCache('/api/reports*');
 
 
     return res.status(200).json({ message: 'M-Pesa callback processed successfully', payment: newPayment });

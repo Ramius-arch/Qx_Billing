@@ -1,6 +1,7 @@
 const asyncHandler = require('../../middleware/asyncHandler');
 const ErrorResponse = require('../../middleware/errorHandler').ErrorResponse;
 const db = require('../../models');
+const { clearCache } = require('../../middleware/cacheHandler');
 
 const Invoice = db.Invoice;
 const Bill = db.Bill;
@@ -93,6 +94,7 @@ exports.updateInvoiceStatus = asyncHandler(async (req, res, next) => {
   }
 
   invoice = await invoice.update({ status });
+  clearCache('/api/reports*');
   res.status(200).json({ success: true, data: invoice });
 });
 
@@ -126,6 +128,8 @@ exports.generateInvoice = asyncHandler(async (req, res, next) => {
     amountDue: parseFloat(amountDue) || bill.amount,
     status: 'pending'
   });
+
+  clearCache('/api/reports*');
 
   res.status(201).json({ success: true, data: invoice });
 });

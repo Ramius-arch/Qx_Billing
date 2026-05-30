@@ -1,5 +1,6 @@
 const { ErrorHandler } = require('../../utlis/errorHandler');
 const db = require('../../models'); // Import models from the centralized index.js
+const { clearCache } = require('../../middleware/cacheHandler');
 const UsageLog = db.UsageLog;
 const Customer = db.Customer;
 const Plan = db.Plan;
@@ -52,6 +53,7 @@ exports.UsageController = {
                 duration,
                 timestamp: new Date(),
             });
+            clearCache('/api/reports*');
             return res.status(201).json(newUsage);
         } catch (error) {
             console.error(error);
@@ -69,6 +71,7 @@ exports.UsageController = {
                 return res.status(404).json({ error: 'Usage log not found or no changes made' });
             }
             const updatedUsage = await UsageLog.findByPk(parseInt(id));
+            clearCache('/api/reports*');
             return res.status(200).json(updatedUsage);
         } catch (error) {
             console.error(error);
@@ -85,6 +88,7 @@ exports.UsageController = {
             if (deletedRows === 0) {
                 return res.status(404).json({ error: 'Usage log not found' });
             }
+            clearCache('/api/reports*');
             return res.status(204).send(); // No content for successful deletion
         } catch (error) {
             console.error(error);

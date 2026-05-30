@@ -1,6 +1,7 @@
 const { ErrorResponse } = require('../../middleware/errorHandler');
 const asyncHandler = require('../../middleware/asyncHandler');
 const db = require('../../models');
+const { clearCache } = require('../../middleware/cacheHandler');
 const Customer = db.Customer;
 const Plan = db.Plan;
 
@@ -70,7 +71,7 @@ const getCustomerById = asyncHandler(async (req, res, next) => {
 // @access  Private
 const createCustomer = asyncHandler(async (req, res, next) => {
   const customer = await Customer.create(req.body);
-
+  clearCache('/api/reports*');
   res.status(201).json({
     success: true,
     data: customer
@@ -91,6 +92,7 @@ const updateCustomer = asyncHandler(async (req, res, next) => {
 
   // Re-fetch to get any updated fields
   customer = await Customer.findByPk(req.params.id);
+  clearCache('/api/reports*');
 
   res.status(200).json({
     success: true,
@@ -109,6 +111,7 @@ const deleteCustomer = asyncHandler(async (req, res, next) => {
   }
 
   await customer.destroy();
+  clearCache('/api/reports*');
 
   res.status(200).json({
     success: true,

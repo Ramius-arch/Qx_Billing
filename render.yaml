@@ -12,6 +12,11 @@ services:
         fromDatabase:
           name: qx-billing-db
           property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: qx-billing-cache
+          property: connectionString
       - key: NODE_ENV
         value: production
       - key: PORT
@@ -31,5 +36,10 @@ services:
 
 databases:
   - name: qx-billing-db
+    plan: free
+    region: oregon
+
+redis:
+  - name: qx-billing-cache
     plan: free
     region: oregon

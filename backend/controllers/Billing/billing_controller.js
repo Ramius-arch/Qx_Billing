@@ -1,6 +1,7 @@
 const asyncHandler = require('../../middleware/asyncHandler');
 const ErrorResponse = require('../../middleware/errorHandler').ErrorResponse;
 const db = require('../../models');
+const { clearCache } = require('../../middleware/cacheHandler');
 const { Op } = require('sequelize');
 
 const Customer = db.Customer;
@@ -125,6 +126,8 @@ exports.generateBill = asyncHandler(async (req, res, next) => {
       { where: { id: { [Op.in]: unbilledLogs.map(l => l.id) } } }
     );
   }
+
+  clearCache('/api/reports*');
 
   res.status(201).json({
     success: true,
