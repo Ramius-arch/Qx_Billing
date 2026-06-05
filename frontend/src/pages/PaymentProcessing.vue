@@ -69,6 +69,7 @@
 <script>
 import { defineComponent, ref, computed, reactive, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
+import api from '../services/api';
 
 export default defineComponent({
   name: 'PaymentProcessing',
@@ -80,18 +81,14 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('resize', updateMobile);
+      fetchInvoices();
     });
 
     const selectedInvoiceId = ref(undefined);
     const paymentMethod = ref('credit_card');
     const processing = ref(false);
-    const paymentStatus = ref(null); // { type: 'success'|'error'|'info', message: '', subTitle: '' }
-
-    const invoices = ref([ // Dummy invoice data
-      { id: 1, invoiceNumber: 'INV-001', customerName: 'John Doe', amountDue: 100.00, dueDate: '2026-01-15', status: 'pending' },
-      { id: 2, invoiceNumber: 'INV-002', customerName: 'Jane Smith', amountDue: 250.50, dueDate: '2026-01-20', status: 'pending' },
-      { id: 3, invoiceNumber: 'INV-003', customerName: 'Alice Johnson', amountDue: 50.00, dueDate: '2026-01-10', status: 'overdue' },
-    ]);
+    const paymentStatus = ref(null);
+    const invoices = ref([]);
 
     const creditCardDetails = reactive({
       cardNumber: '',
@@ -100,11 +97,22 @@ export default defineComponent({
       cardHolderName: '',
     });
 
+    const fetchInvoices = async () => {
+      try {
+        const response = await api.getInvoices();
+        // Assuming the API returns { data: { invoices: [...] } } or similar based on standard patterns
+        invoices.value = response.data.invoices || response.data || [];
+      } catch (error) {
+        console.error('Failed to fetch invoices:', error);
+        message.error('Failed to load invoices.');
+      }
+    };
+
     const selectedInvoice = computed(() => {
       return invoices.value.find(inv => inv.id === selectedInvoiceId.value);
     });
 
-    const processPayment = () => {
+    const processPayment = async () => {
       if (!selectedInvoiceId.value) {
         message.error('Please select an invoice to pay.');
         return;
@@ -113,27 +121,33 @@ export default defineComponent({
       processing.value = true;
       paymentStatus.value = null;
 
-      // Simulate API call
-      setTimeout(() => {
+      try {
+        const paymentData = {
+          invoiceId: selectedInvoiceId.value,
+          amount: selectedInvoice.value.amountDue,
+          method: paymentMethod.value,
+          details: paymentMethod.value === 'credit_card' ? creditCardDetails : {}
+        };
+        
+        await api.createPayment(paymentData);
+        
+        paymentStatus.value = {
+          type: 'success',
+          message: 'Payment Successful!',
+          subTitle: `Your payment for Invoice #${selectedInvoice.value.invoiceNumber} has been processed.`,
+        };
+        message.success('Payment successful!');
+      } catch (error) {
+        console.error('Payment error:', error);
+        paymentStatus.value = {
+          type: 'error',
+          message: 'Payment Failed!',
+          subTitle: 'There was an issue processing your payment. Please try again.',
+        };
+        message.error('Payment failed.');
+      } finally {
         processing.value = false;
-        const success = Math.random() > 0.3; // Simulate 70% success rate
-
-        if (success) {
-          paymentStatus.value = {
-            type: 'success',
-            message: 'Payment Successful!',
-            subTitle: `Your payment for Invoice #${selectedInvoice.value.invoiceNumber} has been processed.`,
-          };
-          message.success('Payment successful!');
-        } else {
-          paymentStatus.value = {
-            type: 'error',
-            message: 'Payment Failed!',
-            subTitle: 'There was an issue processing your payment. Please try again or use a different method.',
-          };
-          message.error('Payment failed. Please try again.');
-        }
-      }, 2000);
+      }
     };
 
     const retryPayment = () => {
