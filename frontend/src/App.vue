@@ -341,6 +341,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .menu-toggle {
@@ -430,5 +431,26 @@ export default defineComponent({
 
 [data-theme='dark'] .nav-menu :deep(.ant-menu-item-selected .ant-menu-title-content a) {
   color: white;
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 15px;
+    max-width: 160px;
+  }
+
+  .header-icon {
+    font-size: 17px;
+  }
+
+  .user-profile {
+    gap: 6px;
+    padding: 2px 4px;
+  }
+
+  .main-footer {
+    font-size: 11px;
+    padding: 12px;
+  }
 }
 </style>
