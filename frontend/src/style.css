@@ -75,6 +75,7 @@ body {
 .ant-menu {
   background: transparent !important;
   border-inline-end: none !important;
+  color: var(--text-primary) !important;
 }
 
 .ant-menu-item {
@@ -82,6 +83,7 @@ body {
   margin: 4px 8px !important;
   width: calc(100% - 16px) !important;
   transition: var(--transition-fast) !important;
+  color: var(--text-secondary) !important;
 }
 
 .ant-card {
