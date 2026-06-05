@@ -14,7 +14,7 @@ if (process.env.REDIS_URL) {
     logger.error('Redis connection error:', err);
   });
 } else {
-  logger.warn('REDIS_URL not found. Caching will be disabled.');
+  logger.warning('REDIS_URL not found. Caching will be disabled.');
 }
 
 module.exports = redis;
