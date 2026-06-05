@@ -122,6 +122,30 @@ body {
   }
 }
 
+/* Mobile Portrait Overrides (< 480px) */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 12px !important;
+  }
+  
+  .ant-card, .ant-modal-content {
+    width: 100% !important;
+  }
+}
+
+/* Force Ant modal widths to 100% !important at < 576px */
+@media (max-width: 576px) {
+  .ant-modal {
+    width: 100% !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+  
+  .ant-modal-content {
+    border-radius: 0 !important;
+  }
+}
+
 .mobile-only {
   display: none;
 }
@@ -164,6 +188,47 @@ html, body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Mobile Portrait Overrides */
+@media (max-width: 480px) {
+  .ant-modal {
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    top: 0 !important;
+  }
+
+  .ant-modal .ant-modal-content {
+    border-radius: 0 !important;
+  }
+
+  .ant-card {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .ant-table-wrapper {
+    font-size: 13px;
+  }
+
+  .ant-form-item-label > label {
+    font-size: 13px;
+  }
+
+  .page-container {
+    padding: 12px 8px !important;
+  }
+
+  .ant-page-header {
+    padding: 12px !important;
+  }
+
+  .ant-page-header-heading-extra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 }
 
