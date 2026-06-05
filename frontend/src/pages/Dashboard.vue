@@ -283,21 +283,35 @@ export default defineComponent({
 
 @media (max-width: 576px) {
   .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 12px;
   }
-  
-  .stat-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
   
-  .stat-icon-wrapper {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
+  .stat-value {
+    font-size: 18px !important;
   }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mock-pie {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .mock-pie::after {
+    width: 80px;
+    height: 80px;
+  }
+}
 }
 
 .stat-card {
