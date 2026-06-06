@@ -200,17 +200,17 @@ export default defineComponent({
     }));
 
     const menuItems = [
-      { key: 'main-site', label: 'Main Site', icon: 'home-outlined', href: 'https://quixora.netlify.app' },
+      { key: 'main-site', label: 'Main Site', icon: HomeOutlined, href: 'https://quixora.netlify.app' },
       { key: 'divider-1', type: 'divider' },
-      { key: 'dashboard', label: 'Dashboard', icon: 'dashboard-outlined', path: '/dashboard' },
-      { key: 'customers', label: 'Customers', icon: 'team-outlined', path: '/customers' },
-      { key: 'usage-tracker', label: 'Usage Tracker', icon: 'bar-chart-outlined', path: '/usage-tracker' },
-      { key: 'billing-engine', label: 'Billing Engine', icon: 'setting-outlined', path: '/billing-engine' },
-      { key: 'reports', label: 'Reports', icon: 'line-chart-outlined', path: '/reports' },
-      { key: 'invoice-generator', label: 'Invoices', icon: 'file-text-outlined', path: '/invoice-generator' },
-      { key: 'payment-processing', label: 'Payments', icon: 'credit-card-outlined', path: '/payment-processing' },
+      { key: 'dashboard', label: 'Dashboard', icon: DashboardOutlined, path: '/dashboard' },
+      { key: 'customers', label: 'Customers', icon: TeamOutlined, path: '/customers' },
+      { key: 'usage-tracker', label: 'Usage Tracker', icon: BarChartOutlined, path: '/usage-tracker' },
+      { key: 'billing-engine', label: 'Billing Engine', icon: SettingOutlined, path: '/billing-engine' },
+      { key: 'reports', label: 'Reports', icon: LineChartOutlined, path: '/reports' },
+      { key: 'invoice-generator', label: 'Invoices', icon: FileTextOutlined, path: '/invoice-generator' },
+      { key: 'payment-processing', label: 'Payments', icon: CreditCardOutlined, path: '/payment-processing' },
       { key: 'divider-2', type: 'divider' },
-      { key: 'help-center', label: 'Help Center', icon: 'question-circle-outlined', path: '/help-center' },
+      { key: 'help-center', label: 'Help Center', icon: QuestionCircleOutlined, path: '/help-center' },
     ];
 
     const toggleTheme = () => {
