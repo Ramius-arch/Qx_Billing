@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-root">
     <!-- Global route loading indicator -->
     <div
       v-if="isRouteLoading"
@@ -7,109 +7,146 @@
     >
       <div class="h-full bg-primary-300 animate-pulse" />
     </div>
+
     <a-config-provider :theme="themeConfig">
       <template v-if="$route.meta.layout === false">
         <router-view />
       </template>
       <template v-else>
-        <a-layout style="min-height: 100vh; overscroll-behavior-x: none;">
-
-        <!-- Desktop Sider -->
-        <a-layout-sider
-          v-if="!isMobile"
-          v-model:collapsed="collapsed"
-          collapsible
-          breakpoint="lg"
-          class="main-sider"
-          width="260"
-        >
-          <router-link to="/dashboard" class="logo-container">
-            <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
-            <span v-if="!collapsed" class="logo-text">Billing</span>
-          </router-link>
-          <MenuContent v-model:selectedKeys="selectedKeys" />
-        </a-layout-sider>
-
-        <!-- Mobile Drawer -->
-        <a-drawer
-          v-if="isMobile"
-          v-model:open="drawerVisible"
-          placement="left"
-          :closable="false"
-          @close="drawerVisible = false"
-          width="260"
-          :body-style="{ padding: 0 }"
-        >
-          <router-link to="/dashboard" class="logo-container" @click="drawerVisible = false">
-            <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
-            <span class="logo-text">Billing</span>
-          </router-link>
-          <MenuContent v-model:selectedKeys="selectedKeys" @click="drawerVisible = false" />
-        </a-drawer>
-
-        <a-layout>
-          <a-layout-header :class="['main-header', { 'mobile-header': isMobile }]">
-            <div class="header-left">
-              <a-button 
-                v-if="isMobile" 
-                type="text" 
-                @click="drawerVisible = true" 
-                class="menu-toggle"
-              >
-                <menu-outlined />
-              </a-button>
-              <h2 class="page-title">{{ isMobile ? 'Qx Billing' : currentPageTitle }}</h2>
-            </div>
-            <div class="header-right">
-              <a-space :size="isMobile ? 'small' : 'large'">
-                <a-tooltip :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-                  <div class="theme-toggle" @click="toggleTheme">
-                    <template v-if="isDark">
-                      <bulb-filled class="header-icon" />
-                    </template>
-                    <template v-else>
-                      <bulb-outlined class="header-icon" />
-                    </template>
-                  </div>
-                </a-tooltip>
-                <a-badge dot v-if="!isMobile">
-                  <bell-outlined class="header-icon" />
-                </a-badge>
-                <a-dropdown placement="bottomRight">
-                  <div class="user-profile">
-                    <a-avatar size="small" src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
-                    <span v-if="!isMobile" class="user-name">Admin User</span>
-                  </div>
-                  <template #overlay>
-                    <a-menu>
-                      <a-menu-item key="profile">Profile Settings</a-menu-item>
-                      <a-menu-item key="logout">Logout</a-menu-item>
-                    </a-menu>
+        <a-layout style="min-height: 100vh;">
+          <!-- Desktop Sider -->
+          <a-layout-sider
+            v-if="!isMobile"
+            v-model:collapsed="collapsed"
+            collapsible
+            breakpoint="lg"
+            class="main-sider"
+            width="260"
+          >
+            <router-link to="/dashboard" class="logo-container">
+              <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
+              <span v-if="!collapsed" class="logo-text">Billing</span>
+            </router-link>
+            
+            <a-menu
+              v-model:selectedKeys="selectedKeys"
+              mode="inline"
+              class="nav-menu"
+            >
+              <template v-for="item in menuItems" :key="item.key">
+                <a-menu-divider v-if="item.type === 'divider'" />
+                <a-menu-item v-else :key="item.key">
+                  <template #icon>
+                    <component :is="item.icon" />
                   </template>
-                </a-dropdown>
-              </a-space>
+                  <template v-if="item.href">
+                    <a :href="item.href" target="_blank">{{ item.label }}</a>
+                  </template>
+                  <router-link v-else :to="item.path">{{ item.label }}</router-link>
+                </a-menu-item>
+              </template>
+            </a-menu>
+          </a-layout-sider>
+
+          <!-- Mobile Drawer -->
+          <a-drawer
+            v-if="isMobile"
+            v-model:open="drawerVisible"
+            placement="left"
+            :closable="false"
+            width="280"
+            :body-style="{ padding: 0 }"
+          >
+            <div class="drawer-header">
+              <router-link to="/dashboard" class="logo-container" @click="drawerVisible = false">
+                <img src="/assets/logo.png" alt="Quixora Logo" class="sidebar-logo" />
+                <span class="logo-text">Billing</span>
+              </router-link>
             </div>
-          </a-layout-header>
-          <a-layout-content :style="{ marginTop: isMobile ? '64px' : '0' }">
-            <router-view v-slot="{ Component }">
-              <transition name="fade" mode="out-in">
-                <component :is="Component" class="page-container" />
-              </transition>
-            </router-view>
-          </a-layout-content>
-          <a-layout-footer class="main-footer">
-            Qx_Billing &copy;2026 Crafted with precision by Ramius_arch
-          </a-layout-footer>
+            
+            <a-menu
+              v-model:selectedKeys="selectedKeys"
+              mode="inline"
+              class="nav-menu"
+              @click="drawerVisible = false"
+            >
+              <template v-for="item in menuItems" :key="item.key">
+                <a-menu-divider v-if="item.type === 'divider'" />
+                <a-menu-item v-else :key="item.key">
+                  <template #icon>
+                    <component :is="item.icon" />
+                  </template>
+                  <template v-if="item.href">
+                    <a :href="item.href" target="_blank">{{ item.label }}</a>
+                  </template>
+                  <router-link v-else :to="item.path">{{ item.label }}</router-link>
+                </a-menu-item>
+              </template>
+            </a-menu>
+          </a-drawer>
+
+          <a-layout>
+            <a-layout-header :class="['main-header', { 'mobile-header': isMobile }]">
+              <div class="header-left">
+                <a-button 
+                  v-if="isMobile" 
+                  type="text" 
+                  @click="drawerVisible = true" 
+                  class="menu-toggle"
+                >
+                  <menu-outlined />
+                </a-button>
+                <h2 class="page-title">{{ isMobile ? 'Qx Billing' : currentPageTitle }}</h2>
+              </div>
+              <div class="header-right">
+                <a-space :size="isMobile ? 'small' : 'large'">
+                  <a-tooltip :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+                    <div class="theme-toggle" @click="toggleTheme">
+                      <component :is="isDark ? 'bulb-filled' : 'bulb-outlined'" class="header-icon" />
+                    </div>
+                  </a-tooltip>
+                  
+                  <a-badge dot v-if="!isMobile">
+                    <bell-outlined class="header-icon" />
+                  </a-badge>
+
+                  <a-dropdown placement="bottomRight">
+                    <div class="user-profile">
+                      <a-avatar size="small" src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
+                      <span v-if="!isMobile" class="user-name">Admin</span>
+                    </div>
+                    <template #overlay>
+                      <a-menu>
+                        <a-menu-item key="profile">Profile</a-menu-item>
+                        <a-menu-item key="logout">Logout</a-menu-item>
+                      </a-menu>
+                    </template>
+                  </a-dropdown>
+                </a-space>
+              </div>
+            </a-layout-header>
+
+            <a-layout-content :style="{ marginTop: isMobile ? '64px' : '0' }">
+              <router-view v-slot="{ Component }">
+                <transition name="fade" mode="out-in">
+                  <component :is="Component" class="page-container" />
+                </transition>
+              </router-view>
+            </a-layout-content>
+
+            <a-layout-footer class="main-footer">
+              Qx_Billing &copy;2026 | Ramius_arch
+            </a-layout-footer>
+          </a-layout>
         </a-layout>
-      </a-layout>
-    </template>
-  </a-config-provider>
+      </template>
+    </a-config-provider>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, h } from 'vue';
-import { useRoute, RouterLink } from 'vue-router';
+import { defineComponent, ref, computed, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { isRouteLoading } from './router';
 import { theme } from 'ant-design-vue';
 import {
@@ -128,91 +165,31 @@ import {
   MenuOutlined,
 } from '@ant-design/icons-vue';
 
-// Sub-component for Menu Content to avoid duplication
-const MenuContent = defineComponent({
-  props: ['selectedKeys'],
-  emits: ['update:selectedKeys', 'click'],
-  setup(props, { emit }) {
-    const handleClick = (e) => {
-      emit('click', e);
-    };
-    return () => h(
-      'a-menu',
-      {
-        selectedKeys: props.selectedKeys,
-        'onUpdate:selectedKeys': (val) => emit('update:selectedKeys', val),
-        mode: 'inline',
-        class: 'nav-menu',
-        onClick: handleClick
-      },
-      [
-        h('a-menu-item', { key: 'main-site' }, {
-          icon: () => h(HomeOutlined),
-          default: () => h('a', { href: 'https://quixora.netlify.app' }, { default: () => 'Main Site' })
-        }),
-        h('a-menu-divider'),
-        h('a-menu-item', { key: 'dashboard' }, {
-          icon: () => h(DashboardOutlined),
-          default: () => h(RouterLink, { to: '/dashboard' }, { default: () => 'Dashboard' })
-        }),
-        h('a-menu-item', { key: 'customers' }, {
-          icon: () => h(TeamOutlined),
-          default: () => h(RouterLink, { to: '/customers' }, { default: () => 'Customers' })
-        }),
-        h('a-menu-item', { key: 'usage-tracker' }, {
-          icon: () => h(BarChartOutlined),
-          default: () => h(RouterLink, { to: '/usage-tracker' }, { default: () => 'Usage Tracker' })
-        }),
-        h('a-menu-item', { key: 'billing-engine' }, {
-          icon: () => h(SettingOutlined),
-          default: () => h(RouterLink, { to: '/billing-engine' }, { default: () => 'Billing Engine' })
-        }),
-        h('a-menu-item', { key: 'reports' }, {
-          icon: () => h(LineChartOutlined),
-          default: () => h(RouterLink, { to: '/reports' }, { default: () => 'Reports & Analytics' })
-        }),
-        h('a-menu-item', { key: 'invoice-generator' }, {
-          icon: () => h(FileTextOutlined),
-          default: () => h(RouterLink, { to: '/invoice-generator' }, { default: () => 'Invoices' })
-        }),
-        h('a-menu-item', { key: 'payment-processing' }, {
-          icon: () => h(CreditCardOutlined),
-          default: () => h(RouterLink, { to: '/payment-processing' }, { default: () => 'Payments' })
-        }),
-        h('a-menu-divider'),
-        h('a-menu-item', { key: 'help-center' }, {
-          icon: () => h(QuestionCircleOutlined),
-          default: () => h(RouterLink, { to: '/help-center' }, { default: () => 'Help Center' })
-        }),
-      ]
-    );
-  }
-});
-
 export default defineComponent({
   name: 'App',
   components: {
+    HomeOutlined,
+    DashboardOutlined,
+    TeamOutlined,
+    BarChartOutlined,
+    SettingOutlined,
+    LineChartOutlined,
+    FileTextOutlined,
+    CreditCardOutlined,
+    QuestionCircleOutlined,
     BellOutlined,
     BulbOutlined,
     BulbFilled,
     MenuOutlined,
-    MenuContent,
   },
   setup() {
     const route = useRoute();
     const windowWidth = ref(window.innerWidth);
-    const collapsed = ref(windowWidth.value >= 768 && windowWidth.value < 1024);
+    const collapsed = ref(false);
     const drawerVisible = ref(false);
     const selectedKeys = ref([route.path.split('/')[1] || 'dashboard']);
     
-    // Smart initial theme detection
-    const getInitialTheme = () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) return savedTheme === 'dark';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    };
-    
-    const isDark = ref(getInitialTheme());
+    const isDark = ref(localStorage.getItem('theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches);
 
     const themeConfig = computed(() => ({
       algorithm: isDark.value ? theme.darkAlgorithm : theme.defaultAlgorithm,
@@ -221,6 +198,20 @@ export default defineComponent({
         borderRadius: 8,
       },
     }));
+
+    const menuItems = [
+      { key: 'main-site', label: 'Main Site', icon: 'home-outlined', href: 'https://quixora.netlify.app' },
+      { key: 'divider-1', type: 'divider' },
+      { key: 'dashboard', label: 'Dashboard', icon: 'dashboard-outlined', path: '/dashboard' },
+      { key: 'customers', label: 'Customers', icon: 'team-outlined', path: '/customers' },
+      { key: 'usage-tracker', label: 'Usage Tracker', icon: 'bar-chart-outlined', path: '/usage-tracker' },
+      { key: 'billing-engine', label: 'Billing Engine', icon: 'setting-outlined', path: '/billing-engine' },
+      { key: 'reports', label: 'Reports', icon: 'line-chart-outlined', path: '/reports' },
+      { key: 'invoice-generator', label: 'Invoices', icon: 'file-text-outlined', path: '/invoice-generator' },
+      { key: 'payment-processing', label: 'Payments', icon: 'credit-card-outlined', path: '/payment-processing' },
+      { key: 'divider-2', type: 'divider' },
+      { key: 'help-center', label: 'Help Center', icon: 'question-circle-outlined', path: '/help-center' },
+    ];
 
     const toggleTheme = () => {
       isDark.value = !isDark.value;
@@ -239,44 +230,25 @@ export default defineComponent({
     onMounted(() => {
       window.addEventListener('resize', updateWidth);
       updateThemeAttribute();
-      
-      // Listen for system theme changes
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = (e) => {
-        if (!localStorage.getItem('theme')) {
-          isDark.value = e.matches;
-          updateThemeAttribute();
-        }
-      };
-      
-      if (mediaQuery.addEventListener) {
-        mediaQuery.addEventListener('change', handleChange);
-      } else {
-        mediaQuery.addListener(handleChange);
-      }
     });
 
-    const isMobile = computed(() => windowWidth.value < 768); // Using md breakpoint as per standards
+    const isMobile = computed(() => windowWidth.value < 992); // Standard desktop breakpoint
 
     const currentPageTitle = computed(() => {
       const key = route.path.split('/')[1] || 'dashboard';
-      const titles = {
-        'dashboard': 'Analytics Overview',
-        'customers': 'Customer Management',
-        'usage-tracker': 'Real-time Usage',
-        'billing-engine': 'Billing Configuration',
-        'reports': 'System Reports',
-        'invoice-generator': 'Invoice Management',
-        'payment-processing': 'Transaction History',
-        'help-center': 'Support & Help',
-      };
-      return titles[key] || 'Overview';
+      const items = menuItems.find(i => i.key === key);
+      return items ? items.label : 'Overview';
+    });
+
+    watch(() => route.path, (newPath) => {
+      selectedKeys.value = [newPath.split('/')[1] || 'dashboard'];
     });
 
     return {
       collapsed,
       drawerVisible,
       selectedKeys,
+      menuItems,
       currentPageTitle,
       isMobile,
       isDark,
@@ -285,13 +257,6 @@ export default defineComponent({
       isRouteLoading,
     };
   },
-  watch: {
-    '$route.path'(newPath) {
-      if (this.$route.meta.layout !== false) {
-        this.selectedKeys = [newPath.split('/')[1] || 'dashboard'];
-      }
-    }
-  }
 });
 </script>
 
