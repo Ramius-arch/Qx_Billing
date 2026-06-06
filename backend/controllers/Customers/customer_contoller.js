@@ -70,7 +70,10 @@ const getCustomerById = asyncHandler(async (req, res, next) => {
 // @route   POST /api/customers
 // @access  Private
 const createCustomer = asyncHandler(async (req, res, next) => {
-  const customer = await Customer.create(req.body);
+  const customerData = { ...req.body };
+  delete customerData.id; // Remove id to let database auto-increment
+  
+  const customer = await Customer.create(customerData);
   clearCache('/api/reports*');
   res.status(201).json({
     success: true,

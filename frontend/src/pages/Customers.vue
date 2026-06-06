@@ -262,11 +262,13 @@ export default defineComponent({
       formRef.value.validate().then(async () => {
         modalConfirmLoading.value = true;
         try {
+          const payload = { ...formState };
           if (isEditing.value) {
-            await api.updateCustomer(formState.id, formState);
+            await api.updateCustomer(payload.id, payload);
             message.success('Account updated successfully.');
           } else {
-            await api.addCustomer(formState);
+            delete payload.id;
+            await api.addCustomer(payload);
             message.success('New customer registered.');
           }
           modalVisible.value = false;
