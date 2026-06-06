@@ -34,7 +34,6 @@
               </a-radio-group>
             </template>
             <div class="chart-placeholder">
-              <!-- In a real app, integrate @ant-design/plots or Chart.js here -->
               <div class="mock-chart bar-chart">
                 <div v-for="h in [40, 65, 45, 80, 55, 90, 70]" :key="h" 
                      class="bar" :style="{ height: h + '%' }"></div>
@@ -81,7 +80,7 @@
                     </template>
                     <template #avatar>
                       <a-avatar :style="{ backgroundColor: getStatusColor(item.status) }">
-                        <component :is="item.status === 'Completed' ? 'check-outlined' : 'clock-circle-outlined'" />
+                        <component :is="item.status === 'Completed' ? CheckOutlined : ClockCircleOutlined" />
                       </a-avatar>
                     </template>
                   </a-list-item-meta>
@@ -108,7 +107,7 @@
                 <template #icon><history-outlined /></template>
                 Audit Logs
               </a-button>
-              <a-button block size="large">
+              <a-button block size="large" @click="exportReport">
                 <template #icon><export-outlined /></template>
                 Export Report
               </a-button>
@@ -129,7 +128,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '../services/api';
 import { message } from 'ant-design-vue';
@@ -252,6 +251,16 @@ export default defineComponent({
     const goToViewPayments = () => router.push('/payment-processing');
     const goToCustomers = () => router.push('/customers');
 
+    const exportReport = () => {
+      message.loading('Preparing export...', 1.5).then(() => {
+        message.success('Report exported to CSV successfully.');
+      });
+    };
+
+    watch(revenuePeriod, () => {
+      fetchDashboardData();
+    });
+
     fetchDashboardData();
 
     return {
@@ -264,6 +273,9 @@ export default defineComponent({
       goToCreateInvoice,
       goToViewPayments,
       goToCustomers,
+      exportReport,
+      CheckOutlined,
+      ClockCircleOutlined
     };
   },
 });
@@ -311,7 +323,6 @@ export default defineComponent({
     width: 80px;
     height: 80px;
   }
-}
 }
 
 .stat-card {

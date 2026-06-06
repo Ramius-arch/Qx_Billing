@@ -1,37 +1,53 @@
 <template>
   <div class="reports-analytics-container">
-    <a-typography-title :level="2">Reports and Analytics</a-typography-title>
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+      <a-typography-title :level="2" style="margin: 0">System Insights</a-typography-title>
+      <a-space>
+        <a-button @click="fetchCustomersReport">
+          <template #icon><reload-outlined /></template>
+          Refresh Data
+        </a-button>
+        <a-button type="primary">
+          <template #icon><download-outlined /></template>
+          Export All
+        </a-button>
+      </a-space>
+    </div>
 
-    <a-row :gutter="[16, 16]" style="margin-bottom: 24px;">
-      <a-col :xs="24" :lg="12">
-        <a-card title="Revenue Trends">
-          <Bar :data="revenueChartData" :options="chartOptions" />
+    <a-row :gutter="[24, 24]" class="mb-6">
+      <a-col :xs="24" :lg="16">
+        <a-card title="Revenue Growth Trends" class="standard-card">
+          <div class="chart-container">
+            <Bar :data="revenueChartData" :options="chartOptions" />
+          </div>
         </a-card>
       </a-col>
-      <a-col :xs="24" :lg="12">
-        <a-card title="Customer Payment Status">
-          <Pie :data="paymentStatusChartData" :options="chartOptions" />
+      <a-col :xs="24" :lg="8">
+        <a-card title="Collection Status" class="standard-card">
+          <div class="chart-container pie-container">
+            <Pie :data="paymentStatusChartData" :options="chartOptions" />
+          </div>
         </a-card>
       </a-col>
     </a-row>
 
-    <a-card title="Outstanding Invoices Summary" style="margin-bottom: 24px;">
-      <a-table :columns="outstandingInvoicesColumns" :data-source="outstandingInvoices" :pagination="false" :scroll="{ x: 'max-content' }">
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'status'">
-            <a-tag :color="record.status === 'overdue' ? 'red' : 'orange'">
-              {{ record.status.toUpperCase() }}
-            </a-tag>
-          </template>
-        </template>
-      </a-table>
-    </a-card>
-
-    <a-card title="All Customers Report">
-      <a-table :columns="allCustomersColumns" :data-source="allCustomers" :pagination="false" :scroll="{ x: 'max-content' }">
+    <a-card title="All Customers Operational Report" class="standard-card">
+      <a-table 
+        :columns="allCustomersColumns" 
+        :data-source="allCustomers" 
+        :pagination="{ pageSize: 5 }" 
+        :scroll="{ x: 'max-content' }"
+      >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'actions'">
-            <a>View Details</a>
+            <a-button type="link" size="small" @click="viewCustomerDetails(record)">
+              View Full Profile
+            </a-button>
+          </template>
+          <template v-else-if="column.key === 'outstandingInvoices'">
+             <a-tag :color="record.outstandingInvoices > 0 ? 'red' : 'green'">
+               {{ record.outstandingInvoices }} Pending
+             </a-tag>
           </template>
         </template>
       </a-table>
@@ -41,8 +57,19 @@
 
 <script>
 import { defineComponent, ref, reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { Bar, Pie } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js';
+import { 
+  Chart as ChartJS, 
+  Title, 
+  Tooltip, 
+  Legend, 
+  BarElement, 
+  CategoryScale, 
+  LinearScale, 
+  ArcElement 
+} from 'chart.js';
+import { ReloadOutlined, DownloadOutlined } from '@ant-design/icons-vue';
 import api from '../services/api';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
@@ -52,15 +79,19 @@ export default defineComponent({
   components: {
     Bar,
     Pie,
+    ReloadOutlined,
+    DownloadOutlined
   },
   setup() {
+    const router = useRouter();
     const revenueChartData = reactive({
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       datasets: [
         {
           label: 'Revenue (KSh)',
-          backgroundColor: '#1890ff',
-          data: [40000, 20000, 120000, 39000, 100000, 80000],
+          backgroundColor: '#1677ff',
+          borderRadius: 4,
+          data: [45000, 52000, 48000, 61000, 58000, 72000],
         },
       ],
     });
@@ -69,8 +100,8 @@ export default defineComponent({
       labels: ['Paid', 'Pending', 'Overdue'],
       datasets: [
         {
-          backgroundColor: ['#52c41a', '#1890ff', '#f5222d'],
-          data: [70, 20, 10], // Percentage
+          backgroundColor: ['#10b981', '#6366f1', '#ef4444'],
+          data: [65, 25, 10],
         },
       ],
     });
@@ -78,56 +109,45 @@ export default defineComponent({
     const chartOptions = reactive({
       responsive: true,
       maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
     });
 
-    const outstandingInvoicesColumns = [
-      { title: 'Invoice ID', dataIndex: 'invoiceId', key: 'invoiceId' },
-      { title: 'Customer', dataIndex: 'customerName', key: 'customerName' },
-      { title: 'Amount Due', dataIndex: 'amountDue', key: 'amountDue' },
-      { title: 'Due Date', dataIndex: 'dueDate', key: 'dueDate' },
-      { title: 'Status', dataIndex: 'status', key: 'status' },
-    ];
-
-    const outstandingInvoices = ref([
-      { invoiceId: 'INV-001', customerName: 'John Doe', amountDue: 150, dueDate: '2026-01-15', status: 'pending' },
-      { invoiceId: 'INV-002', customerName: 'Jane Smith', amountDue: 200, dueDate: '2026-01-10', status: 'overdue' },
-      { invoiceId: 'INV-003', customerName: 'Alice Johnson', amountDue: 75, dueDate: '2026-01-20', status: 'pending' },
-    ]);
-
     const allCustomersColumns = [
-      { title: 'ID', dataIndex: 'id', key: 'id' },
-      { title: 'Name', dataIndex: 'name', key: 'name' },
+      { title: 'ID', dataIndex: 'id', key: 'id', width: 60 },
+      { title: 'Name', dataIndex: 'name', key: 'name', sorter: true },
       { title: 'Email', dataIndex: 'email', key: 'email' },
-      { title: 'Total Usage (Monthly)', dataIndex: 'totalUsage', key: 'totalUsage' },
-      { title: 'Outstanding Invoices', dataIndex: 'outstandingInvoices', key: 'outstandingInvoices' },
-      { title: 'Actions', key: 'actions' },
+      { title: 'Monthly Usage', dataIndex: 'totalUsage', key: 'totalUsage' },
+      { title: 'Invoices', key: 'outstandingInvoices', width: 120 },
+      { title: 'Action', key: 'actions', width: 150 },
     ];
 
     const allCustomers = ref([]);
 
-    onMounted(async () => {
-      await fetchCustomersReport();
-    });
-
-    async function fetchCustomersReport() {
+    const fetchCustomersReport = async () => {
       try {
         const response = await api.reports.getAllCustomersReport();
-        // Assuming the backend returns an array of customers
-        allCustomers.value = response.data.data; // Adjusted to match backend response structure
+        allCustomers.value = response.data.data;
       } catch (error) {
-        console.error('Error fetching all customers report:', error);
+        console.error('Report fetch failed');
       }
-    }
+    };
+
+    const viewCustomerDetails = (record) => {
+      router.push(`/customers?search=${record.name}`);
+    };
+
+    onMounted(fetchCustomersReport);
 
     return {
       revenueChartData,
       paymentStatusChartData,
       chartOptions,
-      outstandingInvoicesColumns,
-      outstandingInvoices,
       allCustomersColumns,
       allCustomers,
-      fetchCustomersReport, // Expose if needed for manual refresh, etc.
+      fetchCustomersReport,
+      viewCustomerDetails
     };
   },
 });
@@ -135,12 +155,23 @@ export default defineComponent({
 
 <style scoped>
 .reports-analytics-container {
-  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.standard-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-container {
+  height: 300px;
+  position: relative;
 }
 
 @media (max-width: 576px) {
-  .reports-analytics-container {
-    padding: 12px;
+  .chart-container {
+    height: 220px;
   }
 }
 </style>

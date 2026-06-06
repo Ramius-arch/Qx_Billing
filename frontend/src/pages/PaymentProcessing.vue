@@ -1,68 +1,100 @@
 <template>
   <div class="payment-processing-container">
-    <a-typography-title :level="2">Payment Processing</a-typography-title>
+    <a-typography-title :level="2" class="mb-6">Payment Processing</a-typography-title>
 
-    <a-card title="Select Invoice to Pay" style="max-width: 600px; width: 90%; margin: 0 auto 24px auto;">
-      <a-form layout="vertical">
-        <a-form-item label="Invoice">
-          <a-select v-model:value="selectedInvoiceId" placeholder="Select an invoice">
-            <a-select-option v-for="invoice in invoices" :key="invoice.id" :value="invoice.id">
-              {{ invoice.invoiceNumber }} - {{ invoice.customerName }} (KSh {{ invoice.amountDue }})
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <div v-if="selectedInvoice">
-          <p><strong>Amount Due:</strong> KSh {{ selectedInvoice.amountDue }}</p>
-          <p><strong>Due Date:</strong> {{ selectedInvoice.dueDate }}</p>
-          <p><strong>Status:</strong> <a-tag :color="selectedInvoice.status === 'overdue' ? 'red' : 'blue'">{{ selectedInvoice.status }}</a-tag></p>
-        </div>
-      </a-form>
-    </a-card>
-
-    <a-card title="Payment Method" style="max-width: 600px; width: 90%; margin: 0 auto 24px auto;">
-      <a-radio-group v-model:value="paymentMethod" button-style="solid">
-        <a-radio-button value="credit_card">Credit Card</a-radio-button>
-        <a-radio-button value="paypal">PayPal</a-radio-button>
-        <a-radio-button value="mpesa">M-Pesa</a-radio-button>
-      </a-radio-group>
-
-      <a-form v-if="paymentMethod === 'credit_card'" layout="vertical" style="margin-top: 24px;">
-        <a-form-item label="Card Number">
-          <a-input v-model:value="creditCardDetails.cardNumber" placeholder="xxxx xxxx xxxx xxxx" />
-        </a-form-item>
-        <a-row :gutter="16">
-          <a-col :xs="24" :sm="12">
-            <a-form-item label="Expiry Date">
-              <a-input v-model:value="creditCardDetails.expiryDate" placeholder="MM/YY" />
+    <a-row :gutter="[24, 24]">
+      <a-col :xs="24" :lg="12">
+        <a-card title="Select Invoice to Pay" class="standard-card">
+          <a-form layout="vertical">
+            <a-form-item label="Invoice">
+              <a-select v-model:value="selectedInvoiceId" placeholder="Select an invoice" show-search :filter-option="filterInvoice">
+                <a-select-option v-for="invoice in invoices" :key="invoice.id" :value="invoice.id">
+                  {{ invoice.invoiceNumber }} - {{ invoice.Customer?.name }} (KSh {{ invoice.amountDue }})
+                </a-select-option>
+              </a-select>
             </a-form-item>
-          </a-col>
-          <a-col :xs="24" :sm="12">
-            <a-form-item label="CVV">
-              <a-input v-model:value="creditCardDetails.cvv" placeholder="xxx" />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-form-item label="Card Holder Name">
-          <a-input v-model:value="creditCardDetails.cardHolderName" placeholder="Name on Card" />
-        </a-form-item>
-      </a-form>
+            <div v-if="selectedInvoice" class="invoice-details mt-4 p-4 bg-slate-50 rounded-lg">
+              <div class="detail-row">
+                <span>Amount Due:</span>
+                <span class="font-bold">KSh {{ selectedInvoice.amountDue.toLocaleString() }}</span>
+              </div>
+              <div class="detail-row mt-2">
+                <span>Due Date:</span>
+                <span>{{ formatDate(selectedInvoice.dueDate) }}</span>
+              </div>
+              <div class="detail-row mt-2">
+                <span>Status:</span>
+                <a-tag :color="getStatusColor(selectedInvoice.status)">{{ selectedInvoice.status.toUpperCase() }}</a-tag>
+              </div>
+            </div>
+          </a-form>
+        </a-card>
+      </a-col>
 
-      <a-button type="primary" :loading="processing" @click="processPayment" style="margin-top: 24px;" :disabled="!selectedInvoiceId || processing" :block="isMobile">
-        {{ processing ? 'Processing...' : 'Pay Now' }}
-      </a-button>
-    </a-card>
+      <a-col :xs="24" :lg="12">
+        <a-card title="Payment Method" class="standard-card">
+          <a-radio-group v-model:value="paymentMethod" button-style="solid" class="w-full flex">
+            <a-radio-button value="credit_card" class="flex-1 text-center">Credit Card</a-radio-button>
+            <a-radio-button value="paypal" class="flex-1 text-center">PayPal</a-radio-button>
+            <a-radio-button value="mpesa" class="flex-1 text-center">M-Pesa</a-radio-button>
+          </a-radio-group>
 
-    <a-card v-if="paymentStatus" title="Payment Status" style="max-width: 600px; width: 90%; margin: 0 auto;">
+          <div class="payment-fields mt-6">
+            <template v-if="paymentMethod === 'credit_card'">
+              <a-form layout="vertical">
+                <a-form-item label="Card Number">
+                  <a-input v-model:value="creditCardDetails.cardNumber" placeholder="xxxx xxxx xxxx xxxx" />
+                </a-form-item>
+                <a-row :gutter="16">
+                  <a-col :xs="24" :sm="12">
+                    <a-form-item label="Expiry Date">
+                      <a-input v-model:value="creditCardDetails.expiryDate" placeholder="MM/YY" />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :xs="24" :sm="12">
+                    <a-form-item label="CVV">
+                      <a-input v-model:value="creditCardDetails.cvv" placeholder="xxx" />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-form-item label="Card Holder Name">
+                  <a-input v-model:value="creditCardDetails.cardHolderName" placeholder="Name on Card" />
+                </a-form-item>
+              </a-form>
+            </template>
+
+            <template v-if="paymentMethod === 'mpesa'">
+              <div class="p-4 bg-green-50 rounded-lg text-green-800 text-sm">
+                <p>A prompt will be sent to your registered M-Pesa number upon clicking "Pay Now".</p>
+              </div>
+            </template>
+
+            <template v-if="paymentMethod === 'paypal'">
+              <div class="p-4 bg-blue-50 rounded-lg text-blue-800 text-sm">
+                <p>You will be redirected to PayPal to complete your transaction.</p>
+              </div>
+            </template>
+
+            <a-button type="primary" :loading="processing" @click="processPayment" class="mt-6" :disabled="!selectedInvoiceId || processing" block size="large">
+              {{ processing ? 'Processing Transaction...' : 'Confirm & Pay Now' }}
+            </a-button>
+          </div>
+        </a-card>
+      </a-col>
+    </a-row>
+
+    <a-modal v-model:open="showStatusModal" :title="null" :footer="null" :closable="!processing">
       <a-result
         :status="paymentStatus.type"
         :title="paymentStatus.message"
         :sub-title="paymentStatus.subTitle"
       >
-        <template #extra v-if="paymentStatus.type === 'error'">
-          <a-button type="primary" @click="retryPayment">Retry</a-button>
+        <template #extra>
+          <a-button v-if="paymentStatus.type === 'success'" type="primary" @click="closeStatus">Return to History</a-button>
+          <a-button v-else type="primary" @click="showStatusModal = false">Try Again</a-button>
         </template>
       </a-result>
-    </a-card>
+    </a-modal>
   </div>
 </template>
 
@@ -70,6 +102,7 @@
 import { defineComponent, ref, computed, reactive, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 import api from '../services/api';
+import dayjs from 'dayjs';
 
 export default defineComponent({
   name: 'PaymentProcessing',
@@ -87,7 +120,8 @@ export default defineComponent({
     const selectedInvoiceId = ref(undefined);
     const paymentMethod = ref('credit_card');
     const processing = ref(false);
-    const paymentStatus = ref(null);
+    const showStatusModal = ref(false);
+    const paymentStatus = ref({ type: 'info', message: '', subTitle: '' });
     const invoices = ref([]);
 
     const creditCardDetails = reactive({
@@ -99,12 +133,10 @@ export default defineComponent({
 
     const fetchInvoices = async () => {
       try {
-        const response = await api.getInvoices();
-        // Assuming the API returns { data: { invoices: [...] } } or similar based on standard patterns
-        invoices.value = response.data.invoices || response.data || [];
+        const response = await api.getInvoices(1, 1000);
+        invoices.value = response.data.invoices || [];
       } catch (error) {
-        console.error('Failed to fetch invoices:', error);
-        message.error('Failed to load invoices.');
+        message.error('Failed to load pending invoices.');
       }
     };
 
@@ -113,13 +145,11 @@ export default defineComponent({
     });
 
     const processPayment = async () => {
-      if (!selectedInvoiceId.value) {
-        message.error('Please select an invoice to pay.');
-        return;
-      }
+      if (!selectedInvoiceId.value) return message.error('Please select an invoice.');
 
       processing.value = true;
-      paymentStatus.value = null;
+      showStatusModal.value = true;
+      paymentStatus.value = { type: 'info', message: 'Authorizing...', subTitle: 'Connecting to payment gateway' };
 
       try {
         const paymentData = {
@@ -133,39 +163,51 @@ export default defineComponent({
         
         paymentStatus.value = {
           type: 'success',
-          message: 'Payment Successful!',
-          subTitle: `Your payment for Invoice #${selectedInvoice.value.invoiceNumber} has been processed.`,
+          message: 'Payment Confirmed',
+          subTitle: `Transaction for #${selectedInvoice.value.invoiceNumber} was successful. Receipt has been emailed.`,
         };
-        message.success('Payment successful!');
+        fetchInvoices(); // Refresh list
       } catch (error) {
-        console.error('Payment error:', error);
         paymentStatus.value = {
           type: 'error',
-          message: 'Payment Failed!',
-          subTitle: 'There was an issue processing your payment. Please try again.',
+          message: 'Transaction Declined',
+          subTitle: error.response?.data?.error || 'Payment gateway returned an error. Please verify your details.',
         };
-        message.error('Payment failed.');
       } finally {
         processing.value = false;
       }
     };
 
-    const retryPayment = () => {
-      paymentStatus.value = null;
-      processPayment();
+    const filterInvoice = (input, option) => 
+      option.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
+    const getStatusColor = (status) => {
+      const colors = { pending: 'orange', paid: 'success', overdue: 'error' };
+      return colors[status] || 'default';
+    };
+
+    const formatDate = (date) => dayjs(date).format('DD MMM YYYY');
+
+    const closeStatus = () => {
+      showStatusModal.value = false;
+      selectedInvoiceId.value = undefined;
     };
 
     return {
       selectedInvoiceId,
       paymentMethod,
       processing,
+      showStatusModal,
       paymentStatus,
       invoices,
       creditCardDetails,
       selectedInvoice,
       processPayment,
-      retryPayment,
       isMobile,
+      filterInvoice,
+      getStatusColor,
+      formatDate,
+      closeStatus
     };
   },
 });
@@ -173,16 +215,24 @@ export default defineComponent({
 
 <style scoped>
 .payment-processing-container {
-  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-@media (max-width: 576px) {
+.standard-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
   .payment-processing-container {
-    padding: 12px;
-  }
-  
-  .ant-card {
-    width: 100% !important;
+    padding: 0;
   }
 }
 </style>

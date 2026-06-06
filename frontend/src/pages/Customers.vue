@@ -66,7 +66,7 @@
       :confirm-loading="modalConfirmLoading"
       destroyOnClose
       :maskClosable="false"
-      width="600px"
+      :width="isMobile ? '100%' : '600px'"
     >
       <div class="modal-form-container">
         <a-form :model="formState" layout="vertical" ref="formRef" @finish="handleModalOk">
@@ -196,6 +196,8 @@ export default defineComponent({
       status: 'active',
     });
 
+    const isMobile = computed(() => window.innerWidth < 768);
+
     const pagination = reactive({
       current: 1,
       pageSize: 10,
@@ -321,6 +323,7 @@ export default defineComponent({
       handleModalOk,
       handleDelete,
       getStatusTagColor,
+      isMobile,
     };
   },
 });
@@ -332,4 +335,3 @@ export default defineComponent({
   font-weight: 600;
 }
 </style>
-

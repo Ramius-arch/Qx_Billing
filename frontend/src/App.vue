@@ -436,21 +436,25 @@ export default defineComponent({
 @media (max-width: 480px) {
   .page-title {
     font-size: 15px;
-    max-width: 160px;
+    max-width: 140px;
   }
 
   .header-icon {
-    font-size: 17px;
+    font-size: 18px;
   }
 
   .user-profile {
-    gap: 6px;
+    gap: 4px;
     padding: 2px 4px;
   }
 
   .main-footer {
     font-size: 11px;
     padding: 12px;
+  }
+
+  .header-right :deep(.ant-space) {
+    gap: 4px !important;
   }
 }
 </style>

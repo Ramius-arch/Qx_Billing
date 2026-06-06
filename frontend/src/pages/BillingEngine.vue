@@ -71,7 +71,7 @@
             <div v-if="forecast" class="forecast-content">
               <a-row :gutter="16">
                 <!-- Current Usage Progress -->
-                <a-col :span="12">
+                <a-col :xs="24" :sm="12">
                    <div class="insight-item">
                      <span class="insight-label">Current Unbilled Usage</span>
                      <div class="usage-bars mt-12">
@@ -92,8 +92,8 @@
                 </a-col>
 
                 <!-- Cost Projection -->
-                <a-col :span="12">
-                  <div class="projection-summary">
+                <a-col :xs="24" :sm="12">
+                  <div class="projection-summary mt-8 sm:mt-0">
                     <span class="insight-label">EOM Projection</span>
                     <div class="projected-value mt-3">
                       <span class="currency">KSh</span>
@@ -127,7 +127,7 @@
           v-model:open="resultVisible"
           title="Billing Cycle Complete"
           @ok="resultVisible = false"
-          width="600px"
+          :width="600"
         >
           <a-result
             status="success"
@@ -298,9 +298,15 @@ export default defineComponent({
 }
 
 .cost-breakdown {
-  background: #f8fafc;
+  background: var(--bg-color);
   padding: 16px;
   border-radius: 8px;
+}
+
+@media (max-width: 576px) {
+  .projected-value .amount {
+    font-size: 24px;
+  }
 }
 
 .breakdown-row {
@@ -319,4 +325,3 @@ export default defineComponent({
 }
 
 </style>
-

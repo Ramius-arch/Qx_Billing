@@ -6,10 +6,17 @@
       @back="() => $router.go(-1)"
     >
       <template #extra>
-        <a-button key="3" @click="resetForm">Reset</a-button>
-        <a-button key="2" :loading="loading" @click="showPreview">Draft Preview</a-button>
+        <a-button key="3" @click="resetForm">
+          <span class="sm:inline hidden">Reset</span>
+          <template #icon class="sm:hidden"><undo-outlined /></template>
+        </a-button>
+        <a-button key="2" :loading="loading" @click="showPreview">
+          <span class="sm:inline hidden">Draft Preview</span>
+          <template #icon class="sm:hidden"><eye-outlined /></template>
+        </a-button>
         <a-button key="1" type="primary" :loading="loading" @click="submitInvoice">
-          Issue Invoice
+          <span class="sm:inline hidden">Issue Invoice</span>
+          <template #icon class="sm:hidden"><send-outlined /></template>
         </a-button>
       </template>
     </a-page-header>
@@ -79,13 +86,13 @@
                     <span class="sm:hidden text-xs font-bold text-slate-500">RATE</span>
                     <a-input-number v-model:value="item.rate" :min="0" style="width: 100%" />
                   </a-col>
-                  <a-col :xs="2" :sm="4" class="text-right sm:text-left">
+                  <a-col :xs="12" :sm="4" class="text-right sm:text-left">
                      <span class="sm:hidden text-xs font-bold text-slate-500">TOTAL</span>
                     <div class="mt-4 sm:mt-0">
                       <span class="text-sm font-semibold">KSh {{ (item.quantity * item.rate).toLocaleString() }}</span>
                     </div>
                   </a-col>
-                  <a-col :xs="2" :sm="1" class="text-right">
+                  <a-col :xs="4" :sm="1" class="text-right">
                     <a-button type="text" danger size="small" @click="removeItem(index)">
                       <template #icon><delete-outlined /></template>
                     </a-button>
@@ -144,7 +151,7 @@
     </a-row>
 
     <!-- Preview Modal -->
-    <a-modal v-model:open="previewVisible" title="Professional Draft Preview" width="800px" :footer="null">
+    <a-modal v-model:open="previewVisible" title="Professional Draft Preview" :width="isMobile ? '95%' : '800px'" :footer="null">
       <div class="invoice-preview-wrap">
          <div class="preview-header">
            <div class="logo">QX BILLING</div>
@@ -155,15 +162,15 @@
          </div>
          <a-divider />
          <a-row justify="space-between">
-           <a-col :span="10">
+           <a-col :xs="24" :sm="10">
              <span class="label">RECIPIENT:</span>
              <p class="val">{{ selectedCustomerName }}</p>
            </a-col>
-           <a-col :span="6">
+           <a-col :xs="12" :sm="6">
              <span class="label">ISSUE DATE:</span>
              <p class="val">{{ form.issueDate?.format('DD MMM YYYY') }}</p>
            </a-col>
-           <a-col :span="6">
+           <a-col :xs="12" :sm="6">
              <span class="label">DUE DATE:</span>
              <p class="val text-red-600">{{ form.dueDate?.format('DD MMM YYYY') }}</p>
            </a-col>
@@ -198,7 +205,9 @@ import {
   PlusOutlined, 
   DeleteOutlined, 
   SendOutlined,
-  PrinterOutlined
+  PrinterOutlined,
+  EyeOutlined,
+  UndoOutlined
 } from '@ant-design/icons-vue';
 import api from '../services/api';
 import { message } from 'ant-design-vue';
@@ -210,12 +219,15 @@ export default defineComponent({
     PlusOutlined,
     DeleteOutlined,
     SendOutlined,
-    PrinterOutlined
+    PrinterOutlined,
+    EyeOutlined,
+    UndoOutlined
   },
   setup() {
     const loading = ref(false);
     const customers = ref([]);
     const previewVisible = ref(false);
+    const isMobile = computed(() => window.innerWidth < 768);
     
     const form = reactive({
       customerId: null,
@@ -256,7 +268,7 @@ export default defineComponent({
     const handleCustomerChange = async (cid) => {
       try {
         const res = await api.getBillingForecast(cid);
-        const { breakdown } = res.data.data.currentCosts;
+        const breakdown = res.data.data.currentCosts;
         // Innovation: Auto-fill from unbilled usage
         form.items = [
           { description: 'Ongoing Cycle Usage', quantity: 1, rate: breakdown.usageCharges },
@@ -317,7 +329,8 @@ export default defineComponent({
       handleCustomerChange,
       submitInvoice,
       resetForm,
-      showPreview
+      showPreview,
+      isMobile
     };
   },
 });
@@ -355,6 +368,12 @@ export default defineComponent({
 /* Preview Styles */
 .invoice-preview-wrap {
   padding: 40px;
+}
+
+@media (max-width: 576px) {
+  .invoice-preview-wrap {
+    padding: 16px;
+  }
 }
 
 .preview-header {
@@ -399,9 +418,4 @@ export default defineComponent({
 }
 
 .p-row { font-size: 16px; }
-</style>
-
-
-<style scoped>
-/* Add any specific styles for InvoiceGenerator here */
 </style>

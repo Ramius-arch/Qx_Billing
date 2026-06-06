@@ -40,8 +40,8 @@ const api = {
     return apiClient.post(`/billing/generate/${customerId}`);
   },
 
-  getUsage() {
-    return apiClient.get('/usage');
+  getUsage(page = 1, pageSize = 10) {
+    return apiClient.get('/usage', { params: { page, pageSize } });
   },
   addUsage(usage) {
     return apiClient.post('/usage', usage);
@@ -55,8 +55,8 @@ const api = {
   deleteUsage(id) {
     return apiClient.delete(`/usage/${id}`);
   },
-  getUsageByCustomerId(customerId) {
-    return apiClient.get(`/usage/customer/${customerId}`);
+  getUsageByCustomerId(customerId, page = 1, pageSize = 10) {
+    return apiClient.get(`/usage/customer/${customerId}`, { params: { page, pageSize } });
   },
   getCallUsage() {
     return apiClient.get('/usage/call');
@@ -65,8 +65,8 @@ const api = {
     return apiClient.get('/usage/sms');
   },
 
-  getInvoices() {
-    return apiClient.get('/invoices');
+  getInvoices(page = 1, pageSize = 100) {
+    return apiClient.get('/invoices', { params: { page, pageSize } });
   },
   getInvoiceById(id) {
     return apiClient.get(`/invoices/${id}`);
