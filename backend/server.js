@@ -44,9 +44,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 // In development, we use 'force: true' to ensure a clean state for seeding
 // In production, we avoid 'alter: true' as it can be unreliable with PostgreSQL
 db.sequelize.sync({ force: !isProduction }) 
-    .then(() => {
+    .then(async () => {
         console.log('Database synchronized');
-        seedDatabase(); // Seed database with initial demo data
+        await seedDatabase(); // Seed database with initial demo data
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });

@@ -35,7 +35,34 @@ async function getUsageTrendData(customerId = null) {
 }
 
 exports.getAllCustomers = asyncHandler(async (req, res, next) => {
-  res.status(200).json({ success: true, message: 'All customers report (Minimal)', data: [] });
+  const customers = await Customer.findAll({
+    include: [
+      {
+        model: UsageLog,
+        attributes: ['duration']
+      },
+      {
+        model: Invoice,
+        attributes: ['amountDue', 'status'],
+        where: { status: { [Op.in]: ['pending', 'overdue'] } },
+        required: false
+      }
+    ]
+  });
+
+  const data = customers.map(c => {
+    const totalUsage = c.UsageLogs?.reduce((acc, log) => acc + log.duration, 0) || 0;
+    const outstandingInvoices = c.Invoices?.reduce((acc, inv) => acc + parseFloat(inv.amountDue), 0) || 0;
+    return {
+      id: c.id,
+      name: c.name,
+      email: c.email,
+      totalUsage,
+      outstandingInvoices
+    };
+  });
+
+  res.status(200).json({ success: true, message: 'All customers report', data });
 });
 
 exports.getBillingTrends = asyncHandler(async (req, res, next) => {
