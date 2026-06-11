@@ -120,8 +120,14 @@ export default defineComponent({
 
     const newUsage = reactive({
       customerId: undefined,
+      planId: undefined,
       usageType: 'data',
       duration: 0,
+    });
+
+    watch(() => newUsage.customerId, (newVal) => {
+        const customer = customers.value.find(c => c.id === newVal);
+        newUsage.planId = customer ? customer.Plan?.id : undefined;
     });
 
     const usageTableColumns = [
@@ -159,9 +165,13 @@ export default defineComponent({
     const addUsage = async () => {
       addingUsage.value = true;
       try {
+        if (!newUsage.planId) {
+            message.error('Selected customer does not have an active plan.');
+            return;
+        }
         await api.addUsage(newUsage);
         message.success('Activity logged successfully.');
-        Object.assign(newUsage, { customerId: undefined, duration: 0 });
+        Object.assign(newUsage, { customerId: undefined, planId: undefined, duration: 0 });
         fetchUsage();
       } catch (error) {
         message.error('Failed to log activity.');

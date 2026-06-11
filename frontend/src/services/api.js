@@ -59,10 +59,10 @@ const api = {
     return apiClient.get(`/usage/customer/${customerId}`, { params: { page, pageSize } });
   },
   getCallUsage() {
-    return apiClient.get('/usage/call');
+    return apiClient.get('/usage/type/call');
   },
   getSmsUsage() {
-    return apiClient.get('/usage/sms');
+    return apiClient.get('/usage/type/sms');
   },
 
   getInvoices(page = 1, pageSize = 100) {
@@ -108,14 +108,17 @@ const api = {
     getAllCustomersReport() {
       return apiClient.get('/reports/customers');
     },
-    getBillingTrends() {
-      return apiClient.get('/reports/billing-trends');
+    getBillingTrends(period = '30d') {
+      return apiClient.get('/reports/billing-trends', { params: { period } });
     },
     getOutstandingDues() {
       return apiClient.get('/reports/outstanding-dues');
     },
     generateFinancialSummary(data) {
       return apiClient.post('/reports/financial-summary', data);
+    },
+    importMetrics(data) {
+      return apiClient.post('/reports/import', data);
     },
     getUsageReports() {
       return apiClient.get('/reports/usage-reports');
@@ -135,33 +138,46 @@ const api = {
     return apiClient.get(`/billing/forecast/${customerId}`);
   },
 
-  async getDashboardData() {
-    const [
-      billingTrendsRes,
-      usageReportsRes,
-      outstandingDuesRes,
-      // Add other relevant dashboard data calls here
-    ] = await Promise.all([
-      apiClient.get('/reports/billing-trends'),
-      apiClient.get('/reports/usage-reports'),
-      apiClient.get('/reports/outstanding-dues'),
-    ]);
+  async getDashboardData(period = '30d') {
+    try {
+      const [
+        billingTrendsRes,
+        usageReportsRes,
+        outstandingDuesRes,
+        // Add other relevant dashboard data calls here
+      ] = await Promise.all([
+        apiClient.get('/reports/billing-trends', { params: { period } }),
+        apiClient.get('/reports/usage-reports'),
+        apiClient.get('/reports/outstanding-dues'),
+      ]);
 
-    const billingTrends = billingTrendsRes.data.data; // Assuming data is nested under 'data'
-    const usageReports = usageReportsRes.data.data;
-    const outstandingDues = outstandingDuesRes.data.data;
+      const billingTrends = billingTrendsRes.data?.data || {};
+      const usageReports = usageReportsRes.data?.data || {};
+      const outstandingDues = outstandingDuesRes.data?.data || [];
 
-    return {
-      data: {
-        totalRevenue: billingTrends.totalRevenue || 0,
-        // activeCustomers: usageReports.activeCustomers || 0, // This needs to come from a specific report
-        totalDataUsage: usageReports.totalUsageDuration || 0, // Assuming this is the field
-        // totalCallDuration: usageReports.totalCallDuration || 0, // This needs to come from a specific report
-        recentTransactions: billingTrends.trendData || [], // Using trendData as recent transactions for now
-        outstandingDuesSummary: outstandingDues || [],
-      }
-    };
+      return {
+        data: {
+          totalRevenue: billingTrends.totalRevenue || 0,
+          totalDataUsage: usageReports.totalUsageDuration || 0,
+          recentTransactions: billingTrends.trendData || [],
+          outstandingDuesSummary: outstandingDues || [],
+          forecast: billingTrends.forecast || null
+        }
+      };
+    } catch (error) {
+      console.error('getDashboardData failed:', error);
+      return {
+        data: {
+          totalRevenue: 0,
+          totalDataUsage: 0,
+          recentTransactions: [],
+          outstandingDuesSummary: [],
+          forecast: null
+        }
+      };
+    }
   },
+
 };
 
 export default api;

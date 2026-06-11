@@ -22,7 +22,7 @@ const generateCustomer = (planIds, customerId) => {
         email: faker.internet.email({ firstName, lastName }).toLowerCase(),
         address: faker.location.streetAddress(false),
         planId: planIds[customerId % planIds.length],
-        status: faker.helpers.arrayElement(['active', 'inactive', 'suspended']),
+        status: 'active', // Ensure all seeded customers are active for dashboard consistency
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
     };
@@ -60,7 +60,7 @@ const generatePayment = (customerId, billId, invoiceId, paymentId, amount) => {
     return {
         id: paymentId,
         amount: amount || parseFloat(faker.finance.amount({ min: 5, max: 200, dec: 2 })),
-        payment_date: faker.date.recent(),
+        payment_date: faker.date.past({ years: 1 }), // Distribute over the last year
         payment_method: faker.helpers.arrayElement(['credit_card', 'paypal', 'mpesa', 'bank_transfer']),
         receipt_number: faker.string.alphanumeric(12).toUpperCase(),
         status: faker.helpers.arrayElement(['pending', 'completed', 'failed']),
@@ -88,7 +88,7 @@ const generateUsageLog = (customerId, planId, usageLogId) => {
         planId: planId,
         usageType: usageType,
         duration: duration,
-        timestamp: faker.date.recent(),
+        timestamp: faker.date.past({ years: 1 }), // Distribute over the last year
     };
 };
 

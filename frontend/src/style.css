@@ -181,6 +181,11 @@ body {
   color: var(--text-primary) !important;
 }
 
+.app-root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 /* Global Box Sizing */
 html, body {
   overflow-x: hidden;

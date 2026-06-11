@@ -102,17 +102,11 @@ exports.updateInvoiceStatus = asyncHandler(async (req, res, next) => {
 // @route   POST /api/invoices/generate-invoice
 // @access  Private
 exports.generateInvoice = asyncHandler(async (req, res, next) => {
-  const { billId, customerId, dueDate, amountDue } = req.body;
+  const { billId, dueDate, amountDue } = req.body;
 
   let bill;
   if (billId) {
     bill = await Bill.findByPk(billId);
-  } else if (customerId) {
-    // If no billId, find the most recent bill for this customer
-    bill = await Bill.findOne({
-      where: { customerId },
-      order: [['createdAt', 'DESC']]
-    });
   }
 
   if (!bill) {
@@ -121,11 +115,10 @@ exports.generateInvoice = asyncHandler(async (req, res, next) => {
 
   const invoice = await Invoice.create({
     billId: bill.id,
-    customerId: bill.customerId,
     invoiceNumber: `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
     issueDate: new Date(),
     dueDate: new Date(dueDate || new Date().setDate(new Date().getDate() + 14)),
-    amountDue: parseFloat(amountDue) || bill.amount,
+    amountDue: parseFloat(amountDue) || bill.totalAmount,
     status: 'pending'
   });
 

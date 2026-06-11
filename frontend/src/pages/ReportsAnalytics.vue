@@ -3,6 +3,7 @@
     <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
       <a-typography-title :level="2" style="margin: 0">System Insights</a-typography-title>
       <a-space>
+        <data-importer @data-imported="handleImportedData" />
         <a-button @click="fetchCustomersReport">
           <template #icon><reload-outlined /></template>
           Refresh Data
@@ -71,6 +72,8 @@ import {
 } from 'chart.js';
 import { ReloadOutlined, DownloadOutlined } from '@ant-design/icons-vue';
 import api from '../services/api';
+import DataImporter from '../components/DataImporter.vue';
+import { message } from 'ant-design-vue';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 
@@ -80,18 +83,19 @@ export default defineComponent({
     Bar,
     Pie,
     ReloadOutlined,
-    DownloadOutlined
+    DownloadOutlined,
+    DataImporter,
   },
   setup() {
     const router = useRouter();
     const revenueChartData = reactive({
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      labels: [],
       datasets: [
         {
           label: 'Revenue (KSh)',
           backgroundColor: '#1677ff',
           borderRadius: 4,
-          data: [45000, 52000, 48000, 61000, 58000, 72000],
+          data: [],
         },
       ],
     });
@@ -101,7 +105,7 @@ export default defineComponent({
       datasets: [
         {
           backgroundColor: ['#10b981', '#6366f1', '#ef4444'],
-          data: [65, 25, 10],
+          data: [0, 0, 0],
         },
       ],
     });
@@ -125,20 +129,51 @@ export default defineComponent({
 
     const allCustomers = ref([]);
 
-    const fetchCustomersReport = async () => {
-      try {
-        const response = await api.reports.getAllCustomersReport();
-        allCustomers.value = response.data.data;
-      } catch (error) {
-        console.error('Report fetch failed');
-      }
-    };
-
     const viewCustomerDetails = (record) => {
       router.push(`/customers?search=${record.name}`);
     };
 
-    onMounted(fetchCustomersReport);
+    const handleImportedData = (data) => {
+        // Map imported data to chart structure (simple implementation)
+        const labels = data.map(d => d.label || d.x || 'N/A');
+        const values = data.map(d => Number(d.value || d.y || 0));
+        revenueChartData.labels = labels;
+        revenueChartData.datasets[0].data = values;
+        message.success('Charts updated with imported data.');
+    };
+
+    const fetchReportsData = async () => {
+      try {
+        const [customersRes, trendsRes, invoicesRes] = await Promise.all([
+          api.reports.getAllCustomersReport(),
+          api.reports.getBillingTrends('12m'),
+          api.getInvoices(1, 1000)
+        ]);
+        
+        allCustomers.value = customersRes.data.data;
+        
+        // Map Trends
+        const trends = trendsRes.data.data.trendData || [];
+        revenueChartData.labels = trends.map(t => t.month || t.date || 'N/A');
+        revenueChartData.datasets[0].data = trends.map(t => t.revenue);
+
+        // Map Payment Status from Invoices
+        const invoices = invoicesRes.data.invoices || [];
+        const statusCounts = invoices.reduce((acc, inv) => {
+          if (inv.status === 'paid') acc.paid++;
+          else if (inv.status === 'pending') acc.pending++;
+          else if (inv.status === 'overdue') acc.overdue++;
+          return acc;
+        }, { paid: 0, pending: 0, overdue: 0 });
+        
+        paymentStatusChartData.datasets[0].data = [statusCounts.paid, statusCounts.pending, statusCounts.overdue];
+
+      } catch (error) {
+        console.error('Report fetch failed', error);
+      }
+    };
+
+    onMounted(fetchReportsData);
 
     return {
       revenueChartData,
@@ -146,8 +181,9 @@ export default defineComponent({
       chartOptions,
       allCustomersColumns,
       allCustomers,
-      fetchCustomersReport,
-      viewCustomerDetails
+      fetchCustomersReport: fetchReportsData,
+      viewCustomerDetails,
+      handleImportedData
     };
   },
 });

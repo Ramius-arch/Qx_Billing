@@ -32,6 +32,7 @@
               v-model:selectedKeys="selectedKeys"
               mode="inline"
               class="nav-menu"
+              @click="handleMenuClick"
             >
               <template v-for="item in menuItems" :key="item.key">
                 <a-menu-divider v-if="item.type === 'divider'" />
@@ -39,10 +40,7 @@
                   <template #icon>
                     <component :is="item.icon" />
                   </template>
-                  <template v-if="item.href">
-                    <a :href="item.href" target="_blank">{{ item.label }}</a>
-                  </template>
-                  <router-link v-else :to="item.path">{{ item.label }}</router-link>
+                  {{ item.label }}
                 </a-menu-item>
               </template>
             </a-menu>
@@ -68,7 +66,7 @@
               v-model:selectedKeys="selectedKeys"
               mode="inline"
               class="nav-menu"
-              @click="drawerVisible = false"
+              @click="handleMenuClick"
             >
               <template v-for="item in menuItems" :key="item.key">
                 <a-menu-divider v-if="item.type === 'divider'" />
@@ -76,10 +74,7 @@
                   <template #icon>
                     <component :is="item.icon" />
                   </template>
-                  <template v-if="item.href">
-                    <a :href="item.href" target="_blank">{{ item.label }}</a>
-                  </template>
-                  <router-link v-else :to="item.path">{{ item.label }}</router-link>
+                  {{ item.label }}
                 </a-menu-item>
               </template>
             </a-menu>
@@ -107,7 +102,7 @@
                   </a-tooltip>
                   
                   <a-badge dot v-if="!isMobile">
-                    <bell-outlined class="header-icon" />
+                    <bell-outlined class="header-icon" @click="router.push('/notifications')" />
                   </a-badge>
 
                   <a-dropdown placement="bottomRight">
@@ -116,7 +111,7 @@
                       <span v-if="!isMobile" class="user-name">Admin</span>
                     </div>
                     <template #overlay>
-                      <a-menu>
+                      <a-menu @click="handleUserMenuClick">
                         <a-menu-item key="profile">Profile</a-menu-item>
                         <a-menu-item key="logout">Logout</a-menu-item>
                       </a-menu>
@@ -146,7 +141,7 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { isRouteLoading } from './router';
 import { theme } from 'ant-design-vue';
 import {
@@ -184,6 +179,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const windowWidth = ref(window.innerWidth);
     const collapsed = ref(false);
     const drawerVisible = ref(false);
@@ -209,9 +205,30 @@ export default defineComponent({
       { key: 'reports', label: 'Reports', icon: LineChartOutlined, path: '/reports' },
       { key: 'invoice-generator', label: 'Invoices', icon: FileTextOutlined, path: '/invoice-generator' },
       { key: 'payment-processing', label: 'Payments', icon: CreditCardOutlined, path: '/payment-processing' },
+      { key: 'settings', label: 'System Settings', icon: SettingOutlined, path: '/settings' },
       { key: 'divider-2', type: 'divider' },
       { key: 'help-center', label: 'Help Center', icon: QuestionCircleOutlined, path: '/help-center' },
     ];
+
+    const handleMenuClick = ({ key }) => {
+      const item = menuItems.find(i => i.key === key);
+      if (item) {
+        if (item.href) {
+          window.open(item.href, '_blank');
+        } else if (item.path) {
+          router.push(item.path);
+        }
+      }
+      drawerVisible.value = false;
+    };
+
+    const handleUserMenuClick = ({ key }) => {
+      if (key === 'profile') {
+        router.push('/profile');
+      } else if (key === 'logout') {
+        console.log('Logging out...');
+      }
+    };
 
     const toggleTheme = () => {
       isDark.value = !isDark.value;
@@ -249,12 +266,15 @@ export default defineComponent({
       drawerVisible,
       selectedKeys,
       menuItems,
+      handleMenuClick,
+      handleUserMenuClick,
       currentPageTitle,
       isMobile,
       isDark,
       themeConfig,
       toggleTheme,
       isRouteLoading,
+      router,
     };
   },
 });

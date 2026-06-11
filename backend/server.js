@@ -20,6 +20,7 @@ const usageRoutes = require('./routes/usage.routes');
 const invoiceRoutes = require('./routes/invoices.routes');
 const reportRoutes = require('./routes/reports.routes');
 const healthRoutes = require('./routes/health.routes');
+const configRoutes = require('./routes/config.routes');
 
 const { errorHandler } = require('./middleware/errorHandler');
 
@@ -32,6 +33,7 @@ app.use('/api/usage', usageRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/config', configRoutes);
 
 // Error handler (should be after routes)
 app.use(errorHandler);

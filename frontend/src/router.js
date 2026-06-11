@@ -122,6 +122,39 @@ const routes = [
       breadcrumb: 'Help Center'
     },
   },
+  // Profile Settings route
+  {
+    path: '/profile',
+    name: 'ProfileSettings',
+    component: () => import('./pages/ProfileSettings.vue'),
+    meta: {
+      title: 'Profile Settings',
+      layout: true,
+      breadcrumb: 'Profile Settings'
+    },
+  },
+  // Notifications route
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    component: () => import('./pages/Notifications.vue'),
+    meta: {
+      title: 'Notifications',
+      layout: true,
+      breadcrumb: 'Notifications'
+    },
+  },
+  // System Settings route
+  {
+    path: '/settings',
+    name: 'SystemSettings',
+    component: () => import('./pages/SystemSettings.vue'),
+    meta: {
+      title: 'System Settings',
+      layout: true,
+      breadcrumb: 'System Settings'
+    },
+  },
   // Invoice Detail route
   {
     path: '/invoices/:id',
