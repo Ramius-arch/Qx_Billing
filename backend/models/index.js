@@ -5,6 +5,7 @@ db.Sequelize = require('sequelize');
 db.sequelize = sequelize;
 
 // Import all models
+console.log('Loading models from SysConfig.js...');
 db.Customer = require('./Customer')(sequelize);
 db.Plan = require('./Plan')(sequelize);
 db.Bill = require('./Bill')(sequelize);
