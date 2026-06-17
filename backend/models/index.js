@@ -12,7 +12,7 @@ db.Payment = require('./Payment')(sequelize);
 db.UsageLog = require('./UsageLog')(sequelize);
 db.Invoice = require('./Invoice')(sequelize);
 db.Report = require('./Report')(sequelize);
-db.SystemConfig = require('./SystemConfig')(sequelize);
+db.SystemConfig = require('./SysConfig')(sequelize);
 
 // Set up model associations
 db.Customer.hasMany(db.Bill, { foreignKey: 'customerId' });
