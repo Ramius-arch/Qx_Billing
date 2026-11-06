@@ -4,8 +4,27 @@ import { ref } from 'vue';
 export const isRouteLoading = ref(false);
 
 const routes = [
-  // Redirect to dashboard by default
-  { path: '/', redirect: '/dashboard' },
+  // Root Entry: Elegant Circular Loading Boot Gate (Apple / BMW Poise)
+  {
+    path: '/',
+    name: 'RootLoading',
+    component: () => import('./pages/LoadingPage.vue'),
+    meta: {
+      title: 'Initializing Qx Ledger',
+      layout: false, // Fullscreen circular boot
+    },
+  },
+
+  // Loading Route (Direct Access)
+  {
+    path: '/loading',
+    name: 'Loading',
+    component: () => import('./pages/LoadingPage.vue'),
+    meta: {
+      title: 'Initializing Qx Ledger',
+      layout: false,
+    },
+  },
 
   // Login Route
   {
@@ -187,40 +206,36 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition && to.meta.preserveScroll !== false) {
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(savedPosition), 300)
-      })
+      return savedPosition;
     }
     if (to.hash) {
-      return { el: to.hash, top: 80, behavior: 'smooth' }
+      return { el: to.hash, top: 80, behavior: 'smooth' };
     }
     if (to.meta.scrollToTop !== false) {
-      return { top: 0, behavior: 'instant' }
+      return { top: 0, left: 0 };
     }
-    return false
+    return false;
   }
 });
 
 router.beforeEach((to, from, next) => {
   isRouteLoading.value = true;
-  document.title = to.meta.title || 'Telecom Billing System';
+  document.title = to.meta.title ? `${to.meta.title} | Ladha Ledger` : 'Ladha Ledger | Archival Commerce Financial Hub';
   next();
 });
 
 router.afterEach(() => {
-  setTimeout(() => {
-    isRouteLoading.value = false;
-  }, 100);
+  isRouteLoading.value = false;
 });
 
 router.onError((error) => {
   isRouteLoading.value = false;
   console.error('Router error:', error);
-  if (error.message.includes('Failed to fetch dynamically imported module')) {
+  if (error.message && error.message.includes('Failed to fetch dynamically imported module')) {
     router.push('/offline');
   }
 });

@@ -149,3 +149,4 @@ dist
 
 run_logs_*/
 logs_*/
+errorlog.txt

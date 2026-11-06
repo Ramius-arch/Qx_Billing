@@ -14,11 +14,13 @@ module.exports = (sequelize) => {
     },
     payment_date: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: DataTypes.NOW
     },
     payment_method: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 'cash'
     },
     receipt_number: {
       type: DataTypes.STRING(100),
@@ -27,7 +29,7 @@ module.exports = (sequelize) => {
     status: {
       type: DataTypes.ENUM('pending', 'completed', 'failed'),
       allowNull: false,
-      defaultValue: 'pending'
+      defaultValue: 'completed'
     },
     customerId: {
       type: DataTypes.INTEGER,
@@ -39,9 +41,17 @@ module.exports = (sequelize) => {
     },
     billId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'Bills',
+        key: 'id'
+      }
+    },
+    orderId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Orders',
         key: 'id'
       }
     },
@@ -53,9 +63,11 @@ module.exports = (sequelize) => {
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
-      onUpdate: () => new Date()
+      defaultValue: DataTypes.NOW
     }
+  }, {
+    timestamps: true
   });
+
   return Payment;
 };

@@ -9,15 +9,31 @@ module.exports = (sequelize) => {
     },
     billId: {
       type: DataTypes.INTEGER,
-      allowNull: true, // Changed from false to true
+      allowNull: true,
       references: {
         model: 'Bills',
         key: 'id'
       }
     },
+    customerId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Customers',
+        key: 'id'
+      }
+    },
+    orderId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Orders',
+        key: 'id'
+      }
+    },
     invoiceNumber: {
       type: DataTypes.STRING,
-      allowNull: true, // Can be generated later
+      allowNull: true,
       unique: true
     },
     issueDate: {
@@ -27,15 +43,17 @@ module.exports = (sequelize) => {
     },
     dueDate: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: DataTypes.NOW
     },
     amountDue: {
-      type: DataTypes.FLOAT,
-      allowNull: false
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+      defaultValue: 0
     },
     pdfPath: {
       type: DataTypes.STRING,
-      allowNull: true // Path to the generated PDF invoice
+      allowNull: true
     },
     status: {
       type: DataTypes.ENUM('pending', 'paid', 'overdue', 'cancelled'),
@@ -50,9 +68,9 @@ module.exports = (sequelize) => {
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
-      onUpdate: () => new Date()
+      defaultValue: DataTypes.NOW
     }
   });
+
   return Invoice;
 };

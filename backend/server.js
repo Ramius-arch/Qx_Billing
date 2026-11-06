@@ -21,6 +21,9 @@ const invoiceRoutes = require('./routes/invoices.routes');
 const reportRoutes = require('./routes/reports.routes');
 const healthRoutes = require('./routes/health.routes');
 const configRoutes = require('./routes/config.routes');
+const ledgerRoutes = require('./routes/ledger.routes');
+const gatewayRoutes = require('./routes/gateway.routes');
+const dukaRoutes = require('./routes/duka.routes');
 
 const { errorHandler } = require('./middleware/errorHandler');
 
@@ -34,30 +37,37 @@ app.use('/api/invoices', invoiceRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/config', configRoutes);
+app.use('/api/ledger', ledgerRoutes);
+app.use('/api/v1/gateway', gatewayRoutes);
+app.use('/api', dukaRoutes);
 
 // Error handler (should be after routes)
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === 'production';
+const isTest = process.env.NODE_ENV === 'test';
 
 // In development, we use 'force: true' to ensure a clean state for seeding
-// In production, we avoid 'alter: true' as it can be unreliable with PostgreSQL
-db.sequelize.sync({ force: !isProduction }) 
-    .then(async () => {
-        console.log('Database synchronized');
-        await seedDatabase(); // Seed database with initial demo data
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
+// In test mode, tests manage database lifecycle and seeding independently
+if (!isTest) {
+    db.sequelize.sync({ force: !isProduction }) 
+        .then(async () => {
+            console.log('Database synchronized');
+            await seedDatabase(); // Seed database with initial demo data
+            app.listen(PORT, () => {
+                console.log(`Server is running on port ${PORT}`);
+            });
+        })
+        .catch(err => {
+            console.error('Failed to synchronize database:', err);
+            process.exit(1);
         });
-    })
-    .catch(err => {
-        console.error('Failed to synchronize database:', err);
-        process.exit(1);
-    });
+}
 
 async function seedDatabase() {
     const generateDemoData = require('./services/demoData');
+    const ledgerService = require('./services/ledgerService');
     const { customers, plans, bills, payments, usageLogs, invoices, reports } = generateDemoData();
     try {
         await db.Plan.bulkCreate(plans, { ignoreDuplicates: true });
@@ -67,7 +77,10 @@ async function seedDatabase() {
         await db.UsageLog.bulkCreate(usageLogs, { ignoreDuplicates: true });
         await db.Invoice.bulkCreate(invoices, { ignoreDuplicates: true });
         await db.Report.bulkCreate(reports, { ignoreDuplicates: true });
-        console.log('Database seeded successfully!');
+
+        // Seed Business Profile & Initial General Ledger Chart of Accounts
+        await ledgerService.ensureAccounts();
+        console.log('Database seeded successfully (including Universal General Ledger)!');
     } catch (error) {
         console.error('Failed to seed database:', error);
     }

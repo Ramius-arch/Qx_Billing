@@ -32,7 +32,7 @@
                   <a-select
                     v-model:value="form.customerId"
                     show-search
-                    placeholder="Search customer base..."
+                    placeholder="Select registered Nairobi VIP shopper..."
                     @change="handleCustomerChange"
                   >
                     <a-select-option v-for="c in customers" :key="c.id" :value="c.id">
@@ -43,7 +43,7 @@
               </a-col>
               <a-col :xs="24" :sm="12">
                 <a-form-item label="Invoice Reference" required>
-                  <a-input v-model:value="form.invoiceNumber" placeholder="e.g. INV-2026-001" />
+                  <a-input v-model:value="form.invoiceNumber" placeholder="e.g. LDH-ETIMS-8933" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -76,7 +76,7 @@
                 <a-row :gutter="[8, 8]" align="middle">
                   <a-col :xs="24" :sm="10">
                     <span class="sm:hidden text-xs font-bold text-slate-500">DESCRIPTION</span>
-                    <a-input v-model:value="item.description" placeholder="e.g. Monthly Subscription" />
+                    <a-input v-model:value="item.description" placeholder="e.g. Vintage Carhartt Double-Knee Work Pants (1-of-1)" />
                   </a-col>
                   <a-col :xs="8" :sm="4">
                     <span class="sm:hidden text-xs font-bold text-slate-500">QTY</span>
@@ -130,13 +130,13 @@
             <span class="total-value">KSh {{ grandTotal.toLocaleString() }}</span>
           </div>
 
-          <div class="mt-6 p-4 bg-slate-50 rounded-lg">
-            <span class="text-xs text-slate-500 font-bold">NOTES / INSTRUCTIONS</span>
+          <div class="mt-6 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
+            <span class="text-xs text-slate-500 font-bold uppercase font-mono">Settlement Instructions & Fiscal Seal</span>
             <a-textarea 
               v-model:value="form.notes" 
-              placeholder="e.g. Payment via M-Pesa Paybill 222111" 
+              placeholder="e.g. Settle via M-Pesa Till 174379, A/C: LDH-8933. Certified under Kenya Tax Procedures Act Section 23A." 
               :rows="3" 
-              class="mt-2 border-0 bg-transparent"
+              class="mt-2 border-0 bg-transparent text-xs"
             />
           </div>
         </a-card>
@@ -385,12 +385,12 @@ export default defineComponent({
 .logo {
   font-size: 24px;
   font-weight: 900;
-  color: #1e293b;
+  color: var(--text-primary);
   letter-spacing: -1px;
 }
 
-.label { font-size: 11px; color: #64748b; font-weight: 700; }
-.val { font-size: 14px; font-weight: 600; margin-top: 4px; }
+.label { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+.val { font-size: 14px; font-weight: 600; margin-top: 4px; color: var(--text-primary); }
 
 .preview-table {
   width: 100%;
@@ -399,16 +399,19 @@ export default defineComponent({
 
 .preview-table th {
   text-align: left;
-  font-size: 12px;
-  color: #64748b;
+  font-size: 11px;
+  color: var(--text-secondary);
   padding: 12px 0;
-  border-bottom: 2px solid #f1f5f9;
+  border-bottom: 2px solid var(--border-glass);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
 }
 
 .preview-table td {
   padding: 16px 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-glass-subtle);
   font-size: 14px;
+  color: var(--text-primary);
 }
 
 .text-right { text-align: right; }
@@ -417,5 +420,5 @@ export default defineComponent({
   justify-content: flex-end;
 }
 
-.p-row { font-size: 16px; }
+.p-row { font-size: 16px; color: var(--text-primary); }
 </style>

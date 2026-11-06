@@ -13,21 +13,21 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     phone_number: {
-      type: DataTypes.STRING(20), // Could be international number with country code
-      allowNull: false,
+      type: DataTypes.STRING(30),
+      allowNull: true,
       unique: true
     },
     email: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(100),
       allowNull: true
     },
     address: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     planId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'Plans',
         key: 'id'
@@ -48,9 +48,11 @@ module.exports = (sequelize) => {
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW,
-      onUpdate: () => new Date()
+      defaultValue: DataTypes.NOW
     }
+  }, {
+    timestamps: true
   });
+
   return Customer;
 };
