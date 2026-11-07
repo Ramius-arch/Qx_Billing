@@ -1,36 +1,36 @@
 <template>
-  <div class="cockpit-mode-switch-wrapper">
+  <div class="view-mode-switch-wrapper">
     <a-tooltip 
-      :title="isExpertMode 
-        ? 'TRACK MODE ACTIVE: Full double-entry telemetry, eTIMS, and audit dossiers. Click to switch to Street Mode.' 
-        : 'STREET MODE ACTIVE: Simple commerce, plain language, and assisted M-Pesa flows. Click to switch to Track Mode.'"
+      :title="isProMode 
+        ? 'Advanced Mode: Full double-entry ledger, KRA eTIMS telemetry, and audit dossiers. Click to switch to Standard Mode.' 
+        : 'Standard Mode: Simple daily commerce, M-Pesa receipts, and 1-click WhatsApp billing. Click to switch to Advanced Mode.'"
       placement="bottom"
     >
-      <button 
-        type="button" 
-        class="drive-mode-selector font-mono"
-        :class="currentMode"
-        @click="toggleMode"
-        aria-label="Toggle Cockpit Driving Mode"
+      <div 
+        class="mode-segmented-pill font-mono"
+        role="group"
+        aria-label="UI View Mode Selector"
       >
-        <!-- Mechanical Housing Bezel -->
-        <div class="dial-segment" :class="{ 'is-active': isStreetMode }">
-          <span class="mode-icon">☕</span>
-          <span class="mode-text">STREET</span>
-        </div>
+        <button 
+          type="button" 
+          class="mode-segment-btn"
+          :class="{ 'is-active': isSimpleMode }"
+          @click="setMode('standard')"
+        >
+          <span class="mode-dot" v-if="isSimpleMode"></span>
+          <span>Standard</span>
+        </button>
 
-        <div class="dial-divider"></div>
-
-        <div class="dial-segment" :class="{ 'is-active': isExpertMode }">
-          <span class="mode-icon">🏁</span>
-          <span class="mode-text">TRACK</span>
-        </div>
-
-        <!-- Glowing Active Position Beacon -->
-        <div class="active-indicator" :class="currentMode">
-          <span class="beacon-pulse"></span>
-        </div>
-      </button>
+        <button 
+          type="button" 
+          class="mode-segment-btn"
+          :class="{ 'is-active': isProMode }"
+          @click="setMode('advanced')"
+        >
+          <span class="mode-dot pro-dot" v-if="isProMode"></span>
+          <span>Advanced</span>
+        </button>
+      </div>
     </a-tooltip>
   </div>
 </template>
@@ -42,9 +42,8 @@ import { useCockpitMode } from '../services/cockpitMode';
 export default defineComponent({
   name: 'CockpitModeSwitch',
   setup() {
-    const { currentMode, isExpertMode, isStreetMode, toggleMode, setMode } = useCockpitMode();
+    const { currentMode, isProMode, isSimpleMode, toggleMode, setMode } = useCockpitMode();
 
-    // Hotkey: Alt + M to toggle drive modes like pressing a steering wheel button!
     const handleKeydown = (e) => {
       if (e.altKey && (e.key === 'm' || e.key === 'M')) {
         e.preventDefault();
@@ -62,8 +61,8 @@ export default defineComponent({
 
     return {
       currentMode,
-      isExpertMode,
-      isStreetMode,
+      isProMode,
+      isSimpleMode,
       toggleMode,
       setMode
     };
@@ -72,132 +71,80 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.cockpit-mode-switch-wrapper {
+.view-mode-switch-wrapper {
   display: inline-flex;
   align-items: center;
 }
 
-/* Mechanical Automotive Rocker / Dial Housing */
-.drive-mode-selector {
-  position: relative;
+/* Minimalist Professional Segmented Control */
+.mode-segmented-pill {
   display: inline-flex;
   align-items: center;
-  height: 32px;
   padding: 2px;
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(15, 23, 42, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 9999px;
-  cursor: pointer;
-  box-shadow: 
-    inset 0 1px 2px rgba(0, 0, 0, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  user-select: none;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.drive-mode-selector:hover {
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 
-    inset 0 1px 3px rgba(0, 0, 0, 0.6),
-    0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-.dial-segment {
+.mode-segment-btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 0 10px;
-  height: 26px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: rgba(148, 163, 184, 0.8);
-  border-radius: 9999px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 2;
-}
-
-.dial-segment.is-active {
-  color: #ffffff;
-}
-
-.drive-mode-selector.street .dial-segment.is-active {
-  background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
-}
-
-.drive-mode-selector.track .dial-segment.is-active {
-  background: rgba(99, 102, 241, 0.25);
-  color: #a5b4fc;
-  box-shadow: 0 0 14px rgba(99, 102, 241, 0.4);
-}
-
-.dial-divider {
-  width: 1px;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 0 1px;
-}
-
-.mode-icon {
+  padding: 3px 10px;
+  height: 24px;
   font-size: 11px;
-  line-height: 1;
-}
-
-.mode-text {
-  line-height: 1;
-}
-
-/* Glowing Indicator Beacon */
-.active-indicator {
-  position: absolute;
-  top: 3px;
-  bottom: 3px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #94a3b8;
+  background: transparent;
+  border: none;
   border-radius: 9999px;
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
 }
 
-.drive-mode-selector.street .active-indicator {
-  left: 3px;
-  width: calc(50% - 3px);
-  border: 1px solid rgba(52, 211, 153, 0.4);
+.mode-segment-btn:hover {
+  color: #f1f5f9;
 }
 
-.drive-mode-selector.track .active-indicator {
-  left: calc(50%);
-  width: calc(50% - 3px);
-  border: 1px solid rgba(165, 180, 252, 0.5);
+.mode-segment-btn.is-active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Light Theme Adjustments */
-:root[data-theme="light"] .drive-mode-selector,
-body:not(.dark) .drive-mode-selector {
-  background: rgba(241, 245, 249, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+.mode-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
 }
 
-:root[data-theme="light"] .dial-segment,
-body:not(.dark) .dial-segment {
+.pro-dot {
+  background: #818cf8;
+  box-shadow: 0 0 6px #818cf8;
+}
+
+/* Light Mode Overrides */
+:root[data-theme="light"] .mode-segmented-pill,
+body:not(.dark) .mode-segmented-pill {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme="light"] .mode-segment-btn,
+body:not(.dark) .mode-segment-btn {
   color: #64748b;
 }
 
-:root[data-theme="light"] .drive-mode-selector.street .dial-segment.is-active,
-body:not(.dark) .drive-mode-selector.street .dial-segment.is-active {
+:root[data-theme="light"] .mode-segment-btn.is-active,
+body:not(.dark) .mode-segment-btn.is-active {
   background: #ffffff;
-  color: #059669;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-}
-
-:root[data-theme="light"] .drive-mode-selector.track .dial-segment.is-active,
-body:not(.dark) .drive-mode-selector.track .dial-segment.is-active {
-  background: #ffffff;
-  color: #4f46e5;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 </style>

@@ -11,7 +11,7 @@
             </h1>
             <span class="hero-mode-pill font-mono bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
               <span class="live-beacon bg-emerald-500"></span>
-              STREET MODE · ASSISTED
+              STANDARD MODE · ASSISTED
             </span>
             <span class="hero-engine-tag font-mono">TILL #882941</span>
           </div>
@@ -110,7 +110,7 @@
       <div class="flex items-center gap-3">
         <span class="text-xl">🛠️</span>
         <div>
-          <div class="text-xs font-bold text-slate-800 dark:text-slate-100">Assisted Commerce Tools</div>
+          <div class="text-xs font-bold text-slate-800 dark:text-slate-100">Quick Actions</div>
           <div class="text-[11px] text-slate-500 dark:text-slate-400">Fast counter sales, customer WhatsApp dispatch, and 1-tap M-Pesa reconciliation</div>
         </div>
       </div>
@@ -413,9 +413,9 @@
     <!-- M-Pesa STK Push Simulation Modal -->
     <stk-push-modal
       v-model:visible="stkModalVisible"
-      :phone="stkData.phone"
-      :amount="stkData.amount"
-      :invoice-id="stkData.invoiceId"
+      :phone="stkData?.phone || ''"
+      :amount="stkData?.amount || 0"
+      :invoice-id="stkData?.invoiceId || ''"
       @success="handleStkSuccess"
     />
   </div>
@@ -482,6 +482,39 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const { activeTenant, formatMoney } = useTenantConfig();
+    const { currentMode, isProMode, isSimpleMode, isExpertMode, isStreetMode, toggleMode, setMode } = useCockpitMode();
+
+    // Kenyan SME Workflow Modals State
+    const whatsappModalVisible = ref(false);
+    const activeInvoiceForWhatsapp = ref({ id: '1042', customerName: 'John Mwangi', customerPhone: '712345678', amount: 4500 });
+    const unclaimedDrawerVisible = ref(false);
+    const stkModalVisible = ref(false);
+    const stkData = ref({ phone: '722345678', amount: 4500, invoiceId: '1042' });
+
+    const openWhatsAppModal = (inv) => {
+      if (inv) {
+        activeInvoiceForWhatsapp.value = {
+          id: inv.id || '1042',
+          customerName: inv.customerName || 'John Mwangi',
+          customerPhone: inv.customerPhone || '712345678',
+          amount: inv.amount || 4500
+        };
+      }
+      whatsappModalVisible.value = true;
+    };
+
+    const openStkModal = (phone = '722345678', amount = 4500, invoiceId = '1042') => {
+      stkData.value = { phone, amount, invoiceId };
+      stkModalVisible.value = true;
+    };
+
+    const handleMpesaReconciled = (payload) => {
+      message.success(`Lipa na M-Pesa payment ${payload.mpesaCode} (KES ${payload.amount.toLocaleString()}) reconciled to Invoice #${payload.invoiceId}.`);
+    };
+
+    const handleStkSuccess = (payload) => {
+      message.success(`M-Pesa payment ${payload.receipt} (KES ${payload.amount.toLocaleString()}) verified!`);
+    };
     const loading = ref(false);
     const revenuePeriod = ref('30d');
     const activePeriodLabel = ref('Last 30 Days (Weekly Velocity)');
@@ -826,7 +859,23 @@ export default defineComponent({
       CheckOutlined,
       ClockCircleOutlined,
       activeTenant,
-      formatMoney
+      formatMoney,
+      currentMode,
+      isProMode,
+      isSimpleMode,
+      isExpertMode,
+      isStreetMode,
+      toggleMode,
+      setMode,
+      whatsappModalVisible,
+      activeInvoiceForWhatsapp,
+      unclaimedDrawerVisible,
+      stkModalVisible,
+      stkData,
+      openWhatsAppModal,
+      openStkModal,
+      handleMpesaReconciled,
+      handleStkSuccess
     };
   }
 });
