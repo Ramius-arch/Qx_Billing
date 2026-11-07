@@ -367,73 +367,141 @@ export default defineComponent({
 
 <style scoped>
 .customer-table-card {
-  background: #ffffff !important;
-  border: 1px solid rgba(226, 232, 240, 0.95) !important;
-  border-radius: 20px !important;
-  box-shadow: 
+  --tbl-bg: #ffffff;
+  --tbl-border: rgba(226, 232, 240, 0.95);
+  --tbl-shadow: 
     inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
     inset 0 0 0 1px rgba(255, 255, 255, 0.65),
     0 2px 10px rgba(15, 23, 42, 0.03),
-    0 18px 40px -8px rgba(15, 23, 42, 0.05) !important;
+    0 18px 40px -8px rgba(15, 23, 42, 0.05);
+  
+  --th-bg: #f8fafc;
+  --th-color: #334155;
+  --th-border: #e2e8f0;
+  
+  --td-border: #f1f5f9;
+  --row-hover-bg: rgba(99, 102, 241, 0.05);
+  
+  --row-name-color: #0f172a;
+  --row-addr-color: #475569;
+  --row-phone-color: #0f172a;
+  
+  --avatar-bg: #e0e7ff;
+  --avatar-color: #3730a3;
+  --avatar-border: #c7d2fe;
+  
+  --status-active-bg: #ecfdf5;
+  --status-active-color: #047857;
+  --status-active-border: #a7f3d0;
+  
+  --status-inactive-bg: #fffbeb;
+  --status-inactive-color: #b45309;
+  --status-inactive-border: #fde68a;
+  
+  --btn-wa-bg: #ecfdf5;
+  --btn-wa-color: #065f46;
+  --btn-wa-border: #a7f3d0;
+  --btn-wa-hover-bg: #d1fae5;
+  
+  --btn-bill-bg: #eef2ff;
+  --btn-bill-color: #3730a3;
+  --btn-bill-border: #c7d2fe;
+  --btn-bill-hover-bg: #e0e7ff;
+  
+  --btn-icon-color: #475569;
+  --btn-icon-hover-color: #0f172a;
+  
+  --pagination-color: #334155;
+  --pagination-item-bg: #ffffff;
+  --pagination-item-border: #e2e8f0;
+
+  background: var(--tbl-bg) !important;
+  border: 1px solid var(--tbl-border) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--tbl-shadow) !important;
   overflow: hidden;
 }
 
-:root[data-theme='dark'] .customer-table-card {
-  background: #0f172a !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.12),
-    0 16px 44px -8px rgba(0, 0, 0, 0.6) !important;
+:root[data-theme='dark'] .customer-table-card,
+[data-theme='dark'] .customer-table-card {
+  --tbl-bg: #0b1120;
+  --tbl-border: rgba(255, 255, 255, 0.08);
+  --tbl-shadow: 
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.10),
+    0 16px 44px -8px rgba(0, 0, 0, 0.65);
+  
+  --th-bg: #070c18;
+  --th-color: #94a3b8;
+  --th-border: rgba(255, 255, 255, 0.08);
+  
+  --td-border: rgba(255, 255, 255, 0.05);
+  --row-hover-bg: rgba(99, 102, 241, 0.12);
+  
+  --row-name-color: #ffffff;
+  --row-addr-color: #94a3b8;
+  --row-phone-color: #f1f5f9;
+  
+  --avatar-bg: rgba(49, 46, 129, 0.6);
+  --avatar-color: #c7d2fe;
+  --avatar-border: rgba(99, 102, 241, 0.35);
+  
+  --status-active-bg: rgba(5, 150, 105, 0.15);
+  --status-active-color: #34d399;
+  --status-active-border: rgba(5, 150, 105, 0.35);
+  
+  --status-inactive-bg: rgba(217, 119, 6, 0.15);
+  --status-inactive-color: #fbbf24;
+  --status-inactive-border: rgba(217, 119, 6, 0.35);
+  
+  --btn-wa-bg: rgba(6, 95, 70, 0.35);
+  --btn-wa-color: #6ee7b7;
+  --btn-wa-border: rgba(16, 185, 129, 0.35);
+  --btn-wa-hover-bg: rgba(6, 95, 70, 0.6);
+  
+  --btn-bill-bg: rgba(55, 48, 163, 0.35);
+  --btn-bill-color: #c7d2fe;
+  --btn-bill-border: rgba(99, 102, 241, 0.35);
+  --btn-bill-hover-bg: rgba(55, 48, 163, 0.6);
+  
+  --btn-icon-color: #94a3b8;
+  --btn-icon-hover-color: #ffffff;
+  
+  --pagination-color: #94a3b8;
+  --pagination-item-bg: #0f172a;
+  --pagination-item-border: rgba(255, 255, 255, 0.1);
 }
 
 .customer-avatar-badge {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 9999px;
-  background: #e0e7ff;
-  color: #3730a3;
+  background: var(--avatar-bg);
+  color: var(--avatar-color);
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-family: 'JetBrains Mono', monospace;
-  border: 1px solid #c7d2fe;
-}
-
-:root[data-theme='dark'] .customer-avatar-badge {
-  background: rgba(49, 46, 129, 0.6);
-  color: #c7d2fe;
-  border-color: rgba(99, 102, 241, 0.35);
+  border: 1px solid var(--avatar-border);
+  flex-shrink: 0;
 }
 
 .customer-row-name {
   font-weight: 800;
-  color: #0f172a !important;
+  color: var(--row-name-color) !important;
   letter-spacing: -0.015em;
 }
 
-:root[data-theme='dark'] .customer-row-name {
-  color: #ffffff !important;
-}
-
 .customer-row-address {
-  color: #475569 !important;
+  color: var(--row-addr-color) !important;
   font-size: 11.5px;
-}
-
-:root[data-theme='dark'] .customer-row-address {
-  color: #94a3b8 !important;
 }
 
 .customer-row-phone {
   font-weight: 700;
-  color: #0f172a !important;
+  color: var(--row-phone-color) !important;
   font-size: 12.5px;
-}
-
-:root[data-theme='dark'] .customer-row-phone {
-  color: #f1f5f9 !important;
 }
 
 .plan-pill {
@@ -447,7 +515,8 @@ export default defineComponent({
   border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
-:root[data-theme='dark'] .plan-pill {
+:root[data-theme='dark'] .plan-pill,
+[data-theme='dark'] .plan-pill {
   background: rgba(99, 102, 241, 0.15);
   color: #a5b4fc;
   border-color: rgba(99, 102, 241, 0.3);
@@ -463,27 +532,15 @@ export default defineComponent({
 }
 
 .status-active {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1px solid #a7f3d0;
-}
-
-:root[data-theme='dark'] .status-active {
-  background: rgba(5, 150, 105, 0.15);
-  color: #34d399;
-  border-color: rgba(5, 150, 105, 0.35);
+  background: var(--status-active-bg);
+  color: var(--status-active-color);
+  border: 1px solid var(--status-active-border);
 }
 
 .status-inactive {
-  background: #fffbeb;
-  color: #b45309;
-  border: 1px solid #fde68a;
-}
-
-:root[data-theme='dark'] .status-inactive {
-  background: rgba(217, 119, 6, 0.15);
-  color: #fbbf24;
-  border-color: rgba(217, 119, 6, 0.35);
+  background: var(--status-inactive-bg);
+  color: var(--status-inactive-color);
+  border: 1px solid var(--status-inactive-border);
 }
 
 .btn-row-whatsapp {
@@ -494,27 +551,16 @@ export default defineComponent({
   border-radius: 8px;
   font-size: 11.5px;
   font-weight: 700;
-  background: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
+  background: var(--btn-wa-bg);
+  color: var(--btn-wa-color);
+  border: 1px solid var(--btn-wa-border);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .btn-row-whatsapp:hover {
-  background: #d1fae5;
-  border-color: #6ee7b7;
+  background: var(--btn-wa-hover-bg);
   transform: translateY(-1px);
-}
-
-:root[data-theme='dark'] .btn-row-whatsapp {
-  background: rgba(6, 95, 70, 0.3);
-  color: #6ee7b7;
-  border-color: rgba(16, 185, 129, 0.3);
-}
-
-:root[data-theme='dark'] .btn-row-whatsapp:hover {
-  background: rgba(6, 95, 70, 0.5);
 }
 
 .btn-row-bill {
@@ -525,67 +571,101 @@ export default defineComponent({
   border-radius: 8px;
   font-size: 11.5px;
   font-weight: 700;
-  background: #eef2ff;
-  color: #3730a3;
-  border: 1px solid #c7d2fe;
+  background: var(--btn-bill-bg);
+  color: var(--btn-bill-color);
+  border: 1px solid var(--btn-bill-border);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .btn-row-bill:hover {
-  background: #e0e7ff;
-  border-color: #a5b4fc;
+  background: var(--btn-bill-hover-bg);
   transform: translateY(-1px);
 }
 
-:root[data-theme='dark'] .btn-row-bill {
-  background: rgba(55, 48, 163, 0.3);
-  color: #c7d2fe;
-  border-color: rgba(99, 102, 241, 0.3);
-}
-
-:root[data-theme='dark'] .btn-row-bill:hover {
-  background: rgba(55, 48, 163, 0.5);
-}
-
 .btn-icon-action {
-  color: #475569 !important;
+  color: var(--btn-icon-color) !important;
   transition: color 0.15s ease;
 }
 
-:root[data-theme='dark'] .btn-icon-action {
-  color: #94a3b8 !important;
+.btn-icon-action:hover {
+  color: var(--btn-icon-hover-color) !important;
+}
+
+:deep(.ant-table) {
+  background: transparent !important;
+}
+
+:deep(.ant-table-container) {
+  background: transparent !important;
+}
+
+:deep(.ant-table-content) {
+  background: transparent !important;
 }
 
 :deep(.ant-table-thead > tr > th) {
-  background: #f8fafc !important;
-  color: #334155 !important;
+  background: var(--th-bg) !important;
+  color: var(--th-color) !important;
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 11px !important;
   font-weight: 800 !important;
-  letter-spacing: 0.05em !important;
-  border-bottom: 1px solid #e2e8f0 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid var(--th-border) !important;
+  padding: 14px 18px !important;
 }
 
-:root[data-theme='dark'] :deep(.ant-table-thead > tr > th) {
-  background: #111827 !important;
-  color: #94a3b8 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+:deep(.ant-table-thead th.ant-table-cell::before) {
+  display: none !important;
 }
 
 :deep(.ant-table-tbody > tr > td) {
-  border-bottom: 1px solid #f1f5f9 !important;
+  background: transparent !important;
+  border-bottom: 1px solid var(--td-border) !important;
+  padding: 16px 18px !important;
+  transition: background 0.15s ease !important;
 }
 
-:root[data-theme='dark'] :deep(.ant-table-tbody > tr > td) {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+:deep(.ant-table-tbody > tr:hover > td),
+:deep(.ant-table-tbody > tr.ant-table-row-hover > td),
+:deep(.ant-table-tbody > tr.ant-table-row-selected > td) {
+  background: var(--row-hover-bg) !important;
 }
 
-:deep(.ant-table-tbody > tr:hover > td) {
-  background: #f8fafc !important;
+:deep(.ant-pagination) {
+  margin: 16px 18px !important;
+  color: var(--pagination-color) !important;
 }
 
-:root[data-theme='dark'] :deep(.ant-table-tbody > tr:hover > td) {
-  background: rgba(255, 255, 255, 0.03) !important;
+:deep(.ant-pagination-item) {
+  background: var(--pagination-item-bg) !important;
+  border-color: var(--pagination-item-border) !important;
+}
+
+:deep(.ant-pagination-item a) {
+  color: var(--pagination-color) !important;
+}
+
+:deep(.ant-pagination-item-active) {
+  border-color: #6366f1 !important;
+  background: #6366f1 !important;
+}
+
+:deep(.ant-pagination-item-active a) {
+  color: #ffffff !important;
+}
+
+:deep(.ant-pagination-prev .ant-pagination-item-link),
+:deep(.ant-pagination-next .ant-pagination-item-link) {
+  background: var(--pagination-item-bg) !important;
+  border-color: var(--pagination-item-border) !important;
+  color: var(--pagination-color) !important;
+}
+
+:deep(.ant-pagination-total-text) {
+  color: var(--pagination-color) !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
 }
 </style>
