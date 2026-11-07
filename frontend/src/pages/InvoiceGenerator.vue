@@ -81,9 +81,10 @@
               <button 
                 type="button" 
                 @click="addItem" 
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 flex items-center gap-1"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 flex items-center gap-1.5"
               >
-                <span>➕</span> Add Item
+                <niche-icon name="plus" :size="13" />
+                <span>Add Item</span>
               </button>
             </div>
 
@@ -165,8 +166,8 @@
 
             <!-- Till Instruction Pill -->
             <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300 space-y-1">
-              <div class="font-bold flex items-center gap-1.5">
-                <span>📱</span>
+              <div class="font-bold flex items-center gap-1.5 font-mono">
+                <niche-icon name="mpesa" :size="14" custom-class="text-emerald-500" />
                 <span>Lipa na M-Pesa Buy Goods Till #882941</span>
               </div>
               <p class="text-[11px] mb-0 opacity-90">
@@ -181,7 +182,7 @@
                 @click="openWhatsAppBill"
                 class="w-full py-3 rounded-xl font-bold text-xs text-white bg-emerald-600 hover:bg-emerald-500 transition-all shadow-sm shadow-emerald-500/20 flex items-center justify-center gap-2 active:scale-95"
               >
-                <span>💬</span>
+                <niche-icon name="whatsapp" :size="14" />
                 <span>Send Bill to Customer WhatsApp</span>
               </button>
 
@@ -190,7 +191,7 @@
                 @click="triggerStkPrompt"
                 class="w-full py-3 rounded-xl font-bold text-xs text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-2 active:scale-95"
               >
-                <span>📱</span>
+                <niche-icon name="phone" :size="14" />
                 <span>Trigger M-Pesa STK Prompt (45s)</span>
               </button>
 
@@ -199,7 +200,7 @@
                 @click="downloadEtimsBillPdf"
                 class="w-full py-2.5 rounded-xl font-bold text-xs text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 transition-all flex items-center justify-center gap-2"
               >
-                <span>📄</span>
+                <niche-icon name="tax" :size="14" />
                 <span>Download Official eTIMS Receipt</span>
               </button>
             </div>
@@ -319,6 +320,7 @@ import api from '../services/api';
 import { isSimpleMode, isProMode } from '../services/cockpitMode';
 import WhatsAppDispatchModal from '../components/WhatsAppDispatchModal.vue';
 import StkPushModal from '../components/StkPushModal.vue';
+import NicheIcon from '../components/NicheIcon.vue';
 import { message } from 'ant-design-vue';
 
 export default defineComponent({
@@ -329,7 +331,8 @@ export default defineComponent({
     UndoOutlined,
     EyeOutlined,
     WhatsAppDispatchModal,
-    StkPushModal
+    StkPushModal,
+    NicheIcon
   },
   setup() {
     const router = useRouter();

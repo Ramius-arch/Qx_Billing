@@ -27,7 +27,7 @@
             @click="showExpenseModal = true"
             class="px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 border border-slate-700/60 shadow-sm transition-all flex items-center gap-2"
           >
-            <span>➕</span>
+            <niche-icon name="plus" :size="13" />
             <span>Record Store Payout / Expense</span>
           </button>
 
@@ -36,7 +36,7 @@
             @click="downloadTaxSummary"
             class="px-4 py-2.5 rounded-xl font-bold text-xs border border-indigo-500/40 text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all flex items-center gap-2"
           >
-            <span>📄</span>
+            <niche-icon name="doc" :size="13" />
             <span>KRA Tax Summary (PDF)</span>
           </button>
         </div>
@@ -46,39 +46,39 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Today's Store Sales</span>
-            <span class="text-lg">💵</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">Today's Store Sales</span>
+            <niche-icon name="vault" :size="18" custom-class="text-amber-500" />
           </div>
           <div class="text-2xl font-black text-slate-900 dark:text-white tabular-nums font-mono">
             KES {{ Number(trialBalance.totalDebits || 14200).toLocaleString() }}
           </div>
-          <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
+          <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1 font-mono">
             &uarr; 100% Collected & Verified
           </div>
         </div>
 
         <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Available Till Balance</span>
-            <span class="text-lg">📱</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">Available Till Balance</span>
+            <niche-icon name="mpesa" :size="18" custom-class="text-emerald-500" />
           </div>
           <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums font-mono">
             KES 72,250
           </div>
-          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">
             Till #882941 &middot; Ready for Payout
           </div>
         </div>
 
         <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">KRA 16% Tax Collected</span>
-            <span class="text-lg">🏛️</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">KRA 16% Tax Collected</span>
+            <niche-icon name="tax" :size="18" custom-class="text-indigo-500" />
           </div>
           <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 tabular-nums font-mono">
             KES {{ Number(calculatedVatTotal).toLocaleString() }}
           </div>
-          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">
             PIN: P051982741Z &middot; eTIMS Compliant
           </div>
         </div>
@@ -145,8 +145,9 @@
                   {{ tx.tax }}
                 </td>
                 <td class="py-3 px-3 text-center">
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                    <span>✓</span> Auto-Balanced
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <niche-icon name="check" :size="11" />
+                    <span>Auto-Balanced</span>
                   </span>
                 </td>
               </tr>
@@ -674,6 +675,7 @@ import api from '../services/api';
 import { useTenantConfig } from '../services/tenantConfig';
 import { isSimpleMode, isProMode } from '../services/cockpitMode';
 import BssAgentsCockpit from '../components/BssAgentsCockpit.vue';
+import NicheIcon from '../components/NicheIcon.vue';
 import { message } from 'ant-design-vue';
 
 export default defineComponent({
@@ -685,7 +687,8 @@ export default defineComponent({
     SettingOutlined,
     PlusOutlined,
     ThunderboltOutlined,
-    BssAgentsCockpit
+    BssAgentsCockpit,
+    NicheIcon
   },
   setup() {
     const router = useRouter();

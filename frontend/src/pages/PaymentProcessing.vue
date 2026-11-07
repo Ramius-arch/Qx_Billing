@@ -27,7 +27,7 @@
             @click="openStkModal"
             class="px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-emerald-600 hover:bg-emerald-500 transition-all flex items-center gap-2 shadow-sm shadow-emerald-500/20 active:scale-95"
           >
-            <span>📱</span>
+            <niche-icon name="phone" :size="14" />
             <span>Send M-Pesa STK Prompt</span>
           </button>
 
@@ -36,7 +36,7 @@
             @click="openUnclaimedDrawer"
             class="px-3.5 py-2.5 rounded-xl font-bold text-xs border border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 transition-all flex items-center gap-2"
           >
-            <span>🔍</span>
+            <niche-icon name="search" :size="14" />
             <span>Unmatched Payments (2)</span>
           </button>
         </div>
@@ -46,39 +46,39 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Available Till Balance</span>
-            <span class="text-lg">📱</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">Available Till Balance</span>
+            <niche-icon name="mpesa" :size="18" custom-class="text-emerald-500" />
           </div>
           <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums font-mono">
             KES 72,250
           </div>
-          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono">
             Till #882941 &middot; Active & Settling
           </div>
         </div>
 
         <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Today's Cash Inflow</span>
-            <span class="text-lg">💵</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">Today's Cash Inflow</span>
+            <niche-icon name="vault" :size="18" custom-class="text-amber-500" />
           </div>
           <div class="text-2xl font-black text-slate-900 dark:text-white tabular-nums font-mono">
             KES 14,200
           </div>
-          <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
+          <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1 font-mono">
             &uarr; 100% Reconciled to Orders
           </div>
         </div>
 
         <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Unmatched Payments</span>
-            <span class="text-lg">⚠️</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">Unmatched Payments</span>
+            <niche-icon name="warning" :size="18" custom-class="text-amber-500" />
           </div>
           <div class="text-2xl font-black text-amber-600 dark:text-amber-400 tabular-nums font-mono">
             2 Payments (KES 5,300)
           </div>
-          <div class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">
+          <div class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1 font-mono">
             Click "Unmatched" to link to bills
           </div>
         </div>
@@ -89,7 +89,8 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
           <div>
             <h3 class="text-base font-extrabold text-slate-900 dark:text-white m-0 flex items-center gap-2">
-              <span>📱</span> Direct Customer M-Pesa STK Prompt
+              <niche-icon name="phone" :size="16" custom-class="text-emerald-500" />
+              <span>Direct Customer M-Pesa STK Prompt</span>
             </h3>
             <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-0">
               Sends an instant PIN prompt directly to the customer's Safaricom phone. Funds settle into Till #882941 in under 5 seconds.
@@ -125,7 +126,7 @@
               @click="handleSendQuickStk"
               class="w-full py-2.5 rounded-xl font-bold text-xs text-white bg-emerald-600 hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 shadow-sm shadow-emerald-500/20 active:scale-95"
             >
-              <span>⚡</span>
+              <niche-icon name="zap" :size="14" />
               <span>Send STK Prompt Now</span>
             </button>
           </div>
@@ -179,17 +180,19 @@
                   {{ tx.orderRef }}
                 </td>
                 <td class="py-3 px-3 text-center">
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    <span>✓</span> MATCHED
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <niche-icon name="check" :size="11" />
+                    <span>MATCHED</span>
                   </span>
                 </td>
                 <td class="py-3 px-3 text-center">
                   <button
                     type="button"
                     @click="sendWhatsAppReceipt(tx)"
-                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 flex items-center gap-1 mx-auto"
+                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 flex items-center gap-1.5 mx-auto"
                   >
-                    <span>💬</span> WhatsApp
+                    <niche-icon name="whatsapp" :size="12" />
+                    <span>WhatsApp</span>
                   </button>
                 </td>
               </tr>
@@ -263,6 +266,7 @@ import { defineComponent, ref, reactive, onMounted } from 'vue';
 import { isSimpleMode, isProMode } from '../services/cockpitMode';
 import StkPushModal from '../components/StkPushModal.vue';
 import UnclaimedMpesaDrawer from '../components/UnclaimedMpesaDrawer.vue';
+import NicheIcon from '../components/NicheIcon.vue';
 import api from '../services/api';
 import { message } from 'ant-design-vue';
 
@@ -270,7 +274,8 @@ export default defineComponent({
   name: 'PaymentProcessing',
   components: {
     StkPushModal,
-    UnclaimedMpesaDrawer
+    UnclaimedMpesaDrawer,
+    NicheIcon
   },
   setup() {
     const stkModalVisible = ref(false);

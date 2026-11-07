@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Customers from '../../src/pages/Customers.vue';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi, describe } from 'vitest';
 import api from '../../src/services/api';
 
 vi.mock('../../src/services/api', () => ({
@@ -31,37 +31,40 @@ vi.mock('vue-router', () => ({
   }),
 }));
 
-test('renders customers table correctly', async () => {
-  const wrapper = mount(Customers, {
-    global: {
-      stubs: {
-        'a-input-search': true,
-        'a-button': true,
-        'a-table': {
-           props: ['dataSource'],
-           template: '<div><div v-for="item in dataSource" :key="item.id">{{ item.name }}</div></div>'
-        },
-        'a-card': { template: '<div><slot /></div>' },
-        'a-tag': true,
-        'a-modal': true,
-        'a-form': true,
-        'a-form-item': true,
-        'a-input': true,
-        'a-textarea': true,
-        'a-select': true,
-        'a-select-option': true,
-        'a-row': true,
-        'a-col': true,
-        'a-space': true,
-        'a-tooltip': true,
-        'a-popconfirm': true,
+describe('Customers', () => {
+  test('renders customers table correctly', async () => {
+    const wrapper = mount(Customers, {
+      global: {
+        stubs: {
+          'a-input-search': true,
+          'a-button': true,
+          'a-table': {
+             props: ['dataSource'],
+             template: '<div><div v-for="item in dataSource" :key="item.id">{{ item.name }}</div></div>'
+          },
+          'a-card': { template: '<div><slot /></div>' },
+          'a-tag': true,
+          'a-modal': true,
+          'a-form': true,
+          'a-form-item': true,
+          'a-input': true,
+          'a-textarea': true,
+          'a-select': true,
+          'a-select-option': true,
+          'a-row': true,
+          'a-col': true,
+          'a-space': true,
+          'a-tooltip': true,
+          'a-popconfirm': true,
+          'niche-icon': { template: '<span>icon</span>' },
+        }
       }
-    }
+    });
+
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick(); // Wait for fetchCustomers
+
+    expect(wrapper.html()).toContain('John Doe');
+    expect(wrapper.html()).toContain('Jane Smith');
   });
-
-  await wrapper.vm.$nextTick();
-  await wrapper.vm.$nextTick(); // Wait for fetchCustomers
-
-  expect(wrapper.html()).toContain('John Doe');
-  expect(wrapper.html()).toContain('Jane Smith');
 });

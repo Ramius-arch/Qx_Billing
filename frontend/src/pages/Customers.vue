@@ -44,12 +44,12 @@
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'name'">
             <div class="flex items-center gap-2.5">
-              <div class="customer-avatar-badge">
-                {{ (record.name || 'C').charAt(0).toUpperCase() }}
+              <div class="customer-avatar-badge font-mono font-bold">
+                {{ ((record.name || 'C').charAt(0)).toUpperCase() }}
               </div>
               <div>
-                <span class="customer-row-name block text-sm">{{ record.name }}</span>
-                <span class="customer-row-address font-mono text-xs">{{ record.address || 'Nairobi, Kenya' }}</span>
+                <span class="customer-row-name block text-sm font-bold">{{ record.name || ('Customer #' + (record.id || 'Walk-in')) }}</span>
+                <span class="customer-row-address font-mono text-xs block mt-0.5">{{ record.address || 'Nairobi, Kenya' }}</span>
               </div>
             </div>
           </template>
@@ -83,7 +83,7 @@
                 title="Chat on WhatsApp"
                 class="btn-row-whatsapp"
               >
-                <span>💬</span>
+                <niche-icon name="whatsapp" :size="13" />
                 <span>WhatsApp</span>
               </button>
 
@@ -93,7 +93,7 @@
                 title="Issue Bill"
                 class="btn-row-bill"
               >
-                <span>➕</span>
+                <niche-icon name="plus" :size="13" />
                 <span>Bill</span>
               </button>
 
@@ -176,6 +176,7 @@ import {
 import api from '../services/api';
 import { isSimpleMode, isProMode } from '../services/cockpitMode';
 import { message } from 'ant-design-vue';
+import NicheIcon from '../components/NicheIcon.vue';
 
 const columns = [
   { title: 'Customer Name', dataIndex: 'name', key: 'name', sorter: true },
@@ -191,6 +192,7 @@ export default defineComponent({
     EditOutlined,
     DeleteOutlined,
     SearchOutlined,
+    NicheIcon,
   },
   setup() {
     const route = useRoute();
@@ -323,7 +325,7 @@ export default defineComponent({
     const openCustomerWhatsApp = (record) => {
       const phone = (record.phone_number || '').replace(/[^0-9]/g, '');
       if (!phone) return message.warning('No phone number recorded for customer.');
-      const text = encodeURIComponent(`Hello ${record.name}! 🛍️ Greetings from Ladha Store.`);
+      const text = encodeURIComponent(`Hello ${record.name || 'valued customer'}! Greetings from Ladha Store.`);
       window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
     };
 

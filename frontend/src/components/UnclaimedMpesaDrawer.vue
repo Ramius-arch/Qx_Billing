@@ -10,7 +10,7 @@
     <div class="unclaimed-mpesa-content font-sans">
       <!-- Context Banner -->
       <div class="p-3 mb-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
-        <span class="text-xl">⚠️</span>
+        <niche-icon name="warning" :size="18" custom-class="text-amber-500 flex-shrink-0 mt-0.5" />
         <div>
           <h4 class="text-xs font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">
             Unassigned Lipa na M-Pesa Payments ({{ unclaimedList.length }})
@@ -74,8 +74,10 @@
         </div>
 
         <div v-if="unclaimedList.length === 0" class="text-center py-12 text-slate-400 font-mono text-xs">
-          <div class="text-3xl mb-2">🎉</div>
-          <p class="font-bold">Zero Unmatched Payments</p>
+          <div class="flex justify-center mb-2">
+            <niche-icon name="party" :size="36" custom-class="text-emerald-500" />
+          </div>
+          <p class="font-bold text-slate-800 dark:text-slate-100">Zero Unmatched Payments</p>
           <p class="text-[11px] text-slate-500">Every Lipa na M-Pesa transaction is reconciled to an invoice.</p>
         </div>
       </div>
@@ -86,9 +88,13 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import { message } from 'ant-design-vue';
+import NicheIcon from './NicheIcon.vue';
 
 export default defineComponent({
   name: 'UnclaimedMpesaDrawer',
+  components: {
+    NicheIcon
+  },
   props: {
     visible: {
       type: Boolean,

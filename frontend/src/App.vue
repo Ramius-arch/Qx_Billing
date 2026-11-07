@@ -232,7 +232,7 @@
 
                   <a-tooltip :title="themeTooltip">
                     <div class="theme-toggle" @click="handleThemeToggle">
-                      <span v-if="themePreference === 'system'" class="text-xs select-none">💻</span>
+                      <niche-icon v-if="themePreference === 'system'" name="desktop" :size="16" class="header-icon" />
                       <component v-else :is="isDark ? 'bulb-filled' : 'bulb-outlined'" class="header-icon" />
                     </div>
                   </a-tooltip>
@@ -294,6 +294,7 @@ import { isRouteLoading } from './router';
 import { theme, message } from 'ant-design-vue';
 import { useTenantConfig } from './services/tenantConfig';
 import CockpitModeSwitch from './components/CockpitModeSwitch.vue';
+import NicheIcon from './components/NicheIcon.vue';
 import { isSimpleMode } from './services/cockpitMode';
 import { themePreference, isDark, setThemePreference, cycleTheme, applyThemeToDom } from './services/themeMode';
 import Lenis from 'lenis';
@@ -326,6 +327,7 @@ export default defineComponent({
   name: 'App',
   components: {
     CockpitModeSwitch,
+    NicheIcon,
     HomeOutlined,
     DashboardOutlined,
     TeamOutlined,

@@ -68,7 +68,7 @@
               class="p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5"
               :class="themePreference === 'system' ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
             >
-              <span class="text-xl">💻</span>
+              <niche-icon name="desktop" :size="20" />
               <span class="text-xs font-bold">System</span>
               <span class="text-[10px] text-slate-500 font-mono">Device Mode</span>
             </button>
@@ -79,7 +79,7 @@
               class="p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5"
               :class="themePreference === 'light' ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
             >
-              <span class="text-xl">☀️</span>
+              <niche-icon name="sun" :size="20" />
               <span class="text-xs font-bold">Light</span>
               <span class="text-[10px] text-slate-500 font-mono">Ceramic Clean</span>
             </button>
@@ -90,7 +90,7 @@
               class="p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5"
               :class="themePreference === 'dark' ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
             >
-              <span class="text-xl">🌙</span>
+              <niche-icon name="moon" :size="20" />
               <span class="text-xs font-bold">Dark</span>
               <span class="text-[10px] text-slate-500 font-mono">Apple Obsidian</span>
             </button>
@@ -114,7 +114,7 @@
               :class="currentMode === 'standard' ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
             >
               <div class="flex items-center gap-1.5 font-bold text-xs mb-1">
-                <span>🛣️</span>
+                <niche-icon name="bag" :size="15" />
                 <span>Standard (Street)</span>
               </div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 m-0">
@@ -129,7 +129,7 @@
               :class="currentMode === 'advanced' ? 'border-amber-600 bg-amber-50/50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
             >
               <div class="flex items-center gap-1.5 font-bold text-xs mb-1">
-                <span>🏁</span>
+                <niche-icon name="scale" :size="15" />
                 <span>Advanced (Track)</span>
               </div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 m-0">
@@ -194,9 +194,13 @@ import { useTenantConfig } from '../services/tenantConfig';
 import { themePreference, isDark, setThemePreference } from '../services/themeMode';
 import { currentMode, setMode as setCockpitMode } from '../services/cockpitMode';
 import api from '../services/api';
+import NicheIcon from '../components/NicheIcon.vue';
 
 export default defineComponent({
   name: 'SystemSettings',
+  components: {
+    NicheIcon
+  },
   setup() {
     const { activeTenant, currentPresetKey, availablePresets, setPreset } = useTenantConfig();
     const config = ref({ vat_rate: 16, currency: activeTenant.value.currency.code });

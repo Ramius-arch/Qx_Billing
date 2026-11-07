@@ -26,7 +26,7 @@
             class="btn-primary-sale"
             @click="$emit('create-sale')"
           >
-            <span class="btn-icon">➕</span>
+            <niche-icon name="plus" :size="14" />
             <span>Make a Sale / Issue Bill</span>
           </button>
 
@@ -35,7 +35,7 @@
             class="btn-secondary-action btn-whatsapp"
             @click="$emit('open-whatsapp')"
           >
-            <span>💬</span>
+            <niche-icon name="whatsapp" :size="14" />
             <span>WhatsApp Bill</span>
           </button>
 
@@ -44,7 +44,7 @@
             class="btn-secondary-action"
             @click="$emit('open-stk')"
           >
-            <span>📱</span>
+            <niche-icon name="phone" :size="14" />
             <span>M-Pesa STK Prompt</span>
           </button>
         </div>
@@ -97,7 +97,7 @@
     <section v-if="unclaimedCount > 0 || overdueCount > 0" class="action-inbox-section mb-6">
       <div class="inbox-header">
         <div class="flex items-center gap-2">
-          <span class="inbox-warning-icon">⚠️</span>
+          <niche-icon name="warning" :size="16" custom-class="text-amber-500 flex-shrink-0" />
           <h2 class="inbox-title">Action Required ({{ unclaimedCount + overdueCount }} items)</h2>
         </div>
         <span class="inbox-hint font-mono text-xs text-slate-400">Review before end of day</span>
@@ -141,8 +141,8 @@
             class="inbox-btn-action btn-green"
             @click="$emit('open-whatsapp', { id: '1042', customerName: 'John Mwangi', customerPhone: '712345678', amount: 4500 })"
           >
+            <niche-icon name="whatsapp" :size="13" />
             <span>Send WhatsApp Reminder</span>
-            <span>💬</span>
           </button>
         </div>
       </div>
@@ -238,7 +238,7 @@
                   title="Share Receipt on WhatsApp"
                   @click.stop="$emit('open-whatsapp', order)"
                 >
-                  💬
+                  <niche-icon name="whatsapp" :size="13" />
                 </button>
                 <span class="status-chip font-mono" :class="order.status === 'Completed' ? 'chip-green' : 'chip-amber'">
                   {{ order.status }}
@@ -299,7 +299,7 @@
             class="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
             @click="$emit('open-whatsapp', selectedOrder); drawerVisible = false"
           >
-            <span>💬</span>
+            <niche-icon name="whatsapp" :size="14" />
             <span>Send Receipt on WhatsApp</span>
           </button>
           
@@ -308,7 +308,7 @@
             class="w-full py-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition-all"
             @click="$emit('create-sale'); drawerVisible = false"
           >
-            <span>➕</span>
+            <niche-icon name="plus" :size="14" />
             <span>Record Another Sale</span>
           </button>
         </div>
@@ -322,13 +322,15 @@ import { defineComponent, ref } from 'vue';
 import { Bar } from 'vue-chartjs';
 import BssAgentsCockpit from './BssAgentsCockpit.vue';
 import BusinessCoachHUD from './BusinessCoachHUD.vue';
+import NicheIcon from './NicheIcon.vue';
 
 export default defineComponent({
   name: 'MerchantStandardDashboard',
   components: {
     Bar,
     BssAgentsCockpit,
-    BusinessCoachHUD
+    BusinessCoachHUD,
+    NicheIcon
   },
   props: {
     activeTenant: {

@@ -10,8 +10,8 @@
     <div class="whatsapp-dispatch-stage font-sans">
       <!-- Kenyan WhatsApp Header Banner -->
       <div class="p-3 mb-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xl shadow-md">
-          <span>💬</span>
+        <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xl shadow-md flex-shrink-0">
+          <niche-icon name="whatsapp" :size="20" />
         </div>
         <div>
           <h4 class="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
@@ -110,9 +110,13 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
+import NicheIcon from './NicheIcon.vue';
 
 export default defineComponent({
   name: 'WhatsAppDispatchModal',
+  components: {
+    NicheIcon
+  },
   props: {
     visible: {
       type: Boolean,

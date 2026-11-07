@@ -38,7 +38,7 @@
 
           <!-- Vibrating Phone Icon inside Circle -->
           <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="text-3xl animate-bounce">📱</span>
+            <niche-icon name="phone" :size="30" custom-class="text-emerald-500 animate-pulse" />
             <span class="text-xs font-mono font-black text-slate-800 dark:text-slate-100 mt-1">
               {{ countdown }}s
             </span>
@@ -153,9 +153,13 @@
 
 <script>
 import { defineComponent, ref, computed, watch, onUnmounted } from 'vue';
+import NicheIcon from './NicheIcon.vue';
 
 export default defineComponent({
   name: 'StkPushModal',
+  components: {
+    NicheIcon
+  },
   props: {
     visible: {
       type: Boolean,

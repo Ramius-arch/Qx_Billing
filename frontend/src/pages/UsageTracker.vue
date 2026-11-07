@@ -25,9 +25,9 @@
           <button 
             type="button" 
             @click="openNewSaleModal"
-            class="px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-500 transition-all flex items-center gap-2 shadow-sm shadow-indigo-500/20 active:scale-95"
+            class="btn-sale-primary"
           >
-            <span>➕</span>
+            <niche-icon name="plus" :size="14" />
             <span>Make a Sale / New Order</span>
           </button>
 
@@ -35,182 +35,205 @@
             type="button" 
             @click="refreshData" 
             :disabled="loading"
-            class="px-3.5 py-2.5 rounded-xl font-bold text-xs border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 transition-all flex items-center gap-2"
+            class="btn-sync-action"
           >
-            <span :class="{ 'animate-spin': loading }">🔄</span>
+            <niche-icon name="refresh" :size="14" :custom-class="loading ? 'animate-spin' : ''" />
             <span>Refresh</span>
           </button>
         </div>
       </div>
 
-      <!-- Quick KPI Cards (Jakob's Law: glanceable totals) -->
+      <!-- Quick KPI Cards (Glanceable 4-Stop Complementary Resonance) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="register-kpi-card p-5">
-          <div class="flex items-center justify-between mb-2">
+        <!-- 1. Gold Resonance: Total Sales -->
+        <div class="register-kpi-card kpi-card-gold p-5">
+          <div class="flex items-center justify-between mb-3">
             <span class="kpi-micro-label">Total Sales</span>
-            <span class="text-lg">💰</span>
+            <div class="kpi-icon-tray tray-gold">
+              <niche-icon name="vault" :size="18" />
+            </div>
           </div>
           <div class="kpi-amount tabular-nums font-mono">
             KES {{ Number(totalGMV || 48500).toLocaleString() }}
           </div>
-          <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-            &uarr; 16% KRA VAT Included
+          <div class="kpi-subtext flex items-center gap-1.5 mt-2">
+            <span class="kpi-badge badge-gold font-mono">&uarr; 16% VAT RING-FENCED</span>
           </div>
         </div>
 
-        <div class="register-kpi-card p-5">
-          <div class="flex items-center justify-between mb-2">
+        <!-- 2. Emerald Resonance: Completed Orders -->
+        <div class="register-kpi-card kpi-card-emerald p-5">
+          <div class="flex items-center justify-between mb-3">
             <span class="kpi-micro-label">Completed Orders</span>
-            <span class="text-lg">📦</span>
+            <div class="kpi-icon-tray tray-emerald">
+              <niche-icon name="parcel" :size="18" />
+            </div>
           </div>
           <div class="kpi-amount tabular-nums font-mono">
             {{ orders.length || 12 }} Orders
           </div>
-          <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-            ✓ 100% Fulfilled & Settled
+          <div class="kpi-subtext flex items-center gap-1.5 mt-2">
+            <span class="kpi-badge badge-emerald font-mono">✓ 100% Fulfilled & Settled</span>
           </div>
         </div>
 
-        <div class="register-kpi-card p-5">
-          <div class="flex items-center justify-between mb-2">
+        <!-- 3. Kinetic Solar Amber Resonance: Pending Deliveries -->
+        <div class="register-kpi-card kpi-card-amber p-5">
+          <div class="flex items-center justify-between mb-3">
             <span class="kpi-micro-label">Pending Deliveries</span>
-            <span class="text-lg">🚚</span>
+            <div class="kpi-icon-tray tray-amber">
+              <niche-icon name="transit" :size="18" />
+            </div>
           </div>
           <div class="kpi-amount tabular-nums font-mono text-amber-600 dark:text-amber-400">
             2 In Transit
           </div>
-          <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Kilimani & Westlands Riders
+          <div class="kpi-subtext flex items-center gap-1.5 mt-2">
+            <span class="kpi-badge badge-amber font-mono">Kilimani & Westlands Riders</span>
           </div>
         </div>
 
-        <div class="register-kpi-card p-5">
-          <div class="flex items-center justify-between mb-2">
+        <!-- 4. Electric Cyan Resonance: M-Pesa Clearance -->
+        <div class="register-kpi-card kpi-card-cyan p-5">
+          <div class="flex items-center justify-between mb-3">
             <span class="kpi-micro-label">M-Pesa Clearance</span>
-            <span class="text-lg">📱</span>
+            <div class="kpi-icon-tray tray-cyan">
+              <niche-icon name="mpesa" :size="18" />
+            </div>
           </div>
-          <div class="kpi-amount tabular-nums font-mono text-indigo-600 dark:text-indigo-400">
+          <div class="kpi-amount tabular-nums font-mono text-cyan-600 dark:text-cyan-400">
             100%
           </div>
-          <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-            100% Reconciled &middot; Clean Books
+          <div class="kpi-subtext flex items-center gap-1.5 mt-2">
+            <span class="kpi-badge badge-cyan font-mono">Zero Discrepancy &bull; Auto-Healed</span>
           </div>
         </div>
       </div>
 
-      <!-- Search & Status Filters Strip -->
-      <div class="register-filter-bar p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
-        <div class="relative flex-1 max-w-md">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search by customer name, phone, or order number..."
-            class="filter-input w-full pl-9 pr-3 py-2.5 rounded-xl border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <span class="absolute left-3 top-3 text-xs text-slate-400">🔍</span>
+      <!-- Architectural Orders Register Bay (Contrasting Structural Substrate) -->
+      <div class="orders-register-bay mt-6 p-4 sm:p-5">
+        <!-- Search & Status Filters Strip -->
+        <div class="register-filter-bar p-3.5 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-4">
+          <div class="relative flex-1 max-w-md">
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search by customer name, phone, or order number..."
+              class="filter-input w-full pl-9 pr-3 py-2.5 rounded-xl border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <niche-icon name="search" :size="14" custom-class="absolute left-3 top-3 text-slate-400" />
+          </div>
+
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+            <button
+              v-for="tab in filterTabs"
+              :key="tab.key"
+              type="button"
+              @click="activeStatusFilter = tab.key"
+              class="filter-tab-btn px-3.5 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap font-mono"
+              :class="{ 'is-active': activeStatusFilter === tab.key }"
+            >
+              {{ tab.label }}
+            </button>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-          <button
-            v-for="tab in filterTabs"
-            :key="tab.key"
-            type="button"
-            @click="activeStatusFilter = tab.key"
-            class="filter-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap"
-            :class="{ 'is-active': activeStatusFilter === tab.key }"
-          >
-            {{ tab.label }}
-          </button>
-        </div>
-      </div>
+        <!-- Clean Orders Table (Shopify / Square Standard) -->
+        <div class="register-table-wrapper overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="table-header-row text-[11px] font-mono uppercase tracking-wider font-bold">
+                  <th class="py-3.5 px-4">Order #</th>
+                  <th class="py-3.5 px-4">Customer</th>
+                  <th class="py-3.5 px-4">Date & Time</th>
+                  <th class="py-3.5 px-4">Purchased Item(s)</th>
+                  <th class="py-3.5 px-4 text-right">Total (KES)</th>
+                  <th class="py-3.5 px-4">Payment Method</th>
+                  <th class="py-3.5 px-4 text-center">Status</th>
+                  <th class="py-3.5 px-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="table-body divide-y font-sans">
+                <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <td class="py-3.5 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                    {{ order.orderNumber || order.id }}
+                  </td>
+                  <td class="py-3.5 px-4">
+                    <div class="font-bold text-slate-900 dark:text-white">{{ order.customerName || order.Customer?.name || 'Walk-in Customer' }}</div>
+                    <div class="text-[11px] text-slate-600 dark:text-slate-400 font-mono">{{ order.customerPhone || order.Customer?.phone_number || order.phone || '-' }}</div>
+                  </td>
+                  <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400 font-mono whitespace-nowrap">
+                    {{ order.date || (order.createdAt ? new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Today') }}
+                  </td>
+                  <td class="py-3.5 px-4 text-slate-800 dark:text-slate-200 font-medium">
+                    {{ order.itemTitle || (order.lines && order.lines[0]?.title) || order.product || 'Archival Vintage Piece' }}
+                    <span v-if="order.zone || order.shippingAddress" class="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1 font-mono mt-0.5">
+                      <niche-icon name="transit" :size="12" custom-class="text-amber-500" />
+                      {{ order.zone || (order.shippingAddress ? order.shippingAddress.split(',')[0] : 'Nairobi') }}
+                    </span>
+                  </td>
+                  <td class="py-3.5 px-4 text-right font-mono font-black text-slate-900 dark:text-white whitespace-nowrap">
+                    KES {{ Number(order.total || order.amount || 0).toLocaleString() }}
+                  </td>
+                  <td class="py-3.5 px-4">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                      <niche-icon name="mpesa" :size="13" custom-class="text-emerald-500" />
+                      {{ order.paymentReceipt || order.mpesaReceipt || (order.Payments && order.Payments[0]?.receipt_number) || 'M-Pesa Till' }}
+                    </span>
+                  </td>
+                  <td class="py-3.5 px-4 text-center">
+                    <span 
+                      class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider font-mono"
+                      :class="order.status === 'Completed' || order.status === 'paid' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'"
+                    >
+                      {{ order.status === 'Completed' || order.status === 'paid' ? 'DELIVERED' : 'IN TRANSIT' }}
+                    </span>
+                  </td>
+                  <td class="py-3.5 px-4 text-center">
+                    <div class="flex items-center justify-center gap-1.5">
+                      <button
+                        type="button"
+                        @click="sendWhatsAppReceipt(order)"
+                        title="Send Receipt via WhatsApp"
+                        class="px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 transition-colors flex items-center gap-1.5"
+                      >
+                        <niche-icon name="whatsapp" :size="13" />
+                        <span>WhatsApp</span>
+                      </button>
 
-      <!-- Clean Orders Table (Shopify / Square Standard) -->
-      <div class="register-table-wrapper overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="table-header-row text-[11px] font-mono uppercase tracking-wider font-bold">
-                <th class="py-3.5 px-4">Order #</th>
-                <th class="py-3.5 px-4">Customer</th>
-                <th class="py-3.5 px-4">Date & Time</th>
-                <th class="py-3.5 px-4">Purchased Item(s)</th>
-                <th class="py-3.5 px-4 text-right">Total (KES)</th>
-                <th class="py-3.5 px-4">Payment Method</th>
-                <th class="py-3.5 px-4 text-center">Status</th>
-                <th class="py-3.5 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="table-body divide-y font-sans">
-              <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                <td class="py-3.5 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                  {{ order.orderNumber || order.id }}
-                </td>
-                <td class="py-3.5 px-4">
-                  <div class="font-bold text-slate-900 dark:text-white">{{ order.customerName || order.Customer?.name || 'Walk-in Customer' }}</div>
-                  <div class="text-[11px] text-slate-600 dark:text-slate-400 font-mono">{{ order.customerPhone || order.Customer?.phone_number || order.phone || '-' }}</div>
-                </td>
-                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400 font-mono whitespace-nowrap">
-                  {{ order.date || (order.createdAt ? new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Today') }}
-                </td>
-                <td class="py-3.5 px-4 text-slate-800 dark:text-slate-200 font-medium">
-                  {{ order.itemTitle || (order.lines && order.lines[0]?.title) || order.product || 'Archival Vintage Piece' }}
-                  <span v-if="order.zone || order.shippingAddress" class="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">🚚 {{ order.zone || (order.shippingAddress ? order.shippingAddress.split(',')[0] : 'Nairobi') }}</span>
-                </td>
-                <td class="py-3.5 px-4 text-right font-mono font-black text-slate-900 dark:text-white whitespace-nowrap">
-                  KES {{ Number(order.total || order.amount || 0).toLocaleString() }}
-                </td>
-                <td class="py-3.5 px-4">
-                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-                    <span>📱</span>
-                    {{ order.paymentReceipt || order.mpesaReceipt || (order.Payments && order.Payments[0]?.receipt_number) || 'M-Pesa Till' }}
-                  </span>
-                </td>
-                <td class="py-3.5 px-4 text-center">
-                  <span 
-                    class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                    :class="order.status === 'Completed' || order.status === 'paid' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'"
-                  >
-                    {{ order.status === 'Completed' || order.status === 'paid' ? 'DELIVERED' : 'IN TRANSIT' }}
-                  </span>
-                </td>
-                <td class="py-3.5 px-4 text-center">
-                  <div class="flex items-center justify-center gap-1.5">
+                      <button
+                        type="button"
+                        @click="downloadEtimsPdf(order)"
+                        title="View KRA eTIMS Tax Invoice"
+                        class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 transition-colors flex items-center gap-1.5"
+                      >
+                        <niche-icon name="tax" :size="13" />
+                        <span>eTIMS</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr v-if="filteredOrders.length === 0">
+                  <td colspan="8" class="py-12 text-center text-slate-500 dark:text-slate-400">
+                    <div class="flex justify-center mb-2">
+                      <niche-icon name="bag" :size="40" custom-class="text-slate-400" />
+                    </div>
+                    <div class="text-sm font-bold text-slate-800 dark:text-slate-200">No orders found</div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">There are no orders matching this filter or search query.</p>
                     <button
                       type="button"
-                      @click="sendWhatsAppReceipt(order)"
-                      title="Send Receipt via WhatsApp"
-                      class="px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 transition-colors flex items-center gap-1"
+                      @click="openNewSaleModal"
+                      class="mt-3 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm inline-flex items-center gap-1.5"
                     >
-                      <span>💬</span> WhatsApp
+                      <niche-icon name="plus" :size="13" />
+                      <span>Record a Sale</span>
                     </button>
-
-                    <button
-                      type="button"
-                      @click="downloadEtimsPdf(order)"
-                      title="View KRA eTIMS Tax Invoice"
-                      class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 transition-colors flex items-center gap-1"
-                    >
-                      <span>📄</span> eTIMS
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr v-if="filteredOrders.length === 0">
-                <td colspan="8" class="py-12 text-center text-slate-500 dark:text-slate-400">
-                  <div class="text-3xl mb-2">🛍️</div>
-                  <div class="text-sm font-bold text-slate-800 dark:text-slate-200">No orders found</div>
-                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">There are no orders matching this filter or search query.</p>
-                  <button
-                    type="button"
-                    @click="openNewSaleModal"
-                    class="mt-3 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm"
-                  >
-                    Record a Sale
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -471,6 +494,7 @@ import {
 import api from '../services/api';
 import { isSimpleMode, isProMode } from '../services/cockpitMode';
 import { message } from 'ant-design-vue';
+import NicheIcon from '../components/NicheIcon.vue';
 
 export default defineComponent({
   name: 'OrdersDropTracker',
@@ -483,7 +507,8 @@ export default defineComponent({
     ReloadOutlined,
     ExportOutlined,
     PlusOutlined,
-    InfoCircleOutlined
+    InfoCircleOutlined,
+    NicheIcon
   },
   setup() {
     const router = useRouter();
@@ -642,7 +667,7 @@ export default defineComponent({
     const sendWhatsAppReceipt = (order) => {
       const phone = (order.customerPhone || order.phone || '').replace(/[^0-9]/g, '');
       const text = encodeURIComponent(
-        `Hello ${order.customerName}! 🛍️ Thank you for shopping with Ladha Store.\n\n` +
+        `Hello ${order.customerName}! Thank you for shopping with Ladha Store.\n\n` +
         `Receipt for Order: ${order.orderNumber || order.id}\n` +
         `Item: ${order.itemTitle}\n` +
         `Total: KES ${Number(order.total).toLocaleString()} (Paid via Lipa na M-Pesa Till #882941 - ${order.mpesaReceipt || 'VERIFIED'})\n\n` +
@@ -713,29 +738,241 @@ export default defineComponent({
   margin-bottom: 24px;
 }
 
-.register-kpi-card {
-  background: #ffffff !important;
-  border: 1px solid rgba(226, 232, 240, 0.95) !important;
-  border-radius: 18px !important;
+/* Architectural Orders Register Bay (Contrasting Structural Substrate) */
+.orders-register-bay {
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 20px;
   box-shadow: 
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.65),
-    0 2px 8px rgba(15, 23, 42, 0.03),
-    0 12px 28px -6px rgba(15, 23, 42, 0.04) !important;
-  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 4px 16px rgba(15, 23, 42, 0.02);
+}
+
+:root[data-theme='dark'] .orders-register-bay {
+  background: #0b1120;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* 4-Stop Complementary Resonance KPI Cards */
+.register-kpi-card {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 16px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 1px 3px rgba(15, 23, 42, 0.03),
+    0 10px 24px -6px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+:root[data-theme='dark'] .register-kpi-card {
+  background: #0d1527;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 .register-kpi-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.35) !important;
 }
 
-:root[data-theme='dark'] .register-kpi-card {
-  background: #0f172a !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.4) !important;
+/* 4 Harmonic Accent Aura Stops */
+.kpi-card-gold {
+  background: radial-gradient(circle at 90% 10%, rgba(212, 175, 55, 0.08), transparent 60%), #ffffff;
+}
+:root[data-theme='dark'] .kpi-card-gold {
+  background: radial-gradient(circle at 90% 10%, rgba(212, 175, 55, 0.12), transparent 65%), #0d1527;
+  border-color: rgba(212, 175, 55, 0.25);
+}
+
+.kpi-card-emerald {
+  background: radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.08), transparent 60%), #ffffff;
+}
+:root[data-theme='dark'] .kpi-card-emerald {
+  background: radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.12), transparent 65%), #0d1527;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.kpi-card-amber {
+  background: radial-gradient(circle at 90% 10%, rgba(245, 158, 11, 0.08), transparent 60%), #ffffff;
+}
+:root[data-theme='dark'] .kpi-card-amber {
+  background: radial-gradient(circle at 90% 10%, rgba(245, 158, 11, 0.12), transparent 65%), #0d1527;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.kpi-card-cyan {
+  background: radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.08), transparent 60%), #ffffff;
+}
+:root[data-theme='dark'] .kpi-card-cyan {
+  background: radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.12), transparent 65%), #0d1527;
+  border-color: rgba(6, 182, 212, 0.25);
+}
+
+/* Double-Bezel Micro-Trays for Icons */
+.kpi-icon-tray {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  transition: transform 0.2s ease;
+}
+
+.tray-gold {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.3);
+  color: #b45309;
+}
+:root[data-theme='dark'] .tray-gold {
+  background: rgba(212, 175, 55, 0.18);
+  border-color: rgba(212, 175, 55, 0.4);
+  color: #fbbf24;
+}
+
+.tray-emerald {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #047857;
+}
+:root[data-theme='dark'] .tray-emerald {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.tray-amber {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #b45309;
+}
+:root[data-theme='dark'] .tray-amber {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+.tray-cyan {
+  background: rgba(6, 182, 212, 0.1);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #0e7490;
+}
+:root[data-theme='dark'] .tray-cyan {
+  background: rgba(6, 182, 212, 0.18);
+  border-color: rgba(6, 182, 212, 0.4);
+  color: #22d3ee;
+}
+
+/* Micro-Badges */
+.kpi-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.badge-gold {
+  background: rgba(212, 175, 55, 0.12);
+  color: #92400e;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+:root[data-theme='dark'] .badge-gold {
+  background: rgba(212, 175, 55, 0.2);
+  color: #fde68a;
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065f46;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+:root[data-theme='dark'] .badge-emerald {
+  background: rgba(16, 185, 129, 0.2);
+  color: #a7f3d0;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: #92400e;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+:root[data-theme='dark'] .badge-amber {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.badge-cyan {
+  background: rgba(6, 182, 212, 0.12);
+  color: #155e75;
+  border: 1px solid rgba(6, 182, 212, 0.25);
+}
+:root[data-theme='dark'] .badge-cyan {
+  background: rgba(6, 182, 212, 0.2);
+  color: #a5f3fc;
+  border-color: rgba(6, 182, 212, 0.35);
+}
+
+/* Action Buttons */
+.btn-sale-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #4f46e5;
+  color: #ffffff;
+  border: 1px solid #4338ca;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(79, 70, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.16s ease;
+}
+.btn-sale-primary:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+}
+
+.btn-sync-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+.btn-sync-action:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+:root[data-theme='dark'] .btn-sync-action {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+:root[data-theme='dark'] .btn-sync-action:hover {
+  background: #334155;
+  color: #ffffff;
 }
 
 .kpi-micro-label {
@@ -765,10 +1002,10 @@ export default defineComponent({
 .register-filter-bar {
   background: #ffffff !important;
   border: 1px solid rgba(226, 232, 240, 0.95) !important;
-  border-radius: 18px !important;
+  border-radius: 14px !important;
   box-shadow: 
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
-    0 2px 8px rgba(15, 23, 42, 0.02) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 1px 3px rgba(15, 23, 42, 0.02) !important;
 }
 
 :root[data-theme='dark'] .register-filter-bar {
@@ -820,7 +1057,7 @@ export default defineComponent({
 .register-table-wrapper {
   background: #ffffff !important;
   border: 1px solid rgba(226, 232, 240, 0.95) !important;
-  border-radius: 20px !important;
+  border-radius: 16px !important;
   box-shadow: 
     inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
     inset 0 0 0 1px rgba(255, 255, 255, 0.65),

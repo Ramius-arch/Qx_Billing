@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils';
 import Dashboard from '../../src/pages/Dashboard.vue';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi, describe } from 'vitest';
 import api from '../../src/services/api';
+import { setMode } from '../../src/services/cockpitMode';
 
 vi.mock('../../src/services/api', () => ({
   default: {
@@ -30,37 +31,61 @@ vi.mock('vue-router', () => ({
   }),
 }));
 
-test('renders dashboard data correctly', async () => {
-  const wrapper = mount(Dashboard, {
-    global: {
-      stubs: {
-        'animated-number': {
-          props: ['value', 'suffix'],
-          template: '<span class="test-animated-num">{{ Number(value).toLocaleString() }}{{ suffix || "" }}</span>'
-        },
-        'Bar': true,
-        'Pie': true,
-        'a-spin': { template: '<div><slot /></div>' },
-        'a-card': { template: '<div><slot /></div>' },
-        'a-row': { template: '<div><slot /></div>' },
-        'a-col': { template: '<div><slot /></div>' },
-        'a-tag': { template: '<span><slot /></span>' },
-        'a-avatar': true,
-        'a-button': true,
-        'router-link': true,
+describe('Dashboard', () => {
+  const commonStubs = {
+    'animated-number': {
+      props: ['value', 'suffix'],
+      template: '<span class="test-animated-num">{{ Number(value).toLocaleString() }}{{ suffix || "" }}</span>'
+    },
+    'Bar': true,
+    'Pie': true,
+    'a-spin': { template: '<div><slot /></div>' },
+    'a-card': { template: '<div><slot /></div>' },
+    'a-row': { template: '<div><slot /></div>' },
+    'a-col': { template: '<div><slot /></div>' },
+    'a-tag': { template: '<span><slot /></span>' },
+    'a-avatar': true,
+    'a-button': true,
+    'router-link': true,
+    'niche-icon': { template: '<span>icon</span>' },
+    'stk-push-modal': true,
+    'whats-app-dispatch-modal': true,
+    'unclaimed-mpesa-drawer': true,
+    'business-coach-hud': true,
+  };
+
+  test('renders merchant standard mode correctly by default', async () => {
+    setMode('standard');
+    const wrapper = mount(Dashboard, {
+      global: {
+        stubs: commonStubs
       }
-    }
+    });
+
+    await wrapper.vm.$nextTick();
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    expect(wrapper.text()).toContain('LADHA Store');
+    expect(wrapper.text()).toContain('Store Automated Back-Office Assistants');
   });
 
-  // Wait for the async operation to complete
-  await wrapper.vm.$nextTick();
-  await new Promise(resolve => setTimeout(resolve, 100));
+  test('renders advanced financial intelligence mode when switched to advanced', async () => {
+    setMode('advanced');
+    const wrapper = mount(Dashboard, {
+      global: {
+        stubs: commonStubs
+      }
+    });
 
-  expect(wrapper.text()).toContain('Financial Intelligence Hub');
-  expect(wrapper.html()).toContain('123,456');
-  expect(wrapper.html()).toContain('123');
-  expect(wrapper.html()).toContain('456');
-  expect(wrapper.html()).toContain('789');
-  expect(wrapper.html()).toContain('Transaction 1');
-  expect(wrapper.html()).toContain('Transaction 2');
+    await wrapper.vm.$nextTick();
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    expect(wrapper.text()).toContain('Financial Intelligence Hub');
+    expect(wrapper.html()).toContain('123,456');
+    expect(wrapper.html()).toContain('123');
+    expect(wrapper.html()).toContain('456');
+    expect(wrapper.html()).toContain('789');
+    expect(wrapper.html()).toContain('Transaction 1');
+    expect(wrapper.html()).toContain('Transaction 2');
+  });
 });

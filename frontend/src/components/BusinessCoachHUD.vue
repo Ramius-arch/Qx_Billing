@@ -90,7 +90,7 @@
             :class="isCoachActive ? 'bg-indigo-600 text-white border-indigo-700 shadow-indigo-500/20' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-300 dark:border-slate-700'"
             title="Toggle Business Coach Advice Cards"
           >
-            <span>🎮</span>
+            <niche-icon name="hud" :size="14" />
             <span>{{ isCoachActive ? 'Coach: Active' : 'Coach: Muted' }}</span>
           </button>
         </div>
@@ -100,8 +100,9 @@
       <div v-if="isCoachActive" class="mt-5 pt-4 border-t border-slate-200 dark:border-slate-800/80">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
+            <niche-icon name="zap" :size="14" custom-class="text-amber-500" />
             <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              ⚡ Real-Time Tactical Coaching Briefs ({{ coachBriefings.length }} Insights)
+              Real-Time Tactical Coaching Briefs ({{ coachBriefings.length }} Insights)
             </span>
           </div>
           <span class="text-[11px] font-mono text-indigo-600 dark:text-indigo-400 font-bold">
@@ -118,7 +119,7 @@
             <div>
               <div class="flex items-center justify-between gap-2 mb-2">
                 <div class="flex items-center gap-1.5">
-                  <span class="text-lg">{{ brief.icon }}</span>
+                  <niche-icon :name="brief.icon" :size="16" />
                   <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     {{ brief.category }}
                   </span>
@@ -229,8 +230,11 @@
           </div>
         </div>
 
-        <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300">
-          ✓ <strong>Peace of Mind Guarantee</strong>: The KES {{ financialBreakdown.vatReserve.toLocaleString() }} tax buffer is segregated. You will have no surprise penalty when filing your monthly KRA return on the 20th.
+        <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-start gap-2">
+          <niche-icon name="check" :size="16" custom-class="text-emerald-500 mt-0.5 flex-shrink-0" />
+          <div>
+            <strong>Peace of Mind Guarantee</strong>: The KES {{ financialBreakdown.vatReserve.toLocaleString() }} tax buffer is segregated. You will have no surprise penalty when filing your monthly KRA return on the 20th.
+          </div>
         </div>
       </div>
     </a-modal>
@@ -240,6 +244,7 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import { message } from 'ant-design-vue';
+import NicheIcon from './NicheIcon.vue';
 import {
   isCoachActive,
   toggleCoachHUD,
@@ -252,6 +257,9 @@ import {
 
 export default defineComponent({
   name: 'BusinessCoachHUD',
+  components: {
+    NicheIcon
+  },
   setup() {
     const showReorderModal = ref(false);
     const showTaxModal = ref(false);

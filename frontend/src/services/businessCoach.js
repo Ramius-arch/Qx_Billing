@@ -141,7 +141,7 @@ export const coachBriefings = computed(() => {
     list.push({
       id: 'tip-stock',
       category: 'INVENTORY RUNWAY',
-      icon: '📦',
+      icon: 'parcel',
       badge: `${topStarving.runwayDays} DAYS LEFT`,
       badgeType: 'amber',
       headline: `${topStarving.title} is starving (${topStarving.stockUnits} units left)`,
@@ -155,7 +155,7 @@ export const coachBriefings = computed(() => {
   list.push({
     id: 'tip-tax',
     category: 'TAX & CASH PURITY',
-    icon: '🏛️',
+    icon: 'tax',
     badge: '16% VAT RING-FENCED',
     badgeType: 'indigo',
     headline: `KES ${financialBreakdown.value.netProfit.toLocaleString()} is your true net spendable cash`,
@@ -168,7 +168,7 @@ export const coachBriefings = computed(() => {
   list.push({
     id: 'tip-delivery',
     category: 'LOGISTICS & RIDERS',
-    icon: '🚚',
+    icon: 'transit',
     badge: '2 IN TRANSIT',
     badgeType: 'emerald',
     headline: 'Boda-Boda Courier turnaround: 38 mins average',

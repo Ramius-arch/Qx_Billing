@@ -25,83 +25,91 @@
           :disabled="isAuditing"
           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 transition-all shadow-sm shadow-indigo-500/20 active:scale-95"
         >
-          <span v-if="isAuditing" class="animate-spin text-sm">⏳</span>
-          <span v-else>⚡</span>
+          <niche-icon v-if="isAuditing" name="refresh" :size="14" custom-class="animate-spin" />
+          <niche-icon v-else name="zap" :size="14" />
           <span>{{ isAuditing ? 'Auditing Books...' : 'Run Back-Office Check' }}</span>
         </button>
       </div>
 
-      <!-- 4 Assistant Cards Grid -->
+      <!-- 4 Assistant Cards Grid (Complementary Resonance Stops) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- 1. M-Pesa & Payment Matcher -->
-        <div class="assistant-card p-4 rounded-xl border">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-2xl">🤖</span>
+        <div class="assistant-card agent-card-emerald p-4 rounded-xl border">
+          <div class="flex items-center justify-between mb-3">
+            <div class="assistant-icon-tray tray-emerald">
+              <niche-icon name="robot" :size="18" />
+            </div>
             <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
               ACTIVE &bull; 60s
             </span>
           </div>
           <h4 class="assistant-title text-sm font-bold m-0">Payment Matcher</h4>
-          <p class="assistant-desc text-xs mt-1 mb-3">
+          <p class="assistant-desc text-xs mt-1.5 mb-3 leading-relaxed">
             Auto-matches Lipa na M-Pesa payments to customer bills and fixes unrecorded sales.
           </p>
-          <div class="card-footer pt-2 border-t flex items-center justify-between text-[11px] font-mono">
+          <div class="card-footer pt-2.5 border-t flex items-center justify-between text-[11px] font-mono">
             <span class="footer-label">Payment Status:</span>
             <span class="font-bold text-emerald-600 dark:text-emerald-400">All Matched</span>
           </div>
         </div>
 
         <!-- 2. Double-Entry Bookkeeper -->
-        <div class="assistant-card p-4 rounded-xl border">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-2xl">⚖️</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+        <div class="assistant-card agent-card-cyan p-4 rounded-xl border">
+          <div class="flex items-center justify-between mb-3">
+            <div class="assistant-icon-tray tray-cyan">
+              <niche-icon name="scale" :size="18" />
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/20">
               BALANCED
             </span>
           </div>
           <h4 class="assistant-title text-sm font-bold m-0">Daily Bookkeeper</h4>
-          <p class="assistant-desc text-xs mt-1 mb-3">
+          <p class="assistant-desc text-xs mt-1.5 mb-3 leading-relaxed">
             Guarantees every shilling in sales, VAT, and expenses matches your cash drawer.
           </p>
-          <div class="card-footer pt-2 border-t flex items-center justify-between text-[11px] font-mono">
+          <div class="card-footer pt-2.5 border-t flex items-center justify-between text-[11px] font-mono">
             <span class="footer-label">Balance:</span>
-            <span class="font-bold text-emerald-600 dark:text-emerald-400">KES 0.00 Diff</span>
+            <span class="font-bold text-cyan-600 dark:text-cyan-400">KES 0.00 Diff</span>
           </div>
         </div>
 
         <!-- 3. Restock Unpaid Orders -->
-        <div class="assistant-card p-4 rounded-xl border">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-2xl">⏱️</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/20">
+        <div class="assistant-card agent-card-amber p-4 rounded-xl border">
+          <div class="flex items-center justify-between mb-3">
+            <div class="assistant-icon-tray tray-amber">
+              <niche-icon name="sweep" :size="18" />
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
               ACTIVE &bull; 15m
             </span>
           </div>
           <h4 class="assistant-title text-sm font-bold m-0">Restock Unpaid Orders</h4>
-          <p class="assistant-desc text-xs mt-1 mb-3">
+          <p class="assistant-desc text-xs mt-1.5 mb-3 leading-relaxed">
             Returns unpaid checkout holds back to your shelf so you never miss a walk-in buyer.
           </p>
-          <div class="card-footer pt-2 border-t flex items-center justify-between text-[11px] font-mono">
+          <div class="card-footer pt-2.5 border-t flex items-center justify-between text-[11px] font-mono">
             <span class="footer-label">Restocked:</span>
-            <span class="footer-value font-bold">{{ sweeperMetrics.totalReclaimed || 0 }} items</span>
+            <span class="footer-value font-bold text-amber-600 dark:text-amber-400">{{ sweeperMetrics.totalReclaimed || 0 }} items</span>
           </div>
         </div>
 
         <!-- 4. KRA eTIMS Tax Engine -->
-        <div class="assistant-card p-4 rounded-xl border">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-2xl">🏛️</span>
+        <div class="assistant-card agent-card-indigo p-4 rounded-xl border">
+          <div class="flex items-center justify-between mb-3">
+            <div class="assistant-icon-tray tray-indigo">
+              <niche-icon name="tax" :size="18" />
+            </div>
             <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
               16% VAT OK
             </span>
           </div>
           <h4 class="assistant-title text-sm font-bold m-0">KRA eTIMS Tax</h4>
-          <p class="assistant-desc text-xs mt-1 mb-3">
+          <p class="assistant-desc text-xs mt-1.5 mb-3 leading-relaxed">
             Calculates statutory 16% VAT and embeds verified eTIMS QR codes on all tax invoices.
           </p>
-          <div class="card-footer pt-2 border-t flex items-center justify-between text-[11px] font-mono">
+          <div class="card-footer pt-2.5 border-t flex items-center justify-between text-[11px] font-mono">
             <span class="footer-label">PIN:</span>
-            <span class="footer-value font-bold">P051982741Z</span>
+            <span class="footer-value font-bold text-indigo-600 dark:text-indigo-400">P051982741Z</span>
           </div>
         </div>
       </div>
@@ -109,7 +117,7 @@
       <!-- Live Notice -->
       <div v-if="lastAuditNotice" class="mt-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span>✅</span>
+          <niche-icon name="check" :size="15" custom-class="text-emerald-500 flex-shrink-0" />
           <span><strong>Audit Complete:</strong> {{ lastAuditNotice }}</span>
         </div>
         <span class="text-[10px] opacity-75 font-mono">{{ lastAuditTime }}</span>
@@ -141,7 +149,7 @@
             :disabled="loadingRecon"
             class="px-3.5 py-2 rounded-xl text-xs font-mono font-bold border border-indigo-500/40 text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 disabled:opacity-50 transition-all flex items-center gap-2"
           >
-            <span>🔄</span>
+            <niche-icon name="refresh" :size="13" :custom-class="loadingRecon ? 'animate-spin' : ''" />
             <span>{{ loadingRecon ? 'Reconciling...' : 'Trigger Reconcile & Heal' }}</span>
           </button>
 
@@ -151,7 +159,7 @@
             :disabled="loadingSweep"
             class="px-3.5 py-2 rounded-xl text-xs font-mono font-bold border border-cyan-500/40 text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 disabled:opacity-50 transition-all flex items-center gap-2"
           >
-            <span>🧹</span>
+            <niche-icon name="sweep" :size="13" />
             <span>{{ loadingSweep ? 'Sweeping...' : 'Force Reservation Sweep' }}</span>
           </button>
 
@@ -160,7 +168,7 @@
             @click="downloadDossier"
             class="px-3.5 py-2 rounded-xl text-xs font-mono font-bold border border-amber-500/40 text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 transition-all flex items-center gap-2"
           >
-            <span>📥</span>
+            <niche-icon name="doc" :size="13" />
             <span>Diligence Dossier (PDF)</span>
           </button>
         </div>
@@ -233,9 +241,13 @@ import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import { isSimpleMode, isProMode } from '../services/cockpitMode';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
+import NicheIcon from './NicheIcon.vue';
 
 export default defineComponent({
   name: 'BssAgentsCockpit',
+  components: {
+    NicheIcon
+  },
   setup() {
     const isAuditing = ref(false);
     const loadingRecon = ref(false);
@@ -429,13 +441,126 @@ export default defineComponent({
 }
 
 .assistant-card {
+  position: relative;
+  overflow: hidden;
   background: #ffffff !important;
-  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
   border-radius: 16px !important;
   box-shadow: 
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 1px 3px rgba(15, 23, 42, 0.02) !important;
+    0 1px 3px rgba(15, 23, 42, 0.02),
+    0 6px 18px -4px rgba(15, 23, 42, 0.04) !important;
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease !important;
+}
+
+:root[data-theme='dark'] .assistant-card {
+  background: #1e293b !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 4px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+.assistant-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 10px 24px -4px rgba(15, 23, 42, 0.08) !important;
+}
+
+:root[data-theme='dark'] .assistant-card:hover {
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 12px 28px -4px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 4 Complementary Harmonic Radial Auras */
+.agent-card-emerald {
+  background: radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.08), transparent 60%), #ffffff !important;
+}
+:root[data-theme='dark'] .agent-card-emerald {
+  background: radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.12), transparent 65%), #1e293b !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.agent-card-cyan {
+  background: radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.08), transparent 60%), #ffffff !important;
+}
+:root[data-theme='dark'] .agent-card-cyan {
+  background: radial-gradient(circle at 90% 10%, rgba(6, 182, 212, 0.12), transparent 65%), #1e293b !important;
+  border-color: rgba(6, 182, 212, 0.25) !important;
+}
+
+.agent-card-amber {
+  background: radial-gradient(circle at 90% 10%, rgba(245, 158, 11, 0.08), transparent 60%), #ffffff !important;
+}
+:root[data-theme='dark'] .agent-card-amber {
+  background: radial-gradient(circle at 90% 10%, rgba(245, 158, 11, 0.12), transparent 65%), #1e293b !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+
+.agent-card-indigo {
+  background: radial-gradient(circle at 90% 10%, rgba(99, 102, 241, 0.08), transparent 60%), #ffffff !important;
+}
+:root[data-theme='dark'] .agent-card-indigo {
+  background: radial-gradient(circle at 90% 10%, rgba(99, 102, 241, 0.12), transparent 65%), #1e293b !important;
+  border-color: rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Double-Bezel Micro-Trays for Assistant Icons */
+.assistant-icon-tray {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  transition: transform 0.2s ease;
+}
+
+.tray-emerald {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #047857;
+}
+:root[data-theme='dark'] .tray-emerald {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.tray-cyan {
+  background: rgba(6, 182, 212, 0.1);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #0e7490;
+}
+:root[data-theme='dark'] .tray-cyan {
+  background: rgba(6, 182, 212, 0.18);
+  border-color: rgba(6, 182, 212, 0.4);
+  color: #22d3ee;
+}
+
+.tray-amber {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #b45309;
+}
+:root[data-theme='dark'] .tray-amber {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+.tray-indigo {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: #4338ca;
+}
+:root[data-theme='dark'] .tray-indigo {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #a5b4fc;
 }
 
 .assistant-title {
@@ -448,7 +573,8 @@ export default defineComponent({
 }
 
 .assistant-desc {
-  color: #475569 !important;
+  color: #334155 !important;
+  font-weight: 500 !important;
   line-height: 1.45;
 }
 
@@ -478,26 +604,5 @@ export default defineComponent({
 
 :root[data-theme='dark'] .footer-value {
   color: #f1f5f9 !important;
-}
-
-:root[data-theme='dark'] .assistant-card {
-  background: #1e293b !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 4px 14px rgba(0, 0, 0, 0.3) !important;
-}
-.assistant-card:hover {
-  transform: translateY(-2.5px) !important;
-  border-color: rgba(99, 102, 241, 0.35) !important;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 10px 24px -4px rgba(15, 23, 42, 0.08) !important;
-}
-:root[data-theme='dark'] .assistant-card:hover {
-  border-color: rgba(129, 140, 248, 0.4) !important;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 12px 28px -4px rgba(0, 0, 0, 0.6) !important;
 }
 </style>

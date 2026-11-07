@@ -60,14 +60,17 @@
           </div>
 
           <div class="hero-actions">
-            <button type="button" class="btn-action-primary bg-emerald-600 hover:bg-emerald-500 border-none" @click="goToCreateInvoice">
-              <span>+ Record Sale</span>
+            <button type="button" class="btn-action-primary bg-emerald-600 hover:bg-emerald-500 border-none inline-flex items-center gap-1.5" @click="goToCreateInvoice">
+              <niche-icon name="plus" :size="13" />
+              <span>Record Sale</span>
             </button>
-            <button type="button" class="btn-action-secondary" @click="openWhatsAppModal()">
-              <span>💬 WhatsApp Bill</span>
+            <button type="button" class="btn-action-secondary inline-flex items-center gap-1.5" @click="openWhatsAppModal()">
+              <niche-icon name="whatsapp" :size="13" />
+              <span>WhatsApp Bill</span>
             </button>
-            <button type="button" class="btn-action-secondary" @click="openStkModal()">
-              <span>📱 STK Push</span>
+            <button type="button" class="btn-action-secondary inline-flex items-center gap-1.5" @click="openStkModal()">
+              <niche-icon name="phone" :size="13" />
+              <span>STK Push</span>
             </button>
           </div>
         </div>
@@ -124,7 +127,7 @@
     <!-- Assisted Commerce Toolbar in Street Mode -->
     <section v-if="isStreetMode" class="street-toolbar mb-4 p-3 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-slate-900/40 to-indigo-500/10 border border-emerald-500/20 flex flex-wrap items-center justify-between gap-3 shadow-sm">
       <div class="flex items-center gap-3">
-        <span class="text-xl">🛠️</span>
+        <niche-icon name="tools" :size="20" custom-class="text-emerald-500" />
         <div>
           <div class="text-xs font-bold text-slate-800 dark:text-slate-100">Quick Actions</div>
           <div class="text-[11px] text-slate-500 dark:text-slate-400">Fast counter sales, customer WhatsApp dispatch, and 1-tap M-Pesa reconciliation</div>
@@ -137,7 +140,7 @@
           @click="openWhatsAppModal()"
           class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
         >
-          <span>💬</span>
+          <niche-icon name="whatsapp" :size="13" />
           <span>1-Click WhatsApp Bill</span>
         </button>
 
@@ -146,7 +149,7 @@
           @click="openStkModal()"
           class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
         >
-          <span>📱</span>
+          <niche-icon name="phone" :size="13" />
           <span>Send M-Pesa STK Prompt</span>
         </button>
 
@@ -155,7 +158,7 @@
           @click="unclaimedDrawerVisible = true"
           class="px-3 py-1.5 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-600 dark:text-amber-400 border border-amber-600/30 text-xs font-bold flex items-center gap-1.5 transition-all"
         >
-          <span>⚠️</span>
+          <niche-icon name="warning" :size="13" />
           <span>Match Unclaimed Receipts (3)</span>
         </button>
       </div>
@@ -330,7 +333,7 @@
                 @click="openWhatsAppModal()"
               >
                 <div class="tile-icon-box text-emerald-400">
-                  <span>💬</span>
+                  <niche-icon name="whatsapp" :size="18" />
                 </div>
                 <div class="tile-text">
                   <div class="tile-header-row">
@@ -347,7 +350,7 @@
                 @click="openStkModal()"
               >
                 <div class="tile-icon-box text-indigo-400">
-                  <span>📱</span>
+                  <niche-icon name="phone" :size="18" />
                 </div>
                 <div class="tile-text">
                   <div class="tile-header-row">
@@ -364,7 +367,7 @@
                 @click="unclaimedDrawerVisible = true"
               >
                 <div class="tile-icon-box text-amber-400">
-                  <span>⚠️</span>
+                  <niche-icon name="warning" :size="18" />
                 </div>
                 <div class="tile-text">
                   <div class="tile-header-row">
@@ -522,6 +525,7 @@ import WhatsAppDispatchModal from '../components/WhatsAppDispatchModal.vue';
 import UnclaimedMpesaDrawer from '../components/UnclaimedMpesaDrawer.vue';
 import StkPushModal from '../components/StkPushModal.vue';
 import MerchantStandardDashboard from '../components/MerchantStandardDashboard.vue';
+import NicheIcon from '../components/NicheIcon.vue';
 import { Bar, Pie } from 'vue-chartjs';
 import { 
   ArrowUpOutlined, 
@@ -551,6 +555,7 @@ export default defineComponent({
   name: 'Dashboard',
   components: {
     MerchantStandardDashboard,
+    NicheIcon,
     Bar,
     Pie,
     AnimatedNumber,
