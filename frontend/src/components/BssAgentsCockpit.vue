@@ -408,11 +408,20 @@ export default defineComponent({
 <style scoped>
 .standard-cockpit {
   background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 20px !important;
+  box-shadow: 
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.65),
+    0 2px 10px rgba(15, 23, 42, 0.03),
+    0 18px 40px -8px rgba(15, 23, 42, 0.05) !important;
 }
 :root[data-theme='dark'] .standard-cockpit {
   background: #0f172a !important;
-  border-color: #1e293b !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.12),
+    0 16px 44px -8px rgba(0, 0, 0, 0.6) !important;
 }
 .advanced-cockpit {
   background: #0f172a;
@@ -421,15 +430,31 @@ export default defineComponent({
 
 .assistant-card {
   background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 16px !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 1px 3px rgba(15, 23, 42, 0.02) !important;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease !important;
 }
 :root[data-theme='dark'] .assistant-card {
   background: #1e293b !important;
-  border-color: #334155 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 4px 14px rgba(0, 0, 0, 0.3) !important;
 }
 .assistant-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2.5px) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 10px 24px -4px rgba(15, 23, 42, 0.08) !important;
+}
+:root[data-theme='dark'] .assistant-card:hover {
+  border-color: rgba(129, 140, 248, 0.4) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 12px 28px -4px rgba(0, 0, 0, 0.6) !important;
 }
 </style>

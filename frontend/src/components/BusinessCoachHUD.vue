@@ -5,14 +5,38 @@
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <!-- Left: Trainer Identity & Vitality Score Dial -->
         <div class="flex items-start sm:items-center gap-4">
-          <!-- Circular Vitality Dial -->
+          <!-- Circular Vitality Chronograph Dial -->
           <div class="vitality-dial-wrapper flex-shrink-0">
-            <div class="vitality-dial relative w-16 h-16 rounded-full flex flex-col items-center justify-center border-2 border-emerald-500/40 bg-emerald-500/5 shadow-inner">
-              <span class="text-xl font-mono font-black text-slate-900 dark:text-white leading-none">
+            <div class="vitality-chronograph relative w-[72px] h-[72px] rounded-full flex flex-col items-center justify-center">
+              <!-- SVG Radial Gauge Ring -->
+              <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 72 72">
+                <circle
+                  cx="36"
+                  cy="36"
+                  r="31"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  class="text-slate-200 dark:text-slate-800"
+                />
+                <circle
+                  cx="36"
+                  cy="36"
+                  r="31"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.5"
+                  stroke-linecap="round"
+                  class="text-emerald-500 drop-shadow-[0_0_6px_rgba(16,185,129,0.5)]"
+                  stroke-dasharray="194.78"
+                  :stroke-dashoffset="194.78 * (1 - storeVitality.score / 100)"
+                />
+              </svg>
+              <span class="text-xl font-mono font-black text-slate-900 dark:text-white leading-none tracking-tight">
                 {{ storeVitality.score }}
               </span>
-              <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mt-0.5">
-                / 100
+              <span class="text-[9px] font-mono font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mt-0.5">
+                INDEX
               </span>
             </div>
           </div>
@@ -276,36 +300,67 @@ export default defineComponent({
 <style scoped>
 .coach-ribbon-card {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 20px;
   box-shadow: 
     inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
-    0 2px 10px -2px rgba(15, 23, 42, 0.04);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 2px 10px -2px rgba(15, 23, 42, 0.03),
+    0 16px 36px -8px rgba(15, 23, 42, 0.06);
 }
 
 :root[data-theme='dark'] .coach-ribbon-card {
   background: #0f172a;
-  border-color: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
   box-shadow: 
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.10),
-    0 10px 30px -4px rgba(0, 0, 0, 0.6);
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 4px 16px -2px rgba(0, 0, 0, 0.4),
+    0 20px 48px -8px rgba(0, 0, 0, 0.7);
+}
+
+.vitality-chronograph {
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+:root[data-theme='dark'] .vitality-chronograph {
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.14) 0%, transparent 75%);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
 .coach-brief-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  box-shadow: inset 0 1px 0 #ffffff;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 16px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 1px 3px rgba(15, 23, 42, 0.02);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 :root[data-theme='dark'] .coach-brief-card {
   background: #1e293b;
-  border-color: #334155;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .coach-brief-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 4px 16px -2px rgba(99, 102, 241, 0.10);
+  transform: translateY(-2.5px);
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 10px 28px -4px rgba(99, 102, 241, 0.12);
+}
+
+:root[data-theme='dark'] .coach-brief-card:hover {
+  border-color: rgba(129, 140, 248, 0.4);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    0 12px 32px -4px rgba(0, 0, 0, 0.6);
 }
 </style>
