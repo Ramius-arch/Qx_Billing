@@ -44,32 +44,32 @@
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'name'">
             <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold flex items-center justify-center text-xs font-mono">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-extrabold flex items-center justify-center text-xs font-mono border border-indigo-200 dark:border-indigo-800">
                 {{ (record.name || 'C').charAt(0).toUpperCase() }}
               </div>
               <div>
-                <span class="font-bold text-slate-900 dark:text-white block">{{ record.name }}</span>
-                <span class="text-[11px] text-slate-400 font-mono">{{ record.address || 'Nairobi, Kenya' }}</span>
+                <span class="font-bold text-slate-900 dark:text-white block text-sm">{{ record.name }}</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400 font-mono">{{ record.address || 'Nairobi, Kenya' }}</span>
               </div>
             </div>
           </template>
 
           <template v-else-if="column.key === 'phone'">
-            <span class="font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <span class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">
               {{ record.phone_number || record.phone || '-' }}
             </span>
           </template>
 
           <template v-else-if="column.key === 'plan'">
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+            <span class="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
               {{ record.Plan ? record.Plan.name : 'VIP RETAIL' }}
             </span>
           </template>
 
           <template v-else-if="column.key === 'status'">
             <span 
-              class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-              :class="record.status === 'active' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'"
+              class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider font-mono"
+              :class="record.status === 'active' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'"
             >
               {{ (record.status || 'ACTIVE').toUpperCase() }}
             </span>
@@ -81,7 +81,7 @@
                 type="button"
                 @click="openCustomerWhatsApp(record)"
                 title="Chat on WhatsApp"
-                class="px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 flex items-center gap-1"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 transition-colors flex items-center gap-1.5 shadow-xs"
               >
                 <span>💬</span>
                 <span>WhatsApp</span>
@@ -91,7 +91,7 @@
                 type="button"
                 @click="billCustomer(record)"
                 title="Issue Bill"
-                class="px-2.5 py-1 rounded-lg text-xs font-bold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 flex items-center gap-1"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-800 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-950/60 border border-indigo-300 dark:border-indigo-700 hover:bg-indigo-200 transition-colors flex items-center gap-1.5 shadow-xs"
               >
                 <span>➕</span>
                 <span>Bill</span>

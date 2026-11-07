@@ -188,9 +188,9 @@
                   </button>
                 </a-tooltip>
                 <h2 class="page-title">{{ isMobile ? 'Ladha Ledger' : currentPageTitle }}</h2>
-                <div v-if="!isMobile" class="ambient-pill ml-3">
+                <div v-if="!isMobile" class="ambient-pill ml-3 font-mono">
                   <span class="status-dot"></span>
-                  <span>Ledger Active</span>
+                  <span>{{ isSimpleMode ? 'Till Live · Store Open' : 'Double-Entry Online' }}</span>
                 </div>
               </div>
               <div class="header-right">
@@ -290,6 +290,7 @@ import { isRouteLoading } from './router';
 import { theme, message } from 'ant-design-vue';
 import { useTenantConfig } from './services/tenantConfig';
 import CockpitModeSwitch from './components/CockpitModeSwitch.vue';
+import { isSimpleMode } from './services/cockpitMode';
 import Lenis from 'lenis';
 import {
   HomeOutlined,
@@ -553,6 +554,7 @@ export default defineComponent({
       currentPresetKey,
       availablePresets,
       switchPreset,
+      isSimpleMode,
     };
   },
 });

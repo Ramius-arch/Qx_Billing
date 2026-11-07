@@ -1,6 +1,8 @@
 /* Google Fonts loaded via index.html preconnect */
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root, :root[data-theme='dark'], html[data-theme='dark'], body[data-theme='dark'] {
   /* Steve Jobs / Apple Human Interface & Swiss Precision Tokens (Dark Obsidian) */
   --bg-deep: #050811;

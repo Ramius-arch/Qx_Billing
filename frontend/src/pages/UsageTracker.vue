@@ -93,7 +93,7 @@
             100%
           </div>
           <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-            Zero Discrepancy &middot; Auto-Healed
+            100% Reconciled &middot; Clean Books
           </div>
         </div>
       </div>
@@ -105,19 +105,19 @@
             v-model="searchQuery"
             type="text"
             placeholder="Search by customer name, phone, or order number..."
-            class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
-          <span class="absolute left-3 top-2.5 text-xs text-slate-400">🔍</span>
+          <span class="absolute left-3 top-3 text-xs text-slate-400">🔍</span>
         </div>
 
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
           <button
             v-for="tab in filterTabs"
             :key="tab.key"
             type="button"
             @click="activeStatusFilter = tab.key"
-            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap"
-            :class="activeStatusFilter === tab.key ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap"
+            :class="activeStatusFilter === tab.key ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/20' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
           >
             {{ tab.label }}
           </button>
@@ -129,15 +129,15 @@
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-mono uppercase tracking-wider text-slate-400 bg-slate-50 dark:bg-slate-800/40">
-                <th class="py-3 px-4">Order #</th>
-                <th class="py-3 px-4">Customer</th>
-                <th class="py-3 px-4">Date & Time</th>
-                <th class="py-3 px-4">Purchased Item(s)</th>
-                <th class="py-3 px-4 text-right">Total (KES)</th>
-                <th class="py-3 px-4">Payment Method</th>
-                <th class="py-3 px-4 text-center">Status</th>
-                <th class="py-3 px-4 text-center">Actions</th>
+              <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-mono uppercase tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/70 font-bold">
+                <th class="py-3.5 px-4">Order #</th>
+                <th class="py-3.5 px-4">Customer</th>
+                <th class="py-3.5 px-4">Date & Time</th>
+                <th class="py-3.5 px-4">Purchased Item(s)</th>
+                <th class="py-3.5 px-4 text-right">Total (KES)</th>
+                <th class="py-3.5 px-4">Payment Method</th>
+                <th class="py-3.5 px-4 text-center">Status</th>
+                <th class="py-3.5 px-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-sans">
@@ -146,29 +146,29 @@
                   {{ order.orderNumber || order.id }}
                 </td>
                 <td class="py-3.5 px-4">
-                  <div class="font-bold text-slate-900 dark:text-white">{{ order.customerName }}</div>
-                  <div class="text-[11px] text-slate-500 font-mono">{{ order.customerPhone || order.phone }}</div>
+                  <div class="font-bold text-slate-900 dark:text-white">{{ order.customerName || order.Customer?.name || 'Walk-in Customer' }}</div>
+                  <div class="text-[11px] text-slate-600 dark:text-slate-400 font-mono">{{ order.customerPhone || order.Customer?.phone_number || order.phone || '-' }}</div>
                 </td>
-                <td class="py-3.5 px-4 text-slate-500 dark:text-slate-400 font-mono whitespace-nowrap">
-                  {{ order.date || 'Today' }}
+                <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400 font-mono whitespace-nowrap">
+                  {{ order.date || (order.createdAt ? new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Today') }}
                 </td>
-                <td class="py-3.5 px-4 text-slate-700 dark:text-slate-300 font-medium">
-                  {{ order.itemTitle || order.product || 'Archival Vintage Piece' }}
-                  <span v-if="order.zone" class="text-[10px] text-slate-400 block font-mono">🚚 {{ order.zone }}</span>
+                <td class="py-3.5 px-4 text-slate-800 dark:text-slate-200 font-medium">
+                  {{ order.itemTitle || (order.lines && order.lines[0]?.title) || order.product || 'Archival Vintage Piece' }}
+                  <span v-if="order.zone || order.shippingAddress" class="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">🚚 {{ order.zone || (order.shippingAddress ? order.shippingAddress.split(',')[0] : 'Nairobi') }}</span>
                 </td>
-                <td class="py-3.5 px-4 text-right font-mono font-extrabold text-slate-900 dark:text-white whitespace-nowrap">
-                  KES {{ Number(order.total || order.amount).toLocaleString() }}
+                <td class="py-3.5 px-4 text-right font-mono font-black text-slate-900 dark:text-white whitespace-nowrap">
+                  KES {{ Number(order.total || order.amount || 0).toLocaleString() }}
                 </td>
                 <td class="py-3.5 px-4">
-                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                     <span>📱</span>
-                    {{ order.mpesaReceipt || 'M-Pesa Till' }}
+                    {{ order.paymentReceipt || order.mpesaReceipt || (order.Payments && order.Payments[0]?.receipt_number) || 'M-Pesa Till' }}
                   </span>
                 </td>
                 <td class="py-3.5 px-4 text-center">
                   <span 
                     class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                    :class="order.status === 'Completed' || order.status === 'paid' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'"
+                    :class="order.status === 'Completed' || order.status === 'paid' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'"
                   >
                     {{ order.status === 'Completed' || order.status === 'paid' ? 'DELIVERED' : 'IN TRANSIT' }}
                   </span>
@@ -179,7 +179,7 @@
                       type="button"
                       @click="sendWhatsAppReceipt(order)"
                       title="Send Receipt via WhatsApp"
-                      class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 flex items-center gap-1"
+                      class="px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 transition-colors flex items-center gap-1"
                     >
                       <span>💬</span> WhatsApp
                     </button>
@@ -188,11 +188,25 @@
                       type="button"
                       @click="downloadEtimsPdf(order)"
                       title="View KRA eTIMS Tax Invoice"
-                      class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 flex items-center gap-1"
+                      class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 transition-colors flex items-center gap-1"
                     >
                       <span>📄</span> eTIMS
                     </button>
                   </div>
+                </td>
+              </tr>
+              <tr v-if="filteredOrders.length === 0">
+                <td colspan="8" class="py-12 text-center text-slate-500 dark:text-slate-400">
+                  <div class="text-3xl mb-2">🛍️</div>
+                  <div class="text-sm font-bold text-slate-800 dark:text-slate-200">No orders found</div>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">There are no orders matching this filter or search query.</p>
+                  <button
+                    type="button"
+                    @click="openNewSaleModal"
+                    class="mt-3 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm"
+                  >
+                    Record a Sale
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -537,8 +551,8 @@ export default defineComponent({
         const q = searchQuery.value.toLowerCase();
         result = result.filter(o => 
           (o.orderNumber || o.id || '').toLowerCase().includes(q) ||
-          (o.customerName || '').toLowerCase().includes(q) ||
-          (o.customerPhone || o.phone || '').toLowerCase().includes(q)
+          (o.customerName || o.Customer?.name || '').toLowerCase().includes(q) ||
+          (o.customerPhone || o.Customer?.phone_number || o.phone || '').toLowerCase().includes(q)
         );
       }
       if (activeStatusFilter.value === 'paid') {
@@ -553,7 +567,7 @@ export default defineComponent({
       loading.value = true;
       try {
         const res = await api.get('/stores/ladha-nairobi/orders').catch(() => null);
-        if (res && res.data && res.data.orders) {
+        if (res && res.data && Array.isArray(res.data.orders) && res.data.orders.length > 0) {
           orders.value = res.data.orders;
         } else {
           // Use standard benchmark fallback orders

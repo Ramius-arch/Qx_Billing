@@ -5,17 +5,17 @@
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
         <div>
           <div class="flex items-center gap-2 mb-1">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
               <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               4 Automated Assistants Active
             </span>
-            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">BSS Auto-Pilot</span>
+            <span class="text-xs text-slate-600 dark:text-slate-400 font-mono font-bold">Daily Store Assistant</span>
           </div>
           <h3 class="text-lg md:text-xl font-extrabold text-slate-900 dark:text-white m-0 tracking-tight">
             Store Automated Back-Office Assistants
           </h3>
           <p class="text-xs md:text-sm text-slate-600 dark:text-slate-400 mt-1 mb-0">
-            Intelligent background workflows handle your daily bookkeeping, M-Pesa matching, and tax compliance automatically.
+            Intelligent background helpers handle your daily bookkeeping, M-Pesa matching, and tax compliance automatically.
           </p>
         </div>
 
@@ -34,74 +34,74 @@
       <!-- 4 Assistant Cards Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- 1. M-Pesa & Payment Matcher -->
-        <div class="assistant-card p-4 rounded-xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800">
+        <div class="assistant-card p-4 rounded-xl border">
           <div class="flex items-center justify-between mb-2">
             <span class="text-2xl">🤖</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
               ACTIVE &bull; 60s
             </span>
           </div>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 m-0">Payment Matcher</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white m-0">Payment Matcher</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">
             Auto-matches Lipa na M-Pesa payments to customer bills and fixes unrecorded sales.
           </p>
-          <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-500">Unmatched:</span>
-            <span class="font-bold text-emerald-600 dark:text-emerald-400">0 Variance</span>
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-500 dark:text-slate-400">Payment Status:</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400">All Matched</span>
           </div>
         </div>
 
         <!-- 2. Double-Entry Bookkeeper -->
-        <div class="assistant-card p-4 rounded-xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800">
+        <div class="assistant-card p-4 rounded-xl border">
           <div class="flex items-center justify-between mb-2">
             <span class="text-2xl">⚖️</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
               BALANCED
             </span>
           </div>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 m-0">Ledger Bookkeeper</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">
-            Guarantees every shilling in debits equals credits across your cash, VAT, and sales.
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white m-0">Daily Bookkeeper</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">
+            Guarantees every shilling in sales, VAT, and expenses matches your cash drawer.
           </p>
-          <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-500">Ledger Invariant:</span>
-            <span class="font-bold text-emerald-600 dark:text-emerald-400">KES 0.00 Diff</span>
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-500 dark:text-slate-400">Balance:</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400">KES 0.00 Difference</span>
           </div>
         </div>
 
-        <!-- 3. Stock Release Sweeper -->
-        <div class="assistant-card p-4 rounded-xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800">
+        <!-- 3. Restock Unpaid Orders -->
+        <div class="assistant-card p-4 rounded-xl border">
           <div class="flex items-center justify-between mb-2">
             <span class="text-2xl">⏱️</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/20">
               ACTIVE &bull; 15m
             </span>
           </div>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 m-0">Stock Sweeper</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">
-            Reclaims reserved items if a shopper abandons checkout, freeing stock for new buyers.
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white m-0">Restock Unpaid Orders</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">
+            Returns unpaid checkout holds back to your shelf so you never miss a walk-in buyer.
           </p>
-          <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-500">Reclaimed:</span>
-            <span class="font-bold text-slate-700 dark:text-slate-300">{{ sweeperMetrics.totalReclaimed || 0 }} items</span>
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-500 dark:text-slate-400">Restocked for Walk-ins:</span>
+            <span class="font-bold text-slate-800 dark:text-slate-200">{{ sweeperMetrics.totalReclaimed || 0 }} items</span>
           </div>
         </div>
 
         <!-- 4. KRA eTIMS Tax Engine -->
-        <div class="assistant-card p-4 rounded-xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800">
+        <div class="assistant-card p-4 rounded-xl border">
           <div class="flex items-center justify-between mb-2">
             <span class="text-2xl">🏛️</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
               16% VAT OK
             </span>
           </div>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 m-0">KRA eTIMS Tax</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white m-0">KRA eTIMS Tax</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">
             Calculates statutory 16% VAT and embeds verified eTIMS QR codes on all tax invoices.
           </p>
-          <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-500">PIN:</span>
-            <span class="font-bold text-slate-700 dark:text-slate-300">P051982741Z</span>
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-500 dark:text-slate-400">PIN:</span>
+            <span class="font-bold text-slate-800 dark:text-slate-200">P051982741Z</span>
           </div>
         </div>
       </div>
@@ -318,7 +318,7 @@ export default defineComponent({
         const healed = reconRes.data?.autoHealedEntries || 0;
         const reclaimed = sweepRes.data?.reclaimed || 0;
         
-        lastAuditNotice.value = `All accounts balanced (0.00 variance). ${healed} journal entries auto-healed, ${reclaimed} expired holds reclaimed.`;
+        lastAuditNotice.value = `All accounts balanced. ${healed} journal entries auto-matched, ${reclaimed} expired holds returned to shelf.`;
         lastAuditTime.value = new Date().toLocaleTimeString();
 
         agentLogs.value.unshift({
@@ -407,18 +407,29 @@ export default defineComponent({
 
 <style scoped>
 .standard-cockpit {
-  background: var(--surface-card, #ffffff);
-  border-color: var(--border-color, #e2e8f0);
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+:root[data-theme='dark'] .standard-cockpit {
+  background: #0f172a !important;
+  border-color: #1e293b !important;
 }
 .advanced-cockpit {
   background: #0f172a;
   border-color: #1e293b;
 }
+
 .assistant-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+:root[data-theme='dark'] .assistant-card {
+  background: #1e293b !important;
+  border-color: #334155 !important;
 }
 .assistant-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 </style>
