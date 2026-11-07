@@ -45,12 +45,12 @@
 
       <!-- Quick KPI Cards (Jakob's Law: glanceable totals) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="register-kpi-card p-5">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Sales</span>
+            <span class="kpi-micro-label">Total Sales</span>
             <span class="text-lg">💰</span>
           </div>
-          <div class="text-2xl font-black text-slate-900 dark:text-white tabular-nums font-mono">
+          <div class="kpi-amount tabular-nums font-mono">
             KES {{ Number(totalGMV || 48500).toLocaleString() }}
           </div>
           <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
@@ -58,12 +58,12 @@
           </div>
         </div>
 
-        <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="register-kpi-card p-5">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Completed Orders</span>
+            <span class="kpi-micro-label">Completed Orders</span>
             <span class="text-lg">📦</span>
           </div>
-          <div class="text-2xl font-black text-slate-900 dark:text-white tabular-nums font-mono">
+          <div class="kpi-amount tabular-nums font-mono">
             {{ orders.length || 12 }} Orders
           </div>
           <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
@@ -71,12 +71,12 @@
           </div>
         </div>
 
-        <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="register-kpi-card p-5">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pending Deliveries</span>
+            <span class="kpi-micro-label">Pending Deliveries</span>
             <span class="text-lg">🚚</span>
           </div>
-          <div class="text-2xl font-black text-amber-600 dark:text-amber-400 tabular-nums font-mono">
+          <div class="kpi-amount tabular-nums font-mono text-amber-600 dark:text-amber-400">
             2 In Transit
           </div>
           <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -84,12 +84,12 @@
           </div>
         </div>
 
-        <div class="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="register-kpi-card p-5">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">M-Pesa Clearance</span>
+            <span class="kpi-micro-label">M-Pesa Clearance</span>
             <span class="text-lg">📱</span>
           </div>
-          <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 tabular-nums font-mono">
+          <div class="kpi-amount tabular-nums font-mono text-indigo-600 dark:text-indigo-400">
             100%
           </div>
           <div class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
@@ -99,13 +99,13 @@
       </div>
 
       <!-- Search & Status Filters Strip -->
-      <div class="p-4 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 shadow-sm">
+      <div class="register-filter-bar p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
         <div class="relative flex-1 max-w-md">
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search by customer name, phone, or order number..."
-            class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="filter-input w-full pl-9 pr-3 py-2.5 rounded-xl border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <span class="absolute left-3 top-3 text-xs text-slate-400">🔍</span>
         </div>
@@ -116,8 +116,8 @@
             :key="tab.key"
             type="button"
             @click="activeStatusFilter = tab.key"
-            class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap"
-            :class="activeStatusFilter === tab.key ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/20' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+            class="filter-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap"
+            :class="{ 'is-active': activeStatusFilter === tab.key }"
           >
             {{ tab.label }}
           </button>
@@ -125,11 +125,11 @@
       </div>
 
       <!-- Clean Orders Table (Shopify / Square Standard) -->
-      <div class="rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+      <div class="register-table-wrapper overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-mono uppercase tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/70 font-bold">
+              <tr class="table-header-row text-[11px] font-mono uppercase tracking-wider font-bold">
                 <th class="py-3.5 px-4">Order #</th>
                 <th class="py-3.5 px-4">Customer</th>
                 <th class="py-3.5 px-4">Date & Time</th>
@@ -140,7 +140,7 @@
                 <th class="py-3.5 px-4 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-sans">
+            <tbody class="table-body divide-y font-sans">
               <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                 <td class="py-3.5 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-400">
                   {{ order.orderNumber || order.id }}
@@ -712,11 +712,165 @@ export default defineComponent({
   gap: 16px;
   margin-bottom: 24px;
 }
+
+.register-kpi-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: 18px !important;
+  box-shadow: 
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.65),
+    0 2px 8px rgba(15, 23, 42, 0.03),
+    0 12px 28px -6px rgba(15, 23, 42, 0.04) !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+}
+
+.register-kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.35) !important;
+}
+
+:root[data-theme='dark'] .register-kpi-card {
+  background: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+.kpi-micro-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+:root[data-theme='dark'] .kpi-micro-label {
+  color: #94a3b8;
+}
+
+.kpi-amount {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #0f172a !important;
+  letter-spacing: -0.02em;
+}
+
+:root[data-theme='dark'] .kpi-amount {
+  color: #ffffff !important;
+}
+
+.register-filter-bar {
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: 18px !important;
+  box-shadow: 
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 8px rgba(15, 23, 42, 0.02) !important;
+}
+
+:root[data-theme='dark'] .register-filter-bar {
+  background: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.filter-input {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:root[data-theme='dark'] .filter-input {
+  background: #1e293b !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+.filter-tab-btn {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.filter-tab-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.filter-tab-btn.is-active {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25) !important;
+}
+
+:root[data-theme='dark'] .filter-tab-btn {
+  background: #1e293b;
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme='dark'] .filter-tab-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.register-table-wrapper {
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: 20px !important;
+  box-shadow: 
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.65),
+    0 2px 10px rgba(15, 23, 42, 0.03),
+    0 18px 40px -8px rgba(15, 23, 42, 0.05) !important;
+}
+
+:root[data-theme='dark'] .register-table-wrapper {
+  background: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 44px -8px rgba(0, 0, 0, 0.6) !important;
+}
+
+.table-header-row {
+  background: #f8fafc !important;
+  color: #334155 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+:root[data-theme='dark'] .table-header-row {
+  background: #111827 !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.table-body tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s ease;
+}
+
+.table-body tr:hover {
+  background: #f8fafc;
+}
+
+:root[data-theme='dark'] .table-body tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme='dark'] .table-body tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
 .bespoke-card {
   background: var(--surface-card, #ffffff);
   border: 1px solid var(--border-glass, #e2e8f0);
   border-radius: 1rem;
 }
+
 .calligraphic-quote {
   font-style: italic;
   font-size: 0.85rem;

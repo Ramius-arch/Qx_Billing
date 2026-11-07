@@ -41,12 +41,12 @@
               ACTIVE &bull; 60s
             </span>
           </div>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-white m-0">Payment Matcher</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">
+          <h4 class="assistant-title text-sm font-bold m-0">Payment Matcher</h4>
+          <p class="assistant-desc text-xs mt-1 mb-3">
             Auto-matches Lipa na M-Pesa payments to customer bills and fixes unrecorded sales.
           </p>
-          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-500 dark:text-slate-400">Payment Status:</span>
+          <div class="card-footer pt-2 border-t flex items-center justify-between text-[11px] font-mono">
+            <span class="footer-label">Payment Status:</span>
             <span class="font-bold text-emerald-600 dark:text-emerald-400">All Matched</span>
           </div>
         </div>
@@ -59,13 +59,13 @@
               BALANCED
             </span>
           </div>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-white m-0">Daily Bookkeeper</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">
+          <h4 class="assistant-title text-sm font-bold m-0">Daily Bookkeeper</h4>
+          <p class="assistant-desc text-xs mt-1 mb-3">
             Guarantees every shilling in sales, VAT, and expenses matches your cash drawer.
           </p>
-          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-500 dark:text-slate-400">Balance:</span>
-            <span class="font-bold text-emerald-600 dark:text-emerald-400">KES 0.00 Difference</span>
+          <div class="card-footer pt-2 border-t flex items-center justify-between text-[11px] font-mono">
+            <span class="footer-label">Balance:</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400">KES 0.00 Diff</span>
           </div>
         </div>
 
@@ -77,13 +77,13 @@
               ACTIVE &bull; 15m
             </span>
           </div>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-white m-0">Restock Unpaid Orders</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">
+          <h4 class="assistant-title text-sm font-bold m-0">Restock Unpaid Orders</h4>
+          <p class="assistant-desc text-xs mt-1 mb-3">
             Returns unpaid checkout holds back to your shelf so you never miss a walk-in buyer.
           </p>
-          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-500 dark:text-slate-400">Restocked for Walk-ins:</span>
-            <span class="font-bold text-slate-800 dark:text-slate-200">{{ sweeperMetrics.totalReclaimed || 0 }} items</span>
+          <div class="card-footer pt-2 border-t flex items-center justify-between text-[11px] font-mono">
+            <span class="footer-label">Restocked:</span>
+            <span class="footer-value font-bold">{{ sweeperMetrics.totalReclaimed || 0 }} items</span>
           </div>
         </div>
 
@@ -95,13 +95,13 @@
               16% VAT OK
             </span>
           </div>
-          <h4 class="text-sm font-bold text-slate-900 dark:text-white m-0">KRA eTIMS Tax</h4>
-          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 mb-3">
+          <h4 class="assistant-title text-sm font-bold m-0">KRA eTIMS Tax</h4>
+          <p class="assistant-desc text-xs mt-1 mb-3">
             Calculates statutory 16% VAT and embeds verified eTIMS QR codes on all tax invoices.
           </p>
-          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-500 dark:text-slate-400">PIN:</span>
-            <span class="font-bold text-slate-800 dark:text-slate-200">P051982741Z</span>
+          <div class="card-footer pt-2 border-t flex items-center justify-between text-[11px] font-mono">
+            <span class="footer-label">PIN:</span>
+            <span class="footer-value font-bold">P051982741Z</span>
           </div>
         </div>
       </div>
@@ -437,6 +437,49 @@ export default defineComponent({
     0 1px 3px rgba(15, 23, 42, 0.02) !important;
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease !important;
 }
+
+.assistant-title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+:root[data-theme='dark'] .assistant-title {
+  color: #ffffff !important;
+}
+
+.assistant-desc {
+  color: #475569 !important;
+  line-height: 1.45;
+}
+
+:root[data-theme='dark'] .assistant-desc {
+  color: #94a3b8 !important;
+}
+
+.card-footer {
+  border-color: #f1f5f9 !important;
+}
+
+:root[data-theme='dark'] .card-footer {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.footer-label {
+  color: #64748b !important;
+}
+
+:root[data-theme='dark'] .footer-label {
+  color: #94a3b8 !important;
+}
+
+.footer-value {
+  color: #0f172a !important;
+}
+
+:root[data-theme='dark'] .footer-value {
+  color: #f1f5f9 !important;
+}
+
 :root[data-theme='dark'] .assistant-card {
   background: #1e293b !important;
   border-color: rgba(255, 255, 255, 0.08) !important;

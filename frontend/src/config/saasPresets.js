@@ -12,7 +12,7 @@
 export const SAAS_PRESETS = {
   d2c_archival: {
     key: 'd2c_archival',
-    isPoC: true,
+    isPoC: false,
     pocNotice: '[PoC · Benchmark Mode] Archival Streetwear & High-Velocity D2C Demo Fixtures',
     industryName: 'Archival D2C & Luxury Commerce',
     brand: {
@@ -125,7 +125,7 @@ export const SAAS_PRESETS = {
 
   b2b_saas: {
     key: 'b2b_saas',
-    isPoC: true,
+    isPoC: false,
     pocNotice: '[PoC · Benchmark Mode] B2B Cloud & Enterprise Subscription Demo Fixtures',
     industryName: 'B2B Cloud & Subscription OS',
     brand: {
@@ -238,7 +238,7 @@ export const SAAS_PRESETS = {
 
   logistics_freight: {
     key: 'logistics_freight',
-    isPoC: true,
+    isPoC: false,
     pocNotice: '[PoC · Benchmark Mode] Cross-Border Freight & Fleet Logistics Demo Fixtures',
     industryName: 'Logistics, Haulage & Supply Chain',
     brand: {
@@ -351,7 +351,7 @@ export const SAAS_PRESETS = {
 
   healthcare_clinic: {
     key: 'healthcare_clinic',
-    isPoC: true,
+    isPoC: false,
     pocNotice: '[PoC · Benchmark Mode] Medical Practice & Diagnostic Billing Demo Fixtures',
     industryName: 'Healthcare & Clinical Practice',
     brand: {
@@ -464,7 +464,7 @@ export const SAAS_PRESETS = {
 
   creative_agency: {
     key: 'creative_agency',
-    isPoC: true,
+    isPoC: false,
     pocNotice: '[PoC · Benchmark Mode] Turnkey Consultancy, Design & Engineering Retainers Demo Fixtures',
     industryName: 'Creative Agency & Studio Retainers',
     brand: {

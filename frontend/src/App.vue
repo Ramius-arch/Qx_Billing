@@ -22,6 +22,7 @@
             collapsible
             class="main-sider"
             :class="{ 'is-collapsed': collapsed }"
+            :theme="isDark ? 'dark' : 'light'"
             :width="250"
             :collapsedWidth="74"
           >
@@ -72,6 +73,7 @@
                   v-model:selectedKeys="selectedKeys"
                   mode="inline"
                   class="nav-menu"
+                  :theme="isDark ? 'dark' : 'light'"
                   @click="handleMenuClick"
                 >
                   <template v-for="item in menuItems" :key="item.key">
@@ -152,6 +154,7 @@
                 v-model:selectedKeys="selectedKeys"
                 mode="inline"
                 class="nav-menu"
+                :theme="isDark ? 'dark' : 'light'"
                 @click="handleMenuClick"
               >
                 <template v-for="item in menuItems" :key="item.key">
@@ -428,6 +431,8 @@ export default defineComponent({
       const label = themePreference.value === 'system' ? 'System Default (Matching Device)' : (themePreference.value === 'light' ? 'Light Mode' : 'Dark Mode');
       message.info(`Theme: ${label}`);
     };
+
+    const toggleTheme = handleThemeToggle;
 
     watch(isDark, () => {
       applyThemeToDom();

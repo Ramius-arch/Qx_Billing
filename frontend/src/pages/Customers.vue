@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <a-card :bordered="false" class="bespoke-card shadow-sm rounded-2xl">
+    <a-card :bordered="false" class="customer-table-card shadow-sm rounded-2xl">
       <a-table
         :columns="columns"
         :data-source="customers"
@@ -44,32 +44,32 @@
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'name'">
             <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-extrabold flex items-center justify-center text-xs font-mono border border-indigo-200 dark:border-indigo-800">
+              <div class="customer-avatar-badge">
                 {{ (record.name || 'C').charAt(0).toUpperCase() }}
               </div>
               <div>
-                <span class="font-bold text-slate-900 dark:text-white block text-sm">{{ record.name }}</span>
-                <span class="text-xs text-slate-600 dark:text-slate-400 font-mono">{{ record.address || 'Nairobi, Kenya' }}</span>
+                <span class="customer-row-name block text-sm">{{ record.name }}</span>
+                <span class="customer-row-address font-mono text-xs">{{ record.address || 'Nairobi, Kenya' }}</span>
               </div>
             </div>
           </template>
 
           <template v-else-if="column.key === 'phone'">
-            <span class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">
+            <span class="customer-row-phone font-mono text-xs">
               {{ record.phone_number || record.phone || '-' }}
             </span>
           </template>
 
           <template v-else-if="column.key === 'plan'">
-            <span class="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
+            <span class="plan-pill font-mono">
               {{ record.Plan ? record.Plan.name : 'VIP RETAIL' }}
             </span>
           </template>
 
           <template v-else-if="column.key === 'status'">
             <span 
-              class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider font-mono"
-              :class="record.status === 'active' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'"
+              class="status-pill font-mono"
+              :class="record.status === 'active' ? 'status-active' : 'status-inactive'"
             >
               {{ (record.status || 'ACTIVE').toUpperCase() }}
             </span>
@@ -81,7 +81,7 @@
                 type="button"
                 @click="openCustomerWhatsApp(record)"
                 title="Chat on WhatsApp"
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-200 transition-colors flex items-center gap-1.5 shadow-xs"
+                class="btn-row-whatsapp"
               >
                 <span>💬</span>
                 <span>WhatsApp</span>
@@ -91,14 +91,14 @@
                 type="button"
                 @click="billCustomer(record)"
                 title="Issue Bill"
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-800 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-950/60 border border-indigo-300 dark:border-indigo-700 hover:bg-indigo-200 transition-colors flex items-center gap-1.5 shadow-xs"
+                class="btn-row-bill"
               >
                 <span>➕</span>
                 <span>Bill</span>
               </button>
 
               <a-tooltip title="Edit Customer">
-                <a-button type="text" size="small" @click="editCustomer(record)">
+                <a-button type="text" size="small" @click="editCustomer(record)" class="btn-icon-action">
                   <template #icon><edit-outlined /></template>
                 </a-button>
               </a-tooltip>
@@ -110,7 +110,7 @@
                 @confirm="handleDelete(record.id)"
               >
                 <a-tooltip title="Delete Customer">
-                  <a-button type="text" size="small" danger>
+                  <a-button type="text" size="small" danger class="btn-icon-action">
                     <template #icon><delete-outlined /></template>
                   </a-button>
                 </a-tooltip>
@@ -364,8 +364,226 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.bespoke-card {
-  background: var(--surface-card, #ffffff);
-  border: 1px solid var(--border-glass, #e2e8f0);
+.customer-table-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: 20px !important;
+  box-shadow: 
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.65),
+    0 2px 10px rgba(15, 23, 42, 0.03),
+    0 18px 40px -8px rgba(15, 23, 42, 0.05) !important;
+  overflow: hidden;
+}
+
+:root[data-theme='dark'] .customer-table-card {
+  background: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.12),
+    0 16px 44px -8px rgba(0, 0, 0, 0.6) !important;
+}
+
+.customer-avatar-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  border: 1px solid #c7d2fe;
+}
+
+:root[data-theme='dark'] .customer-avatar-badge {
+  background: rgba(49, 46, 129, 0.6);
+  color: #c7d2fe;
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.customer-row-name {
+  font-weight: 800;
+  color: #0f172a !important;
+  letter-spacing: -0.015em;
+}
+
+:root[data-theme='dark'] .customer-row-name {
+  color: #ffffff !important;
+}
+
+.customer-row-address {
+  color: #475569 !important;
+  font-size: 11.5px;
+}
+
+:root[data-theme='dark'] .customer-row-address {
+  color: #94a3b8 !important;
+}
+
+.customer-row-phone {
+  font-weight: 700;
+  color: #0f172a !important;
+  font-size: 12.5px;
+}
+
+:root[data-theme='dark'] .customer-row-phone {
+  color: #f1f5f9 !important;
+}
+
+.plan-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(99, 102, 241, 0.08);
+  color: #4338ca;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+:root[data-theme='dark'] .plan-pill {
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.status-active {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+:root[data-theme='dark'] .status-active {
+  background: rgba(5, 150, 105, 0.15);
+  color: #34d399;
+  border-color: rgba(5, 150, 105, 0.35);
+}
+
+.status-inactive {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+:root[data-theme='dark'] .status-inactive {
+  background: rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
+  border-color: rgba(217, 119, 6, 0.35);
+}
+
+.btn-row-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-row-whatsapp:hover {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  transform: translateY(-1px);
+}
+
+:root[data-theme='dark'] .btn-row-whatsapp {
+  background: rgba(6, 95, 70, 0.3);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+:root[data-theme='dark'] .btn-row-whatsapp:hover {
+  background: rgba(6, 95, 70, 0.5);
+}
+
+.btn-row-bill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: #eef2ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-row-bill:hover {
+  background: #e0e7ff;
+  border-color: #a5b4fc;
+  transform: translateY(-1px);
+}
+
+:root[data-theme='dark'] .btn-row-bill {
+  background: rgba(55, 48, 163, 0.3);
+  color: #c7d2fe;
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+:root[data-theme='dark'] .btn-row-bill:hover {
+  background: rgba(55, 48, 163, 0.5);
+}
+
+.btn-icon-action {
+  color: #475569 !important;
+  transition: color 0.15s ease;
+}
+
+:root[data-theme='dark'] .btn-icon-action {
+  color: #94a3b8 !important;
+}
+
+:deep(.ant-table-thead > tr > th) {
+  background: #f8fafc !important;
+  color: #334155 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+:root[data-theme='dark'] :deep(.ant-table-thead > tr > th) {
+  background: #111827 !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+:deep(.ant-table-tbody > tr > td) {
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+:root[data-theme='dark'] :deep(.ant-table-tbody > tr > td) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+:deep(.ant-table-tbody > tr:hover > td) {
+  background: #f8fafc !important;
+}
+
+:root[data-theme='dark'] :deep(.ant-table-tbody > tr:hover > td) {
+  background: rgba(255, 255, 255, 0.03) !important;
 }
 </style>
