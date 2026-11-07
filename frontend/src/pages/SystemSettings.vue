@@ -53,7 +53,98 @@
       </div>
     </a-card>
 
-    <!-- 3. Existing Fiscal & Operational Settings -->
+    <!-- 3. Display, Theme & Experience Options (Jakob's Law: Device Standard) -->
+    <a-card title="Display & Experience Defaults" class="bespoke-card mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Appearance Theme Preference -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+            Appearance Theme
+          </label>
+          <div class="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              @click="setTheme('system')"
+              class="p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5"
+              :class="themePreference === 'system' ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
+            >
+              <span class="text-xl">💻</span>
+              <span class="text-xs font-bold">System</span>
+              <span class="text-[10px] text-slate-500 font-mono">Device Mode</span>
+            </button>
+
+            <button
+              type="button"
+              @click="setTheme('light')"
+              class="p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5"
+              :class="themePreference === 'light' ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
+            >
+              <span class="text-xl">☀️</span>
+              <span class="text-xs font-bold">Light</span>
+              <span class="text-[10px] text-slate-500 font-mono">Ceramic Clean</span>
+            </button>
+
+            <button
+              type="button"
+              @click="setTheme('dark')"
+              class="p-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1.5"
+              :class="themePreference === 'dark' ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
+            >
+              <span class="text-xl">🌙</span>
+              <span class="text-xs font-bold">Dark</span>
+              <span class="text-[10px] text-slate-500 font-mono">Apple Obsidian</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2.5 mb-0">
+            Active view: <strong class="text-indigo-600 dark:text-indigo-400">{{ isDark ? 'Dark Mode' : 'Light Mode' }}</strong>
+            <span v-if="themePreference === 'system'" class="font-mono"> (Automatically synced with your device OS)</span>.
+          </p>
+        </div>
+
+        <!-- Cockpit Experience Mode (Sports Car Drive Mode) -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+            Cockpit Experience Mode
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              @click="changeCockpitMode('standard')"
+              class="p-3 rounded-xl border text-left transition-all"
+              :class="currentMode === 'standard' ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
+            >
+              <div class="flex items-center gap-1.5 font-bold text-xs mb-1">
+                <span>🛣️</span>
+                <span>Standard (Street)</span>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 m-0">
+                Simpler & intuitive UI for retail shopkeeping, WhatsApp receipts, and M-Pesa sales.
+              </p>
+            </button>
+
+            <button
+              type="button"
+              @click="changeCockpitMode('advanced')"
+              class="p-3 rounded-xl border text-left transition-all"
+              :class="currentMode === 'advanced' ? 'border-amber-600 bg-amber-50/50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'"
+            >
+              <div class="flex items-center gap-1.5 font-bold text-xs mb-1">
+                <span>🏁</span>
+                <span>Advanced (Track)</span>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 m-0">
+                Full telemetry, double-entry ledger, 1-of-1 archival locks, and multi-domain diligence.
+              </p>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2.5 mb-0">
+            Switch anytime using the top navigation toggle or here in settings.
+          </p>
+        </div>
+      </div>
+    </a-card>
+
+    <!-- 4. Existing Fiscal & Operational Settings -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <a-card title="Fiscal & Taxation Parameters" class="bespoke-card">
         <a-form layout="vertical" @finish="saveConfig">
@@ -100,6 +191,8 @@
 import { defineComponent, ref } from 'vue';
 import { message } from 'ant-design-vue';
 import { useTenantConfig } from '../services/tenantConfig';
+import { themePreference, isDark, setThemePreference } from '../services/themeMode';
+import { currentMode, setMode as setCockpitMode } from '../services/cockpitMode';
 import api from '../services/api';
 
 export default defineComponent({
@@ -113,6 +206,17 @@ export default defineComponent({
       setPreset(key);
       config.value.currency = activeTenant.value.currency.code;
       message.success(`Platform benchmark updated: ${activeTenant.value.brand.name} (${activeTenant.value.industryName}) active.`);
+    };
+
+    const setTheme = (pref) => {
+      setThemePreference(pref);
+      const label = pref === 'system' ? 'System Default (Matching Device)' : (pref === 'light' ? 'Light Mode' : 'Dark Mode');
+      message.success(`Appearance updated: ${label}`);
+    };
+
+    const changeCockpitMode = (mode) => {
+      setCockpitMode(mode);
+      message.success(`Cockpit mode switched to ${mode === 'standard' ? 'Standard (Street)' : 'Advanced (Track)'}`);
     };
 
     const saveConfig = async () => {

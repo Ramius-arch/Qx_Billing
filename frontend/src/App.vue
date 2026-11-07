@@ -227,9 +227,10 @@
                     </template>
                   </a-dropdown>
 
-                  <a-tooltip :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-                    <div class="theme-toggle" @click="toggleTheme">
-                      <component :is="isDark ? 'bulb-filled' : 'bulb-outlined'" class="header-icon" />
+                  <a-tooltip :title="themeTooltip">
+                    <div class="theme-toggle" @click="handleThemeToggle">
+                      <span v-if="themePreference === 'system'" class="text-xs select-none">💻</span>
+                      <component v-else :is="isDark ? 'bulb-filled' : 'bulb-outlined'" class="header-icon" />
                     </div>
                   </a-tooltip>
                   
@@ -291,6 +292,7 @@ import { theme, message } from 'ant-design-vue';
 import { useTenantConfig } from './services/tenantConfig';
 import CockpitModeSwitch from './components/CockpitModeSwitch.vue';
 import { isSimpleMode } from './services/cockpitMode';
+import { themePreference, isDark, setThemePreference, cycleTheme, applyThemeToDom } from './services/themeMode';
 import Lenis from 'lenis';
 import {
   HomeOutlined,
@@ -354,9 +356,7 @@ export default defineComponent({
     const drawerVisible = ref(false);
     const selectedKeys = ref([route.path.split('/')[1] || 'dashboard']);
     
-    const queryTheme = new URLSearchParams(window.location.search).get('theme');
-    const initialDark = queryTheme ? (queryTheme !== 'light') : (localStorage.getItem('theme') !== 'light');
-    const isDark = ref(initialDark);
+    // Theme is powered by themeMode service (supporting 'system' | 'light' | 'dark')
 
     const themeConfig = computed(() => ({
       algorithm: isDark.value ? theme.darkAlgorithm : theme.defaultAlgorithm,
@@ -416,23 +416,21 @@ export default defineComponent({
       }
     };
 
-    const toggleTheme = () => {
-      isDark.value = !isDark.value;
-      const themeName = isDark.value ? 'dark' : 'light';
-      localStorage.setItem('theme', themeName);
-      updateThemeAttribute();
-    };
-
-    const updateThemeAttribute = () => {
-      const themeName = isDark.value ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', themeName);
-      if (document.body) {
-        document.body.setAttribute('data-theme', themeName);
+    const themeTooltip = computed(() => {
+      if (themePreference.value === 'system') {
+        return `Theme: System (${isDark.value ? 'Dark' : 'Light'}) — Click to cycle mode`;
       }
+      return `Theme: ${isDark.value ? 'Dark' : 'Light'} Mode — Click to cycle mode`;
+    });
+
+    const handleThemeToggle = () => {
+      cycleTheme();
+      const label = themePreference.value === 'system' ? 'System Default (Matching Device)' : (themePreference.value === 'light' ? 'Light Mode' : 'Dark Mode');
+      message.info(`Theme: ${label}`);
     };
 
     watch(isDark, () => {
-      updateThemeAttribute();
+      applyThemeToDom();
     }, { immediate: true });
 
     watch(collapsed, (val) => {
@@ -472,7 +470,7 @@ export default defineComponent({
     onMounted(() => {
       window.addEventListener('resize', updateWidth);
       window.addEventListener('keydown', handleKeydown);
-      updateThemeAttribute();
+      applyThemeToDom();
 
       // Apple Inertial Momentum Smooth Scroll Engine
       try {
@@ -555,6 +553,9 @@ export default defineComponent({
       availablePresets,
       switchPreset,
       isSimpleMode,
+      themePreference,
+      themeTooltip,
+      handleThemeToggle,
     };
   },
 });
