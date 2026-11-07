@@ -90,7 +90,10 @@
       </div>
     </section>
 
-    <!-- 2. Action Required / Merchant Inbox (Stripe & Shopify Pattern) -->
+    <!-- 2. EA Sports-Style Business Coach HUD & Stock Provision Runway -->
+    <business-coach-hud />
+
+    <!-- 3. Action Required / Merchant Inbox (Stripe & Shopify Pattern) -->
     <section v-if="unclaimedCount > 0 || overdueCount > 0" class="action-inbox-section mb-6">
       <div class="inbox-header">
         <div class="flex items-center gap-2">
@@ -318,12 +321,14 @@
 import { defineComponent, ref } from 'vue';
 import { Bar } from 'vue-chartjs';
 import BssAgentsCockpit from './BssAgentsCockpit.vue';
+import BusinessCoachHUD from './BusinessCoachHUD.vue';
 
 export default defineComponent({
   name: 'MerchantStandardDashboard',
   components: {
     Bar,
-    BssAgentsCockpit
+    BssAgentsCockpit,
+    BusinessCoachHUD
   },
   props: {
     activeTenant: {
