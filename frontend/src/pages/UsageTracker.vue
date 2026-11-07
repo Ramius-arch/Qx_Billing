@@ -33,6 +33,15 @@
 
           <button 
             type="button" 
+            @click="goToStorefront"
+            class="btn-storefront-action"
+          >
+            <niche-icon name="transit" :size="14" />
+            <span>Open Storefront &nearr;</span>
+          </button>
+
+          <button 
+            type="button" 
             @click="refreshData" 
             :disabled="loading"
             class="btn-sync-action"
@@ -513,9 +522,17 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const loading = ref(false);
+    const defaultBenchmarkOrders = [
+      { id: '1', orderNumber: 'LDH-8921-KE', customerName: 'Kevin Ochieng', customerPhone: '+254 712 334 556', date: 'Today 12:45 PM', itemTitle: 'Vintage Nike Colorblock Windbreaker', zone: 'Kilimani', total: 3750, mpesaReceipt: 'QK8921MN', status: 'Completed' },
+      { id: '2', orderNumber: 'LDH-8920-KE', customerName: 'Amina Wangari', customerPhone: '+254 722 984 102', date: 'Today 11:15 AM', itemTitle: 'Stüssy 8-Ball Mohair Knit Sweater', zone: 'Westlands', total: 5050, mpesaReceipt: 'QK8920KL', status: 'Completed' },
+      { id: '3', orderNumber: 'LDH-8919-KE', customerName: 'Brian Mutua', customerPhone: '+254 733 112 450', date: 'Yesterday 04:30 PM', itemTitle: 'Carhartt Duck Double-Knee Work Pants', zone: 'CBD Express', total: 3200, mpesaReceipt: 'QK8919PQ', status: 'Completed' },
+      { id: '4', orderNumber: 'LDH-8918-KE', customerName: 'Faith Chebet', customerPhone: '+254 701 556 778', date: 'Yesterday 02:10 PM', itemTitle: 'Minimalist Bias-Cut Silk Midi Skirt', zone: 'Lavington', total: 2050, mpesaReceipt: 'QK8918XY', status: 'In Transit' },
+      { id: '5', orderNumber: 'LDH-8917-KE', customerName: 'David Mwangi', customerPhone: '+254 721 889 012', date: 'Yesterday 10:00 AM', itemTitle: "90s Levi's 501 Raw Selvedge", zone: 'Parklands', total: 4450, mpesaReceipt: 'QK8917AB', status: 'Completed' }
+    ];
+
     const submitting = ref(false);
     const customers = ref([]);
-    const orders = ref([]);
+    const orders = ref([...defaultBenchmarkOrders]);
     const searchQuery = ref('');
     const activeStatusFilter = ref('all');
     const showQuickSaleModal = ref(false);
@@ -594,17 +611,14 @@ export default defineComponent({
         const res = await api.get('/stores/ladha-nairobi/orders').catch(() => null);
         if (res && res.data && Array.isArray(res.data.orders) && res.data.orders.length > 0) {
           orders.value = res.data.orders;
-        } else {
-          // Use standard benchmark fallback orders
-          orders.value = [
-            { id: '1', orderNumber: 'LDH-8921-KE', customerName: 'Kevin Ochieng', customerPhone: '+254 712 334 556', date: 'Today 12:45 PM', itemTitle: 'Vintage Nike Colorblock Windbreaker', zone: 'Kilimani', total: 3750, mpesaReceipt: 'QK8921MN', status: 'Completed' },
-            { id: '2', orderNumber: 'LDH-8920-KE', customerName: 'Amina Wangari', customerPhone: '+254 722 984 102', date: 'Today 11:15 AM', itemTitle: 'Stüssy 8-Ball Mohair Knit Sweater', zone: 'Westlands', total: 5050, mpesaReceipt: 'QK8920KL', status: 'Completed' },
-            { id: '3', orderNumber: 'LDH-8919-KE', customerName: 'Brian Mutua', customerPhone: '+254 733 112 450', date: 'Yesterday 04:30 PM', itemTitle: 'Carhartt Duck Double-Knee Work Pants', zone: 'CBD Express', total: 3200, mpesaReceipt: 'QK8919PQ', status: 'Completed' },
-            { id: '4', orderNumber: 'LDH-8918-KE', customerName: 'Faith Chebet', customerPhone: '+254 701 556 778', date: 'Yesterday 02:10 PM', itemTitle: 'Minimalist Bias-Cut Silk Midi Skirt', zone: 'Lavington', total: 2050, mpesaReceipt: 'QK8918XY', status: 'In Transit' }
-          ];
+        } else if (!orders.value || orders.value.length === 0) {
+          orders.value = [...defaultBenchmarkOrders];
         }
       } catch (err) {
         console.warn('Orders fetch warning', err);
+        if (!orders.value || orders.value.length === 0) {
+          orders.value = [...defaultBenchmarkOrders];
+        }
       } finally {
         loading.value = false;
       }
@@ -946,6 +960,38 @@ export default defineComponent({
   transform: translateY(-1px);
 }
 
+.btn-storefront-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+.btn-storefront-action:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+:root[data-theme='dark'] .btn-storefront-action,
+[data-theme='dark'] .btn-storefront-action,
+.dark .btn-storefront-action {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+:root[data-theme='dark'] .btn-storefront-action:hover,
+[data-theme='dark'] .btn-storefront-action:hover,
+.dark .btn-storefront-action:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
 .btn-sync-action {
   display: inline-flex;
   align-items: center;
@@ -965,14 +1011,18 @@ export default defineComponent({
   border-color: #94a3b8;
   color: #0f172a;
 }
-:root[data-theme='dark'] .btn-sync-action {
-  background: #1e293b;
-  color: #e2e8f0;
-  border-color: rgba(255, 255, 255, 0.12);
+:root[data-theme='dark'] .btn-sync-action,
+[data-theme='dark'] .btn-sync-action,
+.dark .btn-sync-action {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
-:root[data-theme='dark'] .btn-sync-action:hover {
-  background: #334155;
-  color: #ffffff;
+:root[data-theme='dark'] .btn-sync-action:hover,
+[data-theme='dark'] .btn-sync-action:hover,
+.dark .btn-sync-action:hover {
+  background: #334155 !important;
+  color: #ffffff !important;
 }
 
 .kpi-micro-label {
