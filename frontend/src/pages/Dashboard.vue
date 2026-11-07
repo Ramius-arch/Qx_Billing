@@ -1,5 +1,21 @@
 <template>
   <div class="dashboard-page" :data-loading="loading">
+    <!-- A. STANDARD MODE (Merchant Shopkeeper Interface — Jakob's Law / Stripe / Square / Kopo Kopo) -->
+    <merchant-standard-dashboard
+      v-if="isSimpleMode"
+      :active-tenant="activeTenant"
+      :chart-data="revenueChartData"
+      :chart-options="barChartOptions"
+      :period="revenuePeriod"
+      @create-sale="goToCreateInvoice"
+      @open-whatsapp="openWhatsAppModal"
+      @open-stk="openStkModal"
+      @open-unclaimed="unclaimedDrawerVisible = true"
+      @change-period="setPeriod"
+    />
+
+    <!-- B. ADVANCED PRO MODE (Institutional Double-Entry Ledger & Financial Controller) -->
+    <div v-else class="pro-financial-cockpit">
     <!-- 1. Executive Status Ribbon (Sports Car Dual-Cockpit: Street vs Track) -->
     <header class="hero-bar bespoke-ceramic-card mb-4" :class="isStreetMode ? 'street-hero-bar' : 'track-hero-bar'">
       <!-- STREET MODE HERO (Assisted & Simple) -->
@@ -470,6 +486,8 @@
       </a-row>
     </section>
 
+    </div>
+
     <!-- 1-Click WhatsApp Dispatch Modal -->
     <whats-app-dispatch-modal
       v-model:visible="whatsappModalVisible"
@@ -503,6 +521,7 @@ import { useCockpitMode } from '../services/cockpitMode';
 import WhatsAppDispatchModal from '../components/WhatsAppDispatchModal.vue';
 import UnclaimedMpesaDrawer from '../components/UnclaimedMpesaDrawer.vue';
 import StkPushModal from '../components/StkPushModal.vue';
+import MerchantStandardDashboard from '../components/MerchantStandardDashboard.vue';
 import { Bar, Pie } from 'vue-chartjs';
 import { 
   ArrowUpOutlined, 
@@ -531,6 +550,7 @@ ChartJS.register(...registerables);
 export default defineComponent({
   name: 'Dashboard',
   components: {
+    MerchantStandardDashboard,
     Bar,
     Pie,
     AnimatedNumber,
