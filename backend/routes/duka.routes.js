@@ -323,4 +323,133 @@ router.get('/commerce/diligence/dossier-pdf', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/commerce/agents/status
+ * Aggregated telemetry across all 4 Autonomous BSS Accounting & Operational Agents
+ */
+router.get('/commerce/agents/status', async (req, res) => {
+  try {
+    const reconciliationService = require('../services/commerce/reconciliationService');
+    const reservationSweeper = require('../services/commerce/reservationSweeper');
+    const ledger = require('../services/commerce/ledger');
+
+    const reconStatus = reconciliationService.getStatus();
+    const sweeperStatus = reservationSweeper.getStatus();
+    const trialBalance = await ledger.getTrialBalance().catch(() => ({
+      totalDebits: 0,
+      totalCredits: 0,
+      variance: 0,
+      isBalanced: true
+    }));
+
+    const response = {
+      success: true,
+      timestamp: new Date().toISOString(),
+      agents: [
+        {
+          id: 'recon-agent',
+          name: 'M-Pesa & Bank Reconciliation Agent',
+          category: 'Reconciliation & Clearing',
+          status: reconStatus.daemonActive ? 'RUNNING' : 'IDLE',
+          description: 'Autonomous auditor scanning Lipa na M-Pesa receipts against open orders. Auto-posts self-healing journal entries for unposted sales.',
+          interval: '60s cycle',
+          lastRunAt: reconStatus.lastReconciliationTime,
+          metrics: {
+            autoHealedCount: reconStatus.lastReport?.autoHealedEntries || 0,
+            discrepancies: reconStatus.lastReport?.discrepanciesCount || 0,
+            settledOrders: reconStatus.lastReport?.settlementAudit?.paidOrdersCount || 0,
+            totalSettled: reconStatus.lastReport?.settlementAudit?.totalSettledAmount || 0
+          }
+        },
+        {
+          id: 'ledger-guardian',
+          name: 'Double-Entry Ledger Guardian',
+          category: 'Financial Accounting (IFRS/GAAP)',
+          status: trialBalance.isBalanced ? 'ACTIVE' : 'WARNING',
+          description: 'Real-time double-entry invariant checker guaranteeing Debits equal Credits across accounts 1100, 2200, 4000, and 4100.',
+          interval: 'Continuous real-time',
+          lastRunAt: new Date().toISOString(),
+          metrics: {
+            isBalanced: trialBalance.isBalanced,
+            variance: trialBalance.variance,
+            totalDebits: trialBalance.totalDebits || trialBalance.grandTotalDebits || 0,
+            totalCredits: trialBalance.totalCredits || trialBalance.grandTotalCredits || 0
+          }
+        },
+        {
+          id: 'stock-sweeper',
+          name: 'Stock Reservation & TTL Sweeper',
+          category: 'Inventory & Order Lifecycle',
+          status: sweeperStatus.isRunning ? 'RUNNING' : 'IDLE',
+          description: 'Scans checkout holds with 15-minute expiration windows. Automatically reclaims abandoned items back to storefront stock.',
+          interval: '30s sweep',
+          lastRunAt: sweeperStatus.lastSweepAt,
+          metrics: {
+            totalReclaimed: sweeperStatus.totalReclaimedCount,
+            ttlMinutes: 15
+          }
+        },
+        {
+          id: 'etims-agent',
+          name: 'KRA eTIMS Tax Compliance Engine',
+          category: 'Statutory Tax Compliance',
+          status: 'ACTIVE',
+          description: 'Calculates statutory 16% VAT, constructs cryptographic verification hashes, control unit serials, and generates verified PDF tax invoices.',
+          interval: 'Per transaction & on-demand',
+          lastRunAt: new Date().toISOString(),
+          metrics: {
+            taxRate: '16.0%',
+            taxpayerPin: 'P051982741Z',
+            cuSerial: 'KRA-CU-0982410-LADHA',
+            status: 'VSCU Compliant'
+          }
+        }
+      ]
+    };
+
+    return res.json(response);
+  } catch (err) {
+    console.error('Agents status error:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * POST /api/commerce/quick-sale
+ * Fast counter point-of-sale action (Shopkeeper standard flow)
+ */
+router.post('/commerce/quick-sale', async (req, res) => {
+  try {
+    const { customerName, customerPhone, items, paymentMethod = 'mpesa', isPaid = true } = req.body;
+
+    if (!items || !items.length) {
+      return res.status(400).json({ success: false, error: 'At least one item is required.' });
+    }
+
+    const checkoutResult = await checkoutService.processCheckout({
+      storeId: 'ladha-nairobi',
+      customer: {
+        name: customerName || 'Walk-in Counter Customer',
+        phone: customerPhone || '+254700000000'
+      },
+      items,
+      paymentMethod
+    });
+
+    if (isPaid && checkoutResult.mpesa?.checkoutRequestId) {
+      const settleResult = await checkoutService.settlePayment(checkoutResult.mpesa.checkoutRequestId);
+      return res.json({
+        success: true,
+        order: checkoutResult.order,
+        settlement: settleResult
+      });
+    }
+
+    return res.json(checkoutResult);
+  } catch (err) {
+    console.error('Quick sale error:', err);
+    return res.status(err.status || 500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

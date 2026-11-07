@@ -21,38 +21,35 @@ function getInitialMode() {
   return 'standard';
 }
 
-const currentMode = ref(getInitialMode());
+export const currentMode = ref(getInitialMode());
+export const isProMode = computed(() => currentMode.value === 'advanced');
+export const isSimpleMode = computed(() => currentMode.value === 'standard');
+export const isExpertMode = isProMode;
+export const isStreetMode = isSimpleMode;
+
+export function setMode(mode) {
+  let normalized = mode;
+  if (mode === 'street') normalized = 'standard';
+  if (mode === 'track') normalized = 'advanced';
+
+  if (normalized !== 'standard' && normalized !== 'advanced') return;
+  currentMode.value = normalized;
+
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, normalized);
+    }
+  } catch (e) {
+    // ignore
+  }
+}
+
+export function toggleMode() {
+  const next = currentMode.value === 'standard' ? 'advanced' : 'standard';
+  setMode(next);
+}
 
 export function useCockpitMode() {
-  const isProMode = computed(() => currentMode.value === 'advanced');
-  const isSimpleMode = computed(() => currentMode.value === 'standard');
-
-  // Backward compatibility aliases
-  const isExpertMode = isProMode;
-  const isStreetMode = isSimpleMode;
-
-  function setMode(mode) {
-    let normalized = mode;
-    if (mode === 'street') normalized = 'standard';
-    if (mode === 'track') normalized = 'advanced';
-
-    if (normalized !== 'standard' && normalized !== 'advanced') return;
-    currentMode.value = normalized;
-
-    try {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(STORAGE_KEY, normalized);
-      }
-    } catch (e) {
-      // ignore
-    }
-  }
-
-  function toggleMode() {
-    const next = currentMode.value === 'standard' ? 'advanced' : 'standard';
-    setMode(next);
-  }
-
   return {
     currentMode,
     isProMode,

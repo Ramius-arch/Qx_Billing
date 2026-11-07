@@ -247,7 +247,12 @@
       </div>
     </div>
 
-    <!-- 4. Slide-Over Order Detail Drawer (Stripe Pattern) -->
+    <!-- 4. Store Automated Back-Office Assistants Cockpit -->
+    <section class="mt-6 mb-2">
+      <bss-agents-cockpit />
+    </section>
+
+    <!-- 5. Slide-Over Order Detail Drawer (Stripe Pattern) -->
     <a-drawer
       :open="drawerVisible"
       title="Sale & Receipt Details"
@@ -312,11 +317,13 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import { Bar } from 'vue-chartjs';
+import BssAgentsCockpit from './BssAgentsCockpit.vue';
 
 export default defineComponent({
   name: 'MerchantStandardDashboard',
   components: {
-    Bar
+    Bar,
+    BssAgentsCockpit
   },
   props: {
     activeTenant: {

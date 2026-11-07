@@ -55,6 +55,17 @@ if (!isTest) {
         .then(async () => {
             console.log('Database synchronized');
             await seedDatabase(); // Seed database with initial demo data
+
+            // Initialize Autonomous BSS Background Agents
+            try {
+                const reconciliationService = require('./services/commerce/reconciliationService');
+                const reservationSweeper = require('./services/commerce/reservationSweeper');
+                reconciliationService.startDaemon();
+                reservationSweeper.startSweeper();
+                console.log('[BSS Engine] Autonomous background accounting reconciliation and inventory sweeper daemons active.');
+            } catch (daemonErr) {
+                console.warn('[BSS Engine] Could not start autonomous daemons:', daemonErr.message);
+            }
             app.listen(PORT, () => {
                 console.log(`Server is running on port ${PORT}`);
             });
@@ -87,3 +98,4 @@ async function seedDatabase() {
 }
 
 module.exports = app;
+
