@@ -1,53 +1,149 @@
 <template>
   <div class="dashboard-page" :data-loading="loading">
-    <!-- 1. Executive Status Ribbon (Sleek, Proportional, Frosted Ceramic Glass) -->
-    <header class="hero-bar bespoke-ceramic-card mb-4">
-      <div class="hero-left">
-        <div class="hero-title-line">
-          <h1 class="hero-title">
-            Financial <span class="calligraphic-accent">Intelligence Hub</span>
-          </h1>
-          <span class="hero-mode-pill font-mono" :class="activeTenant.isPoC ? 'poc' : 'live'">
-            <span class="live-beacon"></span>
-            {{ activeTenant.isPoC ? 'PoC · BENCHMARK MODE' : 'LIVE LEDGER' }}
-          </span>
-          <span class="hero-engine-tag font-mono">{{ activeTenant.brand.engineVersion }}</span>
-        </div>
-        <p class="hero-whisper font-mono">
-          <span class="whisper-quote">&ldquo;{{ activeTenant.brand.tagline || 'You handle the craft, we handle the count.' }}&rdquo;</span>
-          <span class="whisper-sep">&bull;</span>
-          <span>Settlements reconciled &bull; Real-time trial balance (0.00 variance)</span>
-        </p>
-      </div>
-
-      <div class="hero-right">
-        <!-- Lively Specular Micro-Telemetry Chips -->
-        <div class="hero-telemetry font-mono">
-          <div class="telemetry-chip">
-            <span class="telemetry-label">SYSTEM</span>
-            <span class="telemetry-val text-emerald-600 dark:text-emerald-400 font-bold">99.98% NOMINAL</span>
+    <!-- 1. Executive Status Ribbon (Sports Car Dual-Cockpit: Street vs Track) -->
+    <header class="hero-bar bespoke-ceramic-card mb-4" :class="isStreetMode ? 'street-hero-bar' : 'track-hero-bar'">
+      <!-- STREET MODE HERO (Assisted & Simple) -->
+      <template v-if="isStreetMode">
+        <div class="hero-left">
+          <div class="hero-title-line">
+            <h1 class="hero-title">
+              Daily Sales & <span class="text-emerald-600 dark:text-emerald-400 italic">Cashflow</span>
+            </h1>
+            <span class="hero-mode-pill font-mono bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+              <span class="live-beacon bg-emerald-500"></span>
+              STREET MODE · ASSISTED
+            </span>
+            <span class="hero-engine-tag font-mono">TILL #882941</span>
           </div>
-          <div class="telemetry-chip">
-            <span class="telemetry-label">LEDGER</span>
-            <span class="telemetry-val text-amber-600 dark:text-amber-400 font-bold">BALANCED (0.00)</span>
-          </div>
-          <div class="telemetry-chip">
-            <span class="telemetry-label">SYNC</span>
-            <span class="telemetry-val text-indigo-600 dark:text-indigo-400 font-bold">{{ activeTenant.brand.syncLatency }}</span>
-          </div>
+          <p class="hero-whisper font-mono">
+            <span>Lipa na M-Pesa Live</span>
+            <span class="whisper-sep">&bull;</span>
+            <span>Simple retail operations &bull; 1-click customer WhatsApp billing &bull; Instant cash matching</span>
+          </p>
         </div>
 
-        <!-- Compact Actions -->
-        <div class="hero-actions">
-          <button type="button" class="btn-action-primary" @click="goToCreateInvoice">
-            <span>+ New Tax Invoice</span>
-          </button>
-          <button type="button" class="btn-action-secondary" @click="handleExportDossier">
-            <span>Export Audit &nearr;</span>
-          </button>
+        <div class="hero-right">
+          <div class="hero-telemetry font-mono">
+            <div class="telemetry-chip bg-emerald-500/10 border-emerald-500/25">
+              <span class="telemetry-label">GATEWAY</span>
+              <span class="telemetry-val text-emerald-600 dark:text-emerald-400 font-bold">M-PESA LIVE</span>
+            </div>
+            <div class="telemetry-chip bg-indigo-500/10 border-indigo-500/25">
+              <span class="telemetry-label">BOOKS</span>
+              <span class="telemetry-val text-indigo-600 dark:text-indigo-400 font-bold">BALANCED</span>
+            </div>
+            <button 
+              type="button" 
+              class="telemetry-chip bg-amber-500/10 border-amber-500/30 hover:bg-amber-500/20 cursor-pointer transition-all"
+              @click="unclaimedDrawerVisible = true"
+              title="Click to view and match unassigned M-Pesa receipts"
+            >
+              <span class="telemetry-label">UNMATCHED</span>
+              <span class="telemetry-val text-amber-600 dark:text-amber-400 font-bold">3 PENDING &rarr;</span>
+            </button>
+          </div>
+
+          <div class="hero-actions">
+            <button type="button" class="btn-action-primary bg-emerald-600 hover:bg-emerald-500 border-none" @click="goToCreateInvoice">
+              <span>+ Record Sale</span>
+            </button>
+            <button type="button" class="btn-action-secondary" @click="openWhatsAppModal()">
+              <span>💬 WhatsApp Bill</span>
+            </button>
+            <button type="button" class="btn-action-secondary" @click="openStkModal()">
+              <span>📱 STK Push</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
+
+      <!-- TRACK MODE HERO (Audited Sovereign Cockpit) -->
+      <template v-else>
+        <div class="hero-left">
+          <div class="hero-title-line">
+            <h1 class="hero-title">
+              Financial <span class="calligraphic-accent">Intelligence Hub</span>
+            </h1>
+            <span class="hero-mode-pill font-mono" :class="activeTenant.isPoC ? 'poc' : 'live'">
+              <span class="live-beacon"></span>
+              {{ activeTenant.isPoC ? 'PoC · BENCHMARK MODE' : 'LIVE LEDGER' }}
+            </span>
+            <span class="hero-engine-tag font-mono">{{ activeTenant.brand.engineVersion }}</span>
+          </div>
+          <p class="hero-whisper font-mono">
+            <span class="whisper-quote">&ldquo;{{ activeTenant.brand.tagline || 'You handle the craft, we handle the count.' }}&rdquo;</span>
+            <span class="whisper-sep">&bull;</span>
+            <span>Settlements reconciled &bull; Real-time trial balance (0.00 variance)</span>
+          </p>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-telemetry font-mono">
+            <div class="telemetry-chip">
+              <span class="telemetry-label">SYSTEM</span>
+              <span class="telemetry-val text-emerald-600 dark:text-emerald-400 font-bold">99.98% NOMINAL</span>
+            </div>
+            <div class="telemetry-chip">
+              <span class="telemetry-label">LEDGER</span>
+              <span class="telemetry-val text-amber-600 dark:text-amber-400 font-bold">BALANCED (0.00)</span>
+            </div>
+            <div class="telemetry-chip">
+              <span class="telemetry-label">SYNC</span>
+              <span class="telemetry-val text-indigo-600 dark:text-indigo-400 font-bold">{{ activeTenant.brand.syncLatency }}</span>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button type="button" class="btn-action-primary" @click="goToCreateInvoice">
+              <span>+ New Tax Invoice</span>
+            </button>
+            <button type="button" class="btn-action-secondary" @click="handleExportDossier">
+              <span>Export Audit &nearr;</span>
+            </button>
+          </div>
+        </div>
+      </template>
     </header>
+
+    <!-- Assisted Commerce Toolbar in Street Mode -->
+    <section v-if="isStreetMode" class="street-toolbar mb-4 p-3 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-slate-900/40 to-indigo-500/10 border border-emerald-500/20 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-xl">🛠️</span>
+        <div>
+          <div class="text-xs font-bold text-slate-800 dark:text-slate-100">Assisted Commerce Tools</div>
+          <div class="text-[11px] text-slate-500 dark:text-slate-400">Fast counter sales, customer WhatsApp dispatch, and 1-tap M-Pesa reconciliation</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button 
+          type="button" 
+          @click="openWhatsAppModal()"
+          class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+        >
+          <span>💬</span>
+          <span>1-Click WhatsApp Bill</span>
+        </button>
+
+        <button 
+          type="button" 
+          @click="openStkModal()"
+          class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+        >
+          <span>📱</span>
+          <span>Send M-Pesa STK Prompt</span>
+        </button>
+
+        <button 
+          type="button" 
+          @click="unclaimedDrawerVisible = true"
+          class="px-3 py-1.5 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-600 dark:text-amber-400 border border-amber-600/30 text-xs font-bold flex items-center gap-1.5 transition-all"
+        >
+          <span>⚠️</span>
+          <span>Match Unclaimed Receipts (3)</span>
+        </button>
+      </div>
+    </section>
 
     <!-- 2. Four Precision Frosted Ceramic KPI Cards (Proportional, Compact ~86px, Stable Keys) -->
     <section class="stats-grid mb-5" aria-label="Key Performance Indicators">
@@ -301,6 +397,27 @@
         </a-col>
       </a-row>
     </section>
+
+    <!-- 1-Click WhatsApp Dispatch Modal -->
+    <whats-app-dispatch-modal
+      v-model:visible="whatsappModalVisible"
+      :invoice="activeInvoiceForWhatsapp"
+    />
+
+    <!-- Unclaimed M-Pesa Drawer -->
+    <unclaimed-mpesa-drawer
+      v-model:visible="unclaimedDrawerVisible"
+      @reconciled="handleMpesaReconciled"
+    />
+
+    <!-- M-Pesa STK Push Simulation Modal -->
+    <stk-push-modal
+      v-model:visible="stkModalVisible"
+      :phone="stkData.phone"
+      :amount="stkData.amount"
+      :invoice-id="stkData.invoiceId"
+      @success="handleStkSuccess"
+    />
   </div>
 </template>
 
@@ -310,6 +427,10 @@ import { useRouter } from 'vue-router';
 import api from '../services/api';
 import { message } from 'ant-design-vue';
 import { useTenantConfig } from '../services/tenantConfig';
+import { useCockpitMode } from '../services/cockpitMode';
+import WhatsAppDispatchModal from '../components/WhatsAppDispatchModal.vue';
+import UnclaimedMpesaDrawer from '../components/UnclaimedMpesaDrawer.vue';
+import StkPushModal from '../components/StkPushModal.vue';
 import { Bar, Pie } from 'vue-chartjs';
 import { 
   ArrowUpOutlined, 

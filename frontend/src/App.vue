@@ -195,6 +195,8 @@
               </div>
               <div class="header-right">
                 <a-space :size="isMobile ? 'small' : 'middle'">
+                  <!-- Sports Car Dual-Cockpit Drive Mode Switcher (Street vs Track) -->
+                  <cockpit-mode-switch />
                   <!-- Multi-Industry White-Label Benchmark Preset Selector -->
                   <a-dropdown placement="bottomRight" :trigger="['click']">
                     <button type="button" class="preset-pill-trigger font-mono">
@@ -287,6 +289,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { isRouteLoading } from './router';
 import { theme, message } from 'ant-design-vue';
 import { useTenantConfig } from './services/tenantConfig';
+import CockpitModeSwitch from './components/CockpitModeSwitch.vue';
 import Lenis from 'lenis';
 import {
   HomeOutlined,
@@ -316,6 +319,7 @@ import {
 export default defineComponent({
   name: 'App',
   components: {
+    CockpitModeSwitch,
     HomeOutlined,
     DashboardOutlined,
     TeamOutlined,
