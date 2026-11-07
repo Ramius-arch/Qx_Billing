@@ -186,11 +186,11 @@
             <div class="panel-header">
               <div class="panel-header-left">
                 <div class="flex items-center gap-2">
-                  <h2 class="panel-title">Revenue Trajectory & Forecast</h2>
+                  <h2 class="panel-title">{{ isSimpleMode ? 'Sales & Cashflow Trend' : 'Revenue Trajectory & Forecast' }}</h2>
                   <span class="period-badge font-mono">{{ activePeriodLabel }}</span>
                   <span v-if="activeTenant.isPoC" class="poc-benchmark-tag font-mono">[PoC Benchmark]</span>
                 </div>
-                <p class="panel-subtitle">Audited settlement cash flow and projected incoming M-Pesa receipts</p>
+                <p class="panel-subtitle">{{ isSimpleMode ? 'Weekly sales and customer payments received' : 'Audited settlement cash flow and projected incoming M-Pesa receipts' }}</p>
               </div>
 
               <!-- Period Switcher Buttons -->
@@ -231,8 +231,8 @@
           <div class="chart-panel bespoke-ceramic-card">
             <div class="panel-header">
               <div>
-                <h2 class="panel-title">Revenue Stream Mix</h2>
-                <p class="panel-subtitle">Distribution by audited catalog category</p>
+                <h2 class="panel-title">{{ isSimpleMode ? 'Sales by Category' : 'Revenue Stream Mix' }}</h2>
+                <p class="panel-subtitle">{{ isSimpleMode ? 'Where your revenue is coming from' : 'Distribution by audited catalog category' }}</p>
               </div>
             </div>
 
@@ -257,11 +257,11 @@
           <div class="table-panel bespoke-ceramic-card">
             <div class="panel-header">
               <div>
-                <h2 class="panel-title">Live Settlement Stream</h2>
-                <p class="panel-subtitle">Real-time immutable ledger audit trail</p>
+                <h2 class="panel-title">{{ isSimpleMode ? 'Recent Sales & Payments' : 'Live Settlement Stream' }}</h2>
+                <p class="panel-subtitle">{{ isSimpleMode ? 'Latest customer orders and Lipa na M-Pesa receipts' : 'Real-time immutable ledger audit trail' }}</p>
               </div>
               <router-link to="/payment-processing" class="action-link font-mono font-bold">
-                FULL LEDGER &rarr;
+                {{ isSimpleMode ? 'VIEW ALL SALES &rarr;' : 'FULL LEDGER &rarr;' }}
               </router-link>
             </div>
 
@@ -301,12 +301,84 @@
           <div class="actions-panel bespoke-ceramic-card">
             <div class="panel-header">
               <div>
-                <h2 class="panel-title">Command Center</h2>
-                <p class="panel-subtitle">Institutional settlement triggers</p>
+                <h2 class="panel-title">{{ isSimpleMode ? 'Quick Actions' : 'Command Center' }}</h2>
+                <p class="panel-subtitle">{{ isSimpleMode ? 'Daily tools for sales, M-Pesa & WhatsApp' : 'Institutional settlement triggers' }}</p>
               </div>
             </div>
 
-            <div class="action-tiles">
+            <!-- Standard Mode: Daily Store Actions (Jakob's Law) -->
+            <div v-if="isSimpleMode" class="action-tiles">
+              <button 
+                type="button"
+                class="tile-btn tile-primary" 
+                @click="openWhatsAppModal()"
+              >
+                <div class="tile-icon-box text-emerald-400">
+                  <span>💬</span>
+                </div>
+                <div class="tile-text">
+                  <div class="tile-header-row">
+                    <span class="tile-title">Send WhatsApp Invoice</span>
+                    <span class="tile-badge-live">1-CLICK</span>
+                  </div>
+                  <span class="tile-desc">Send M-Pesa payment steps & bill to customer</span>
+                </div>
+              </button>
+
+              <button 
+                type="button"
+                class="tile-btn" 
+                @click="openStkModal()"
+              >
+                <div class="tile-icon-box text-indigo-400">
+                  <span>📱</span>
+                </div>
+                <div class="tile-text">
+                  <div class="tile-header-row">
+                    <span class="tile-title">Lipa na M-Pesa Prompt</span>
+                    <span class="tile-badge-sec">STK PUSH</span>
+                  </div>
+                  <span class="tile-desc">Prompt customer phone to enter PIN</span>
+                </div>
+              </button>
+
+              <button 
+                type="button"
+                class="tile-btn" 
+                @click="unclaimedDrawerVisible = true"
+              >
+                <div class="tile-icon-box text-amber-400">
+                  <span>⚠️</span>
+                </div>
+                <div class="tile-text">
+                  <div class="tile-header-row">
+                    <span class="tile-title">Match Unclaimed Payments</span>
+                    <span class="tile-badge-audit">3 PENDING</span>
+                  </div>
+                  <span class="tile-desc">Attach unnamed Till receipts to invoices</span>
+                </div>
+              </button>
+
+              <button 
+                type="button"
+                class="tile-btn" 
+                @click="goToCreateInvoice"
+              >
+                <div class="tile-icon-box text-emerald-400">
+                  <plus-outlined />
+                </div>
+                <div class="tile-text">
+                  <div class="tile-header-row">
+                    <span class="tile-title">Create New Sale / Invoice</span>
+                    <span class="tile-badge-pdf">RECEIPT</span>
+                  </div>
+                  <span class="tile-desc">Print receipt or generate invoice</span>
+                </div>
+              </button>
+            </div>
+
+            <!-- Advanced Mode: Institutional Triggers -->
+            <div v-else class="action-tiles">
               <button 
                 type="button"
                 class="tile-btn tile-primary" 
@@ -386,8 +458,8 @@
 
             <div class="health-card mt-5 font-mono">
               <div class="health-top">
-                <span class="health-title">{{ activeTenant.terminology.syncTitle }}</span>
-                <span class="health-val text-emerald-600 dark:text-emerald-400 font-bold">100.0% BALANCED</span>
+                <span class="health-title">{{ isSimpleMode ? 'M-Pesa Gateway Connection' : activeTenant.terminology.syncTitle }}</span>
+                <span class="health-val text-emerald-600 dark:text-emerald-400 font-bold">{{ isSimpleMode ? '100% ONLINE (TILL 882941)' : '100.0% BALANCED' }}</span>
               </div>
               <div class="health-bar-track">
                 <div class="health-bar-fill" style="width: 100%;"></div>

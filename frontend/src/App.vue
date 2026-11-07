@@ -372,15 +372,15 @@ export default defineComponent({
       { key: 'storefront', label: 'Storefront (Shop)', icon: ShoppingOutlined, href: '/shop', badge: 'LIVE' },
       { key: 'divider-1', type: 'divider' },
       { key: 'dashboard', label: 'Sales Dashboard', icon: DashboardOutlined, path: '/dashboard' },
-      { key: 'usage-tracker', label: 'Orders & Drops', icon: ShoppingCartOutlined, path: '/usage-tracker' },
-      { key: 'customers', label: 'Nairobi Shoppers', icon: TeamOutlined, path: '/customers' },
-      { key: 'reports', label: 'Capital & Diligence', icon: LineChartOutlined, path: '/reports' },
+      { key: 'usage-tracker', label: 'Orders & Sales', icon: ShoppingCartOutlined, path: '/usage-tracker' },
+      { key: 'customers', label: 'Customers', icon: TeamOutlined, path: '/customers' },
+      { key: 'reports', label: 'Reports', icon: LineChartOutlined, path: '/reports' },
       { key: 'divider-2', type: 'divider' },
-      { key: 'payment-processing', label: 'M-Pesa Settlements', icon: CreditCardOutlined, path: '/payment-processing' },
-      { key: 'billing-engine', label: 'Double-Entry Ledger', icon: AccountBookOutlined, path: '/billing-engine' },
-      { key: 'invoice-generator', label: 'Tax Invoices', icon: FileTextOutlined, path: '/invoice-generator' },
+      { key: 'payment-processing', label: 'M-Pesa Payments', icon: CreditCardOutlined, path: '/payment-processing' },
+      { key: 'billing-engine', label: 'Accounting & Ledger', icon: AccountBookOutlined, path: '/billing-engine' },
+      { key: 'invoice-generator', label: 'Invoices & Receipts', icon: FileTextOutlined, path: '/invoice-generator' },
       { key: 'divider-3', type: 'divider' },
-      { key: 'settings', label: 'System Settings', icon: SettingOutlined, path: '/settings' },
+      { key: 'settings', label: 'Settings', icon: SettingOutlined, path: '/settings' },
     ];
 
     const handleMenuClick = ({ key }) => {
