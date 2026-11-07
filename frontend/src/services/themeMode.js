@@ -39,6 +39,13 @@ export function applyThemeToDom() {
   if (typeof document === 'undefined') return;
   const themeName = activeThemeName.value;
   document.documentElement.setAttribute('data-theme', themeName);
+  if (themeName === 'dark') {
+    document.documentElement.classList.add('dark');
+    if (document.body) document.body.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+    if (document.body) document.body.classList.remove('dark');
+  }
   if (document.body) {
     document.body.setAttribute('data-theme', themeName);
   }

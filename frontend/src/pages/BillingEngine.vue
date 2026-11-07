@@ -33,6 +33,15 @@
 
           <button 
             type="button" 
+            @click="openCanvasDrawer"
+            class="px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm transition-all flex items-center gap-2"
+          >
+            <niche-icon name="zap" :size="13" />
+            <span>Configure Business & Archetype</span>
+          </button>
+
+          <button 
+            type="button" 
             @click="downloadTaxSummary"
             class="px-4 py-2.5 rounded-xl font-bold text-xs border border-indigo-500/40 text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all flex items-center gap-2"
           >

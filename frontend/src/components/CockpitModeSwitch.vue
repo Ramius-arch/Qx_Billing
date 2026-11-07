@@ -76,13 +76,13 @@ export default defineComponent({
   align-items: center;
 }
 
-/* Minimalist Professional Segmented Control */
+/* Dark Mode (Default / Base) */
 .mode-segmented-pill {
   display: inline-flex;
   align-items: center;
-  padding: 2px;
-  background: rgba(15, 23, 42, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2.5px;
+  background: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 9999px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -92,14 +92,14 @@ export default defineComponent({
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 3px 10px;
+  padding: 3px 11px;
   height: 24px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: #94a3b8;
-  background: transparent;
-  border: none;
+  color: #94a3b8 !important;
+  background: transparent !important;
+  border: none !important;
   border-radius: 9999px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -107,13 +107,13 @@ export default defineComponent({
 }
 
 .mode-segment-btn:hover {
-  color: #f1f5f9;
+  color: #f1f5f9 !important;
 }
 
 .mode-segment-btn.is-active {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
 }
 
 .mode-dot {
@@ -129,22 +129,27 @@ export default defineComponent({
   box-shadow: 0 0 6px #818cf8;
 }
 
-/* Light Mode Overrides */
+/* Light Mode Explicit Scoping */
 :root[data-theme="light"] .mode-segmented-pill,
-body:not(.dark) .mode-segmented-pill {
-  background: #f1f5f9;
-  border-color: rgba(0, 0, 0, 0.08);
+[data-theme="light"] .mode-segmented-pill {
+  background: #f1f5f9 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 :root[data-theme="light"] .mode-segment-btn,
-body:not(.dark) .mode-segment-btn {
-  color: #64748b;
+[data-theme="light"] .mode-segment-btn {
+  color: #64748b !important;
+}
+
+:root[data-theme="light"] .mode-segment-btn:hover,
+[data-theme="light"] .mode-segment-btn:hover {
+  color: #0f172a !important;
 }
 
 :root[data-theme="light"] .mode-segment-btn.is-active,
-body:not(.dark) .mode-segment-btn.is-active {
-  background: #ffffff;
-  color: #0f172a;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+[data-theme="light"] .mode-segment-btn.is-active {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 </style>
