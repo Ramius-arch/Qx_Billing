@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { ref } from 'vue';
 
+import { STOREFRONT_URL } from './config/storefront';
+
 export const isRouteLoading = ref(false);
 
 const routes = [
@@ -192,6 +194,17 @@ const routes = [
     name: 'Offline',
     component: () => import('./pages/Offline.vue'),
     meta: { title: 'Offline', layout: true }
+  },
+  // External Storefront redirect (/shop -> live storefront)
+  {
+    path: '/shop',
+    name: 'StorefrontRedirect',
+    beforeEnter() {
+      if (typeof window !== 'undefined') {
+        window.location.assign(STOREFRONT_URL);
+      }
+      return false;
+    }
   },
   // 404 Route
   {

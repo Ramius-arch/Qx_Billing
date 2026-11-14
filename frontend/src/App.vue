@@ -295,6 +295,7 @@ import { theme, message } from 'ant-design-vue';
 import { useTenantConfig } from './services/tenantConfig';
 import CockpitModeSwitch from './components/CockpitModeSwitch.vue';
 import NicheIcon from './components/NicheIcon.vue';
+import { STOREFRONT_URL, openStorefront } from './config/storefront';
 import { isSimpleMode } from './services/cockpitMode';
 import { themePreference, isDark, setThemePreference, cycleTheme, applyThemeToDom } from './services/themeMode';
 import Lenis from 'lenis';
@@ -375,7 +376,7 @@ export default defineComponent({
     }));
 
     const menuItems = [
-      { key: 'storefront', label: 'Storefront (Shop)', icon: ShoppingOutlined, href: '/shop', badge: 'LIVE' },
+      { key: 'storefront', label: 'Storefront (Shop)', icon: ShoppingOutlined, href: STOREFRONT_URL, badge: 'LIVE' },
       { key: 'divider-1', type: 'divider' },
       { key: 'dashboard', label: 'Sales Dashboard', icon: DashboardOutlined, path: '/dashboard' },
       { key: 'usage-tracker', label: 'Orders & Sales', icon: ShoppingCartOutlined, path: '/usage-tracker' },
@@ -393,7 +394,8 @@ export default defineComponent({
       const item = menuItems.find(i => i.key === key);
       if (item) {
         if (item.href) {
-          window.open(item.href, '_blank');
+          openStorefront(item.href);
+          selectedKeys.value = [route.path.split('/')[1] || 'dashboard'];
         } else if (item.path) {
           if (route.path !== item.path) {
             router.push(item.path).catch(err => {

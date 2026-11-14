@@ -504,6 +504,7 @@ import api from '../services/api';
 import { isSimpleMode, isProMode } from '../services/cockpitMode';
 import { message } from 'ant-design-vue';
 import NicheIcon from '../components/NicheIcon.vue';
+import { openStorefront } from '../config/storefront';
 
 export default defineComponent({
   name: 'OrdersDropTracker',
@@ -696,7 +697,7 @@ export default defineComponent({
     };
 
     const goToStorefront = () => {
-      window.open('https://qx-billing-client.netlify.app/', '_blank');
+      openStorefront();
     };
 
     const handleLogOrder = () => {};

@@ -76,5 +76,10 @@ describe('App', () => {
     });
 
     expect(wrapper.exists()).toBe(true);
+
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    wrapper.vm.handleMenuClick({ key: 'storefront' });
+    expect(openSpy).toHaveBeenCalledWith('https://ladha.vercel.app/', '_blank', 'noopener,noreferrer');
+    openSpy.mockRestore();
   });
 });
