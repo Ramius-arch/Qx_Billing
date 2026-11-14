@@ -13,14 +13,24 @@ const apiClient = axios.create({
 const api = {
   apiClient,
 
-  async getCustomers(page = 1, pageSize = 10, search = '', sortBy = 'id', sortOrder = 'asc') {
+  async getCustomers(page = 1, pageSize = 10, search = '', sortBy = 'id', sortOrder = 'asc', segment = '', includeArchived = false) {
     try {
       return await apiClient.get('/customers', {
-        params: { page, pageSize, search, sortBy, sortOrder }
+        params: { page, pageSize, search, sortBy, sortOrder, ...(segment ? { segment } : {}), ...(includeArchived ? { includeArchived: 'true' } : {}) }
       });
     } catch (err) {
       console.warn('Backend unavailable, using autonomous MockStore for customers:', err.message);
-      return { data: MockStore.getCustomers(page, pageSize, search) };
+      return { data: MockStore.getCustomers(page, pageSize, search, sortBy, sortOrder, segment, includeArchived) };
+    }
+  },
+
+  async getCustomerSummary(id) {
+    try {
+      return await apiClient.get('/customers/' + id + '/summary');
+    } catch (err) {
+      if (err.response && err.response.status < 500) throw err;
+      console.warn('Backend unavailable, using autonomous MockStore for customer summary:', err.message);
+      return { data: MockStore.getCustomerSummary(id) };
     }
   },
 
@@ -28,6 +38,7 @@ const api = {
     try {
       return await apiClient.post('/customers', customer);
     } catch (err) {
+      if (err.response && err.response.status < 500) throw err;
       console.warn('Backend unavailable, saving customer to autonomous MockStore');
       return { data: MockStore.addCustomer(customer) };
     }
@@ -37,6 +48,7 @@ const api = {
     try {
       return await apiClient.get(`/customers/${id}`);
     } catch (err) {
+      if (err.response && err.response.status < 500) throw err;
       const customers = MockStore.getCustomers(1, 100).customers;
       return { data: customers.find(c => c.id === Number(id)) || customers[0] };
     }
@@ -46,6 +58,7 @@ const api = {
     try {
       return await apiClient.put(`/customers/${id}`, customer);
     } catch (err) {
+      if (err.response && err.response.status < 500) throw err;
       return { data: MockStore.updateCustomer(id, customer) };
     }
   },
@@ -54,6 +67,7 @@ const api = {
     try {
       return await apiClient.delete(`/customers/${id}`);
     } catch (err) {
+      if (err.response && err.response.status < 500) throw err;
       return { data: { success: MockStore.deleteCustomer(id) } };
     }
   },

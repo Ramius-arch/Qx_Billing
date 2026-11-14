@@ -37,7 +37,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       defaultValue: 'active',
       validate: {
-        isIn: [['active', 'inactive', 'suspended']]
+        isIn: [['active', 'inactive', 'suspended', 'archived']]
       }
     },
     createdAt: {

@@ -79,11 +79,13 @@ if (!isTest) {
 async function seedDatabase() {
     const generateDemoData = require('./services/demoData');
     const ledgerService = require('./services/ledgerService');
-    const { customers, plans, bills, payments, usageLogs, invoices, reports } = generateDemoData();
+    const { customers, plans, orders = [], orderLines = [], bills, payments, usageLogs, invoices, reports } = generateDemoData();
     try {
         await db.Plan.bulkCreate(plans, { ignoreDuplicates: true });
         await db.Customer.bulkCreate(customers, { ignoreDuplicates: true });
         await db.Bill.bulkCreate(bills, { ignoreDuplicates: true });
+        if (orders.length) await db.Order.bulkCreate(orders, { ignoreDuplicates: true });
+        if (orderLines.length) await db.OrderLine.bulkCreate(orderLines, { ignoreDuplicates: true });
         await db.Payment.bulkCreate(payments, { ignoreDuplicates: true });
         await db.UsageLog.bulkCreate(usageLogs, { ignoreDuplicates: true });
         await db.Invoice.bulkCreate(invoices, { ignoreDuplicates: true });
